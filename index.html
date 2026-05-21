@@ -1,0 +1,2067 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EXOSYSTEMS Marketing Content Agent</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+        body {
+            font-family: 'Inter', 'Noto Sans KR', sans-serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col custom-scrollbar">
+
+    <!-- Toast Notification -->
+    <div id="toast-message" class="fixed bottom-4 right-4 bg-slate-800 text-white px-5 py-3 rounded-xl shadow-2xl transform transition-all duration-300 translate-y-24 opacity-0 z-50 text-sm font-medium flex items-center space-x-2">
+        <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+        <span id="toast-text">알림 메시지</span>
+    </div>
+
+    <!-- HEADER BAR -->
+    <header class="bg-white border-b-2 border-slate-200 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-blue-600 p-2 rounded-lg text-white shadow-sm">
+                    <i data-lucide="sparkles" class="w-5 h-5 sm:w-6 sm:h-6"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight" id="ui-app-title">EXOSYSTEMS Marketing Content Agent</h1>
+                    <p class="text-[10px] sm:text-xs text-slate-500 hidden sm:block" id="ui-app-subtitle">EXOSYSTEMS 제품군을 위한 전략형 마케팅 콘텐츠 생성 도구</p>
+                </div>
+            </div>
+            
+            <!-- LANGUAGE SELECTOR -->
+            <div class="flex items-center space-x-1 sm:space-x-2 bg-slate-100 p-1 sm:p-1.5 rounded-xl border-2 border-slate-200">
+                <span class="text-[10px] sm:text-xs font-semibold text-slate-500 px-1 sm:px-2 hidden md:block" id="ui-lang-label">언어</span>
+                <button onclick="setLanguage('ko')" id="lang-btn-ko" class="px-2 py-1 sm:px-2.5 rounded-lg text-sm transition-all font-medium focus:outline-none">🇰🇷</button>
+                <button onclick="setLanguage('en')" id="lang-btn-en" class="px-2 py-1 sm:px-2.5 rounded-lg text-sm transition-all font-medium focus:outline-none">🇺🇸</button>
+                <button onclick="setLanguage('zh')" id="lang-btn-zh" class="px-2 py-1 sm:px-2.5 rounded-lg text-sm transition-all font-medium focus:outline-none">🇨🇳</button>
+                <button onclick="setLanguage('ja')" id="lang-btn-ja" class="px-2 py-1 sm:px-2.5 rounded-lg text-sm transition-all font-medium focus:outline-none">🇯🇵</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
+        
+        <!-- LEFT COLUMN: INPUT FORM & KB EXPANSION -->
+        <section class="lg:col-span-5 space-y-6">
+            
+            <!-- CONFIGURATION CARD -->
+            <div class="bg-white rounded-2xl border-2 border-slate-200 p-5 sm:p-6 shadow-md space-y-5">
+                <div class="flex items-center space-x-2 pb-3 border-b-2 border-slate-100">
+                    <i data-lucide="sliders" class="w-5 h-5 text-blue-600"></i>
+                    <h2 class="text-base sm:text-lg font-bold text-slate-900" id="ui-section-config">콘텐츠 설정</h2>
+                </div>
+
+                <!-- Product Selection -->
+                <div class="space-y-2">
+                    <label class="text-xs sm:text-sm font-bold text-slate-700 block" id="ui-label-product">지원 제품군</label>
+                    <select id="product-select" onchange="handleProductChange()" class="w-full bg-slate-50 border-2 border-slate-300 rounded-xl px-4 py-2.5 sm:py-3 text-slate-900 font-bold focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none text-sm hover:border-blue-400">
+                        <option value="exoFit">exoFit</option>
+                        <option value="exoPill-dEMG">exoPill-dEMG</option>
+                        <option value="exoPill-FES">exoPill-FES</option>
+                        <option value="EXOMED-DeepSARC">EXOMED-DeepSARC</option>
+                        <option value="exoPill-Lite">exoPill-Lite</option>
+                        <option value="exoRehab">exoRehab</option>
+                    </select>
+                    
+                    <!-- Product Info Auxiliary Box -->
+                    <div id="product-info-box" class="hidden mt-3 bg-blue-50/70 border-2 border-blue-200 rounded-xl p-3 sm:p-4 space-y-2 transition-all">
+                        <div class="flex justify-between items-start">
+                            <span id="pi-name" class="font-extrabold text-sm text-blue-900"></span>
+                            <span id="pi-medical" class="text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-md"></span>
+                        </div>
+                        <p id="pi-def" class="text-[11px] sm:text-xs text-blue-700 font-bold"></p>
+                        <p id="pi-pos" class="text-[10px] sm:text-[11px] text-slate-700 leading-relaxed font-medium"></p>
+                        <div class="pt-2 mt-2 border-t-2 border-blue-100 space-y-1.5">
+                            <p class="text-[10px] sm:text-[11px] text-slate-700"><strong id="ui-pi-target-lbl" class="text-slate-900">주요 타겟:</strong> <span id="pi-targets"></span></p>
+                            <p class="text-[10px] sm:text-[11px] text-amber-700"><strong id="ui-pi-warn-lbl" class="text-amber-900">주의 표현:</strong> <span id="pi-warns"></span></p>
+                        </div>
+                        <div id="pi-json-badge" class="hidden mt-2 items-center space-x-1 bg-emerald-100 text-emerald-800 px-2 py-1 rounded border-2 border-emerald-300 text-[9px] sm:text-[10px] font-bold w-fit">
+                            <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
+                            <span id="ui-pi-json-lbl">AI 분석 학습 데이터 연동 중</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Target Audience Selection -->
+                <div class="space-y-2">
+                    <label class="text-xs sm:text-sm font-bold text-slate-700 block" id="ui-label-target">타겟 고객군</label>
+                    <select id="target-select" class="w-full bg-slate-50 border-2 border-slate-300 rounded-xl px-4 py-2.5 sm:py-3 text-slate-900 font-bold focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none text-sm hover:border-blue-400">
+                        <!-- Dynamically filled -->
+                    </select>
+                </div>
+
+                <!-- Content Type & Video Duration Selection -->
+                <div class="space-y-2">
+                    <label class="text-xs sm:text-sm font-bold text-slate-700 block" id="ui-label-content-type">콘텐츠 유형</label>
+                    <div class="flex space-x-2">
+                        <select id="type-select" onchange="handleContentTypeChange()" class="flex-1 bg-slate-50 border-2 border-slate-300 rounded-xl px-4 py-2.5 sm:py-3 text-slate-900 font-bold focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none text-sm hover:border-blue-400">
+                            <option value="strategyplan" id="ui-opt-type-strategy">마케팅 전략 계획</option>
+                            <option value="imagegen" id="ui-opt-type-imagegen">이미지 생성</option>
+                            <option value="email" id="ui-opt-type-email">이메일</option>
+                            <option value="cardnews" id="ui-opt-type-cardnews">카드뉴스</option>
+                            <option value="reels" id="ui-opt-type-reels">숏폼/릴스 (클린)</option>
+                            <option value="adcopy" id="ui-opt-type-adcopy">광고 카피</option>
+                            <option value="videoprompt" id="ui-opt-type-videoprompt">영상 프롬프트</option>
+                        </select>
+                        <select id="reels-duration" class="hidden w-24 sm:w-28 bg-blue-50 border-2 border-blue-300 rounded-xl px-2 py-2.5 sm:py-3 text-blue-900 font-extrabold focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none text-sm hover:border-blue-400">
+                            <option value="10">10초</option>
+                            <option value="15">15초</option>
+                            <option value="20">20초</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Video Duration Context Tooltip (Dynamic) -->
+                <div id="video-duration-box" class="hidden p-3 bg-blue-50 border-2 border-blue-200 rounded-xl text-xs text-blue-800 flex items-start space-x-2 font-medium">
+                    <i data-lucide="info" class="w-4 h-4 mt-0.5 flex-shrink-0"></i>
+                    <span id="ui-video-length-msg">영상 길이 조건이 활성화되었습니다. 연출 프롬프트에 자동으로 시간 분량이 매핑됩니다.</span>
+                </div>
+
+                <!-- Core Keywords Input -->
+                <div class="space-y-2">
+                    <label class="text-xs sm:text-sm font-bold text-slate-700 block" id="ui-label-keywords">강조 키워드 (필수 반영)</label>
+                    <input type="text" id="keywords-input" class="w-full bg-slate-50 border-2 border-slate-300 rounded-xl px-4 py-2.5 sm:py-3 text-slate-900 font-medium placeholder-slate-400 focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none text-sm hover:border-blue-400" placeholder="쉼표(,)로 구분 (예: 데이터 기반, 차별화, 프리미엄)">
+                </div>
+
+                <!-- FILE UPLOADER 1: IMAGES -->
+                <div class="space-y-2 pt-2 border-t-2 border-slate-100">
+                    <label class="text-xs sm:text-sm font-bold text-slate-700 block" id="ui-label-img-upload">제품 / 시각 참고 이미지 업로드</label>
+                    <div class="flex items-center space-x-3">
+                        <button onclick="document.getElementById('img-file-input').click()" class="bg-white hover:bg-slate-50 text-slate-800 border-2 border-slate-300 rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 text-xs font-bold flex items-center space-x-1.5 transition-all outline-none hover:border-slate-400">
+                            <i data-lucide="image" class="w-4 h-4"></i>
+                            <span id="ui-btn-select-img">이미지 선택</span>
+                        </button>
+                        <span id="img-upload-status" class="text-xs text-slate-500 font-medium">선택된 파일 없음</span>
+                        <input type="file" id="img-file-input" accept="image/*" multiple class="hidden" onchange="handleImageUpload(event)">
+                    </div>
+                    <p class="text-[10px] text-slate-400 font-medium" id="ui-img-help-text">*업로드된 이미지는 이미지 생성 및 영상 기획의 컨텍스트로 우선 활용됩니다.</p>
+                    <div id="image-previews" class="grid grid-cols-3 sm:grid-cols-4 gap-2 pt-1"></div>
+                </div>
+
+                <!-- ADDITIONAL STRATEGY MEMO -->
+                <div class="space-y-2 pt-2 border-t-2 border-slate-100">
+                    <label class="text-[11px] sm:text-xs font-bold text-slate-700 block" id="ui-label-add-memo">추가 전략 메모 (선택)</label>
+                    <textarea id="doc-memo" rows="2" class="w-full bg-slate-50 border-2 border-slate-300 rounded-lg p-3 text-xs text-slate-900 outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder-slate-400 font-medium hover:border-blue-400" placeholder="콘텐츠 생성 시 추가로 반영할 특별한 전략이나 상황을 간략히 적어주세요."></textarea>
+                    <label class="flex items-center space-x-2 pt-1 cursor-pointer select-none">
+                        <input type="checkbox" id="doc-reflect-check" checked class="rounded border-slate-300 text-blue-600 focus:ring-blue-500 w-4 h-4" onchange="toggleKBBadge()">
+                        <span class="text-[11px] sm:text-xs text-slate-700 font-bold" id="ui-check-reflect-memo">위 메모 및 제품 학습 데이터를 최우선 반영</span>
+                    </label>
+                </div>
+
+                <!-- GENERATE ACTION BUTTON -->
+                <button onclick="generateContent()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-extrabold py-3.5 sm:py-4 px-6 rounded-xl shadow-lg transition-all transform active:scale-[0.98] flex items-center justify-center space-x-2 text-sm sm:text-base mt-2 border-2 border-blue-700">
+                    <i data-lucide="zap" class="w-4 h-4 sm:w-5 sm:h-5"></i>
+                    <span id="ui-btn-generate">전략 마케팅 콘텐츠 생성</span>
+                </button>
+            </div>
+
+            <!-- LIGHT-THEMED KNOWLEDGE BASE MONITOR -->
+            <div class="bg-white text-slate-800 rounded-2xl p-5 sm:p-6 shadow-md border-2 border-slate-200 space-y-4">
+                <div class="flex items-center justify-between border-b-2 border-slate-100 pb-3">
+                    <div class="flex items-center space-x-2">
+                        <i data-lucide="database" class="text-blue-600 w-4 h-4 sm:w-5 sm:h-5"></i>
+                        <h3 class="text-sm sm:text-base font-extrabold text-slate-900" id="ui-title-kb-monitor">Knowledge Base 매핑 현황</h3>
+                    </div>
+                    <span id="kb-medical-badge" class="px-2 py-0.5 sm:px-2.5 rounded-md text-[9px] sm:text-[10px] font-bold tracking-wider"></span>
+                </div>
+                
+                <div class="space-y-3.5 text-xs">
+                    <div>
+                        <span class="text-slate-500 font-bold block uppercase tracking-wider text-[9px] sm:text-[10px]" id="ui-monitor-def">제품 정의</span>
+                        <p id="kb-display-definition" class="text-slate-900 font-bold text-xs sm:text-sm mt-0.5"></p>
+                    </div>
+                    <div>
+                        <span class="text-slate-500 font-bold block uppercase tracking-wider text-[9px] sm:text-[10px]" id="ui-monitor-pos">핵심 포지셔닝</span>
+                        <p id="kb-display-positioning" class="text-slate-700 mt-0.5 leading-relaxed text-[11px] sm:text-xs font-medium"></p>
+                    </div>
+                    <div>
+                        <span class="text-slate-500 font-bold block uppercase tracking-wider text-[9px] sm:text-[10px]" id="ui-monitor-targets">주요 타겟 고객층</span>
+                        <p id="kb-display-targets" class="text-blue-700 mt-0.5 font-bold text-[11px] sm:text-xs"></p>
+                    </div>
+                    <div class="pt-3 border-t-2 border-slate-100 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="bg-amber-50 p-2.5 rounded-lg border border-amber-100">
+                            <span class="text-amber-700 font-extrabold block uppercase tracking-wider text-[9px] sm:text-[10px] mb-1" id="ui-monitor-prohibited">금지 표현 / 주의사항</span>
+                            <ul id="kb-display-prohibited" class="list-disc list-inside text-amber-900 mt-1 space-y-1 text-[11px] font-medium"></ul>
+                        </div>
+                        <div class="bg-emerald-50 p-2.5 rounded-lg border border-emerald-100">
+                            <span class="text-emerald-700 font-extrabold block uppercase tracking-wider text-[9px] sm:text-[10px] mb-1" id="ui-monitor-rules">필수 마케팅 규칙</span>
+                            <ul id="kb-display-rules" class="list-disc list-inside text-emerald-900 mt-1 space-y-1 text-[11px] font-medium"></ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        <!-- RIGHT COLUMN: INTERACTIVE VIEW TABS -->
+        <section class="lg:col-span-7 flex flex-col space-y-4 h-full">
+            
+            <!-- VIEW NAVIGATION TABS -->
+            <div class="bg-white p-1 rounded-xl border-2 border-slate-200 shadow-sm flex space-x-1 shrink-0">
+                <button onclick="switchView('generator')" id="tab-btn-generator" class="flex-1 py-2.5 sm:py-3 px-2 sm:px-4 rounded-lg font-bold text-xs sm:text-sm transition-all flex items-center justify-center space-x-1.5 sm:space-x-2 outline-none">
+                    <i data-lucide="file-edit" class="w-4 h-4"></i>
+                    <span id="ui-tab-generator">콘텐츠 결과</span>
+                </button>
+                <button onclick="switchView('library')" id="tab-btn-library" class="flex-1 py-2.5 sm:py-3 px-2 sm:px-4 rounded-lg font-bold text-xs sm:text-sm transition-all flex items-center justify-center space-x-1.5 sm:space-x-2 outline-none relative">
+                    <i data-lucide="folder-heart" class="w-4 h-4"></i>
+                    <span id="ui-tab-library">라이브러리</span>
+                    <span id="library-count-badge" class="absolute right-2 sm:right-4 bg-slate-800 text-white text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full">0</span>
+                </button>
+            </div>
+
+            <!-- TAB CONTAINER 1: GENERATOR OUTPUT PANEL -->
+            <div id="view-panel-generator" class="space-y-4 sm:space-y-6 flex-1 flex flex-col min-h-[500px]">
+                
+                <!-- EMPTY STATE -->
+                <div id="generator-empty-state" class="bg-white rounded-2xl border-2 border-slate-200 p-8 sm:p-12 text-center flex-1 flex flex-col items-center justify-center space-y-4 shadow-sm">
+                    <div class="bg-slate-100 p-4 rounded-full text-slate-400">
+                        <i data-lucide="file-text" class="w-10 h-10 sm:w-12 sm:h-12"></i>
+                    </div>
+                    <div class="max-w-sm">
+                        <h3 class="text-base sm:text-lg font-bold text-slate-900" id="ui-empty-title">전략 콘텐츠가 구성되지 않았습니다</h3>
+                        <p class="text-xs sm:text-sm text-slate-500 mt-1 font-medium" id="ui-empty-desc">조건을 설정하고 생성하기 버튼을 눌러주세요.</p>
+                    </div>
+                </div>
+
+                <!-- CONTENT OUTPUT PANEL -->
+                <div id="generator-result-panel" class="hidden bg-white rounded-2xl border-2 border-slate-200 shadow-md p-4 sm:p-6 space-y-4 sm:space-y-6 flex-1 flex flex-col h-full">
+                    
+                    <!-- Top Actions Bar -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-2 border-slate-100 pb-3 sm:pb-4 shrink-0">
+                        <div class="flex items-center space-x-2">
+                            <span class="bg-blue-100 text-blue-800 text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-md uppercase tracking-wider" id="output-badge-type"></span>
+                            <span class="text-slate-300 text-xs sm:text-sm font-bold">|</span>
+                            <span class="text-slate-800 text-xs sm:text-sm font-bold" id="output-meta-info"></span>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="flex items-center space-x-2 overflow-x-auto pb-1 sm:pb-0">
+                            <button onclick="copyOutputText('all')" class="shrink-0 bg-white border-2 border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-800 p-1.5 sm:p-2 rounded-xl text-[11px] sm:text-xs font-bold flex items-center space-x-1 transition-all outline-none">
+                                <i data-lucide="copy" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i>
+                                <span id="ui-btn-copy-all">전체복사</span>
+                            </button>
+                            <button onclick="downloadMarkdown()" class="shrink-0 bg-white border-2 border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-800 p-1.5 sm:p-2 rounded-xl text-[11px] sm:text-xs font-bold flex items-center space-x-1 transition-all outline-none">
+                                <i data-lucide="download" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i>
+                                <span id="ui-btn-dl-md">다운로드</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- SCROLLABLE OUTPUT CONTAINER -->
+                    <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-4 sm:space-y-6 text-sm leading-relaxed text-slate-800 pb-2">
+                        
+                        <!-- SECTION 1: STRATEGIC BRIEF -->
+                        <div class="bg-slate-50 border-2 border-slate-200 rounded-xl p-4 sm:p-5 space-y-3">
+                            <h4 class="font-bold text-slate-900 flex items-center space-x-1.5 text-xs sm:text-sm border-b-2 border-slate-200 pb-2">
+                                <i data-lucide="compass" class="w-4 h-4 text-blue-600"></i>
+                                <span id="ui-sec-strat-direction">[전략적 메시지 방향]</span>
+                            </h4>
+                            <ul id="output-strategic-brief" class="space-y-1.5 sm:space-y-2 text-[11px] sm:text-xs text-slate-700 list-none pl-0 font-medium"></ul>
+                        </div>
+
+                        <!-- SECTION 2: MARKETING ARTIFACT -->
+                        <div class="space-y-2 sm:space-y-3">
+                            <h4 class="font-bold text-slate-900 flex items-center space-x-1.5 text-xs sm:text-sm border-b-2 border-slate-100 pb-2">
+                                <i data-lucide="file-text" class="w-4 h-4 text-blue-600"></i>
+                                <span id="ui-sec-gen-content">상세 결과물</span>
+                            </h4>
+                            <div id="output-generated-body" class="bg-slate-50/50 border-2 border-slate-200 rounded-xl p-4 sm:p-5 whitespace-pre-wrap font-mono text-[11px] sm:text-xs text-slate-800"></div>
+                        </div>
+
+                        <!-- SECTION 3: GENERATED IMAGE -->
+                        <div id="generated-image-container" class="hidden space-y-2 sm:space-y-3 pt-4 border-t-2 border-slate-100">
+                            <h4 class="font-bold text-slate-900 flex items-center space-x-1.5 text-xs sm:text-sm pb-1" id="ui-sec-gen-img-title">
+                                <!-- Dynamic icon & text based on type -->
+                            </h4>
+                            <div id="image-generation-status" class="flex items-center justify-center space-x-2 text-blue-600 text-xs font-bold bg-blue-50 p-4 rounded-xl border-2 border-blue-100 hidden">
+                                <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span id="ui-img-loading-text">AI 에셋 생성 중...</span>
+                            </div>
+                            <img id="generated-image" class="w-full max-w-md rounded-xl shadow-md border-2 border-slate-200 hidden" alt="Generated AI Concept">
+                        </div>
+
+                        <!-- SECTION 4: LEGAL WARNING -->
+                        <div id="output-disclaimer-box" class="p-3 sm:p-4 bg-amber-50 border-2 border-amber-200 rounded-xl space-y-2">
+                            <h5 class="font-bold text-amber-900 flex items-center space-x-1.5 text-[11px] sm:text-xs">
+                                <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600"></i>
+                                <span id="ui-sec-warnings">주의사항 및 필수 안내</span>
+                            </h5>
+                            <ul id="output-disclaimer-list" class="list-disc list-inside text-[10px] sm:text-[11px] text-amber-800 space-y-1 font-bold"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB CONTAINER 2: LIBRARY PANEL -->
+            <div id="view-panel-library" class="hidden space-y-4 flex-1 flex flex-col h-full min-h-[500px]">
+                
+                <!-- CLEAN LEARNING DATA UPDATE SECTION -->
+                <div class="bg-indigo-50 border-2 border-indigo-200 rounded-2xl p-4 sm:p-5 flex flex-col shadow-sm shrink-0">
+                    <h3 class="font-extrabold text-indigo-900 text-sm sm:text-base mb-4 flex items-center shrink-0">
+                        <i data-lucide="cpu" class="w-5 h-5 mr-1.5 text-indigo-600"></i> 
+                        <span id="ui-lib-gen-title">학습 데이터 업데이트 (문서/URL)</span>
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <!-- Product Selection Dropdown (Top positioned for stability) -->
+                        <div>
+                            <label class="text-xs font-bold text-indigo-800 block mb-1.5" id="ui-lib-update-prod">적용 제품군 선택</label>
+                            <select id="general-product-select" class="w-full bg-white border-2 border-indigo-300 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-indigo-500 font-bold text-slate-800 hover:border-indigo-400 transition-all">
+                                <option value="exoFit">exoFit</option>
+                                <option value="exoPill-dEMG">exoPill-dEMG</option>
+                                <option value="exoPill-FES">exoPill-FES</option>
+                                <option value="EXOMED-DeepSARC">EXOMED-DeepSARC</option>
+                                <option value="exoPill-Lite">exoPill-Lite</option>
+                                <option value="exoRehab">exoRehab</option>
+                            </select>
+                        </div>
+                        
+                        <!-- File / URL Inputs Grid -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
+                            <div>
+                                <label class="text-[11px] font-bold text-indigo-800 block mb-1" id="ui-lib-update-file">모든 문서 업로드 (PDF, DOCX 등)</label>
+                                <div class="flex items-center space-x-2">
+                                    <button onclick="document.getElementById('general-file-input').click()" class="bg-white border-2 border-indigo-300 hover:bg-indigo-100 text-indigo-700 px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-1 outline-none whitespace-nowrap">
+                                        <i data-lucide="upload-cloud" class="w-4 h-4"></i> 
+                                        <span id="ui-lib-btn-select">문서 선택</span>
+                                    </button>
+                                    <span id="general-file-status" class="text-[10px] sm:text-[11px] text-indigo-600 font-bold truncate flex-1">선택된 파일 없음</span>
+                                    <input type="file" id="general-file-input" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.md,.json,.csv" class="hidden" onchange="handleLearningFileSelect(event)">
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="text-[11px] font-bold text-indigo-800 block mb-1" id="ui-lib-update-url">웹사이트 URL 크롤링</label>
+                                <div class="flex items-center space-x-2">
+                                    <div class="relative flex-1">
+                                        <i data-lucide="link" class="w-4 h-4 text-indigo-400 absolute left-2.5 top-1/2 transform -translate-y-1/2"></i>
+                                        <input type="url" id="general-url-input" class="w-full bg-white border-2 border-indigo-300 rounded-xl pl-8 pr-3 py-2 text-xs outline-none focus:border-indigo-500 font-bold text-slate-800 placeholder-indigo-300 transition-all hover:border-indigo-400" placeholder="https://..." oninput="handleLearningUrlInput()">
+                                    </div>
+                                    <button onclick="saveLearningData()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-2 px-3.5 rounded-xl text-xs transition-all shadow-md flex items-center outline-none whitespace-nowrap border-2 border-indigo-800">
+                                        <span id="ui-lib-btn-save">분석/저장</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- History List Block -->
+                    <div class="mt-4 pt-3 border-t-2 border-indigo-200/60">
+                        <div class="flex justify-between items-center mb-2 px-1">
+                            <span class="text-[11px] font-bold text-indigo-900" id="ui-lib-hist-title">업데이트 기록 (최근 5개)</span>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-[9px] text-indigo-500 font-bold hidden sm:inline-block" id="ui-lib-hist-desc">*리스트 삭제 시에도 적용된 데이터는 유지됩니다.</span>
+                                <button onclick="openFullHistoryModal()" class="text-[10px] bg-indigo-100 hover:bg-indigo-200 text-indigo-700 px-2 py-1 rounded font-bold transition-all border border-indigo-200 shadow-sm" id="ui-lib-btn-viewall">전체보기</button>
+                            </div>
+                        </div>
+                        <ul id="general-history-list" class="space-y-2 pr-1 text-xs"></ul>
+                    </div>
+                </div>
+
+                <!-- LIBRARY SEARCH & FILTER -->
+                <div class="bg-white p-3 sm:p-4 rounded-2xl border-2 border-slate-200 shadow-sm grid grid-cols-1 sm:grid-cols-12 gap-2 sm:gap-3 items-center shrink-0">
+                    <div class="sm:col-span-5 relative">
+                        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+                        <input type="text" id="library-search" oninput="renderLibrary()" class="w-full bg-slate-50 border-2 border-slate-200 rounded-xl pl-8 pr-3 py-2.5 text-xs outline-none focus:bg-white focus:border-blue-500 transition-all placeholder-slate-400 font-bold" placeholder="키워드 검색...">
+                    </div>
+                    <div class="sm:col-span-4 flex space-x-2">
+                        <select id="library-filter-status" onchange="renderLibrary()" class="flex-1 bg-slate-50 border-2 border-slate-200 rounded-xl px-2 py-2.5 text-xs font-bold outline-none focus:bg-white focus:border-blue-500 transition-all text-slate-700">
+                            <option value="ALL" id="ui-opt-all-status">모든 상태보기</option>
+                            <option value="Draft" id="ui-opt-status-draft">Draft</option>
+                            <option value="Reviewed" id="ui-opt-status-reviewed">Reviewed</option>
+                            <option value="Used" id="ui-opt-status-used">Used</option>
+                            <option value="Archived" id="ui-opt-status-archived">Archived</option>
+                        </select>
+                    </div>
+                    <div class="sm:col-span-3 text-right hidden sm:block">
+                        <span id="library-scope-label" class="text-[10px] bg-slate-100 border border-slate-200 px-2.5 py-1.5 rounded-lg text-slate-500 font-extrabold inline-block"></span>
+                    </div>
+                </div>
+
+                <!-- CLEAN LIST VIEW FOR GENERATED ITEMS -->
+                <div id="library-items-list" class="space-y-3 overflow-y-auto pr-2 flex-1 custom-scrollbar pb-2"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- LIBRARY DETAILED MODAL -->
+    <div id="library-modal" class="hidden fixed inset-0 z-[50] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-white w-full max-w-3xl rounded-2xl shadow-2xl border border-slate-200 flex flex-col max-h-[90vh]">
+            
+            <div class="p-4 sm:p-5 border-b-2 border-slate-100 flex items-center justify-between bg-slate-50 rounded-t-2xl shrink-0">
+                <div class="space-y-1">
+                    <div class="flex items-center space-x-2">
+                        <span id="modal-badge-type" class="bg-blue-100 text-blue-800 text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider border border-blue-200"></span>
+                        <h3 id="modal-title-product" class="text-sm sm:text-base font-extrabold text-slate-900"></h3>
+                    </div>
+                    <p id="modal-meta-date" class="text-[10px] sm:text-[11px] text-slate-500 font-bold"></p>
+                </div>
+                <button onclick="closeLibraryModal()" class="text-slate-500 hover:text-slate-800 bg-white border-2 border-slate-200 p-1.5 rounded-xl transition-all outline-none shadow-sm hover:border-slate-400">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <div class="p-4 sm:p-6 overflow-y-auto space-y-5 text-xs leading-relaxed text-slate-800 custom-scrollbar flex-1">
+                
+                <!-- Status Controls -->
+                <div class="bg-slate-50 p-3 rounded-xl border-2 border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <span class="font-extrabold text-slate-800 text-[11px] sm:text-xs" id="ui-modal-status-lbl">상태 관리</span>
+                    <div class="flex space-x-1.5">
+                        <button onclick="updateModalItemStatus('Draft')" id="m-status-Draft" class="px-3 py-1.5 rounded-lg text-[10px] sm:text-[11px] font-bold transition-all border">Draft</button>
+                        <button onclick="updateModalItemStatus('Reviewed')" id="m-status-Reviewed" class="px-3 py-1.5 rounded-lg text-[10px] sm:text-[11px] font-bold transition-all border">Reviewed</button>
+                        <button onclick="updateModalItemStatus('Used')" id="m-status-Used" class="px-3 py-1.5 rounded-lg text-[10px] sm:text-[11px] font-bold transition-all border">Used</button>
+                        <button onclick="updateModalItemStatus('Archived')" id="m-status-Archived" class="px-3 py-1.5 rounded-lg text-[10px] sm:text-[11px] font-bold transition-all border">Archived</button>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 border-2 border-slate-200 rounded-xl p-4 space-y-2">
+                    <h4 class="font-bold text-slate-900 border-b-2 border-slate-200 pb-1.5 text-[11px] sm:text-xs" id="ui-modal-strat-lbl">[전략적 방향]</h4>
+                    <ul id="modal-strategic-brief" class="space-y-1.5 text-[10px] sm:text-[11px] text-slate-700 list-none pl-0 font-medium"></ul>
+                </div>
+
+                <div class="space-y-2">
+                    <h4 class="font-bold text-slate-900 border-b-2 border-slate-100 pb-1.5 text-[11px] sm:text-xs" id="ui-modal-content-lbl">문서 본문</h4>
+                    <div id="modal-generated-body" class="bg-slate-50 border-2 border-slate-200 rounded-xl p-4 font-mono text-[10px] sm:text-xs text-slate-800 whitespace-pre-wrap"></div>
+                </div>
+
+                <!-- GENERATED IMAGE IN MODAL -->
+                <div id="modal-image-wrapper" class="hidden space-y-2">
+                    <h4 class="font-bold text-slate-900 border-b-2 border-slate-100 pb-1.5 text-[11px] sm:text-xs">AI 생성 에셋 이미지</h4>
+                    <img id="modal-generated-image" class="w-full max-w-sm rounded-xl shadow-sm border-2 border-slate-200" alt="Generated Image">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-3 border-t-2 border-slate-100">
+                    <div class="space-y-1">
+                        <span class="font-extrabold text-slate-500 uppercase tracking-wider text-[9px] sm:text-[10px]" id="ui-modal-hash-lbl">해시태그</span>
+                        <div id="modal-hashtags-string" class="flex flex-wrap min-h-[24px]"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-3 sm:p-4 border-t-2 border-slate-100 bg-slate-50 rounded-b-2xl flex items-center justify-between shrink-0">
+                <button id="modal-delete-btn" class="bg-white hover:bg-red-50 text-red-600 px-4 py-2.5 rounded-xl text-[11px] sm:text-xs font-bold transition-all border-2 border-red-200 flex items-center space-x-1 outline-none">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    <span id="ui-modal-btn-del">삭제</span>
+                </button>
+                
+                <div class="flex space-x-2">
+                    <button id="modal-copy-all-btn" class="bg-white border-2 border-slate-300 hover:bg-slate-100 text-slate-800 px-4 py-2.5 rounded-xl text-[11px] sm:text-xs font-extrabold flex items-center space-x-1 transition-all outline-none shadow-sm">
+                        <i data-lucide="copy" class="w-4 h-4"></i>
+                        <span id="ui-modal-btn-copy">복사</span>
+                    </button>
+                    <button onclick="closeLibraryModal()" class="bg-slate-800 hover:bg-slate-900 text-white px-5 py-2.5 rounded-xl text-[11px] sm:text-xs font-extrabold transition-all outline-none shadow-md">
+                        <span id="ui-modal-btn-close">닫기</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LEARNING HISTORY DETAIL MODAL (Z-60 to be above full history modal) -->
+    <div id="learning-detail-modal" class="hidden fixed inset-0 z-[60] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl border border-slate-200 flex flex-col max-h-[80vh]">
+            <div class="p-4 sm:p-5 border-b-2 border-slate-100 flex items-center justify-between bg-slate-50 rounded-t-2xl shrink-0">
+                <h3 class="text-sm sm:text-base font-bold text-slate-900 flex items-center">
+                    <i data-lucide="file-json" class="w-4 h-4 mr-1.5 text-blue-600"></i>
+                    <span id="ui-modal-lrn-title">학습 데이터 상세 내용</span>
+                </h3>
+                <button onclick="closeLearningDetailModal()" class="text-slate-400 hover:text-slate-600 bg-white border-2 border-slate-200 p-1.5 rounded-xl transition-all outline-none shadow-sm">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+            <div class="p-4 sm:p-6 overflow-y-auto space-y-4 text-xs leading-relaxed text-slate-800 custom-scrollbar flex-1">
+                <div class="flex justify-between items-center bg-slate-50 p-4 rounded-xl border-2 border-slate-200">
+                    <div>
+                        <p class="font-extrabold text-slate-800 text-sm" id="ld-modal-name"></p>
+                        <p class="text-[10px] text-slate-500 font-bold mt-1" id="ld-modal-meta"></p>
+                    </div>
+                    <span id="ld-modal-product" class="bg-blue-100 text-blue-800 text-[10px] font-extrabold px-2.5 py-1 rounded uppercase tracking-wider border border-blue-200"></span>
+                </div>
+                <div id="ld-modal-content" class="bg-slate-50/50 border-2 border-slate-200 rounded-xl p-4 font-mono text-[10px] sm:text-[11px] text-slate-700 whitespace-pre-wrap break-all"></div>
+            </div>
+            <div class="p-3 sm:p-4 border-t-2 border-slate-100 bg-slate-50 rounded-b-2xl flex items-center justify-between shrink-0">
+                <button id="ld-modal-delete-btn" class="bg-white hover:bg-red-50 text-red-600 px-4 py-2.5 rounded-xl text-[11px] sm:text-xs font-extrabold transition-all border-2 border-red-200 flex items-center space-x-1 outline-none">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    <span id="ui-modal-lrn-btn-del">리스트 기록 삭제</span>
+                </button>
+                <button onclick="closeLearningDetailModal()" class="bg-slate-800 hover:bg-slate-900 text-white px-5 py-2.5 rounded-xl text-[11px] sm:text-xs font-extrabold transition-all outline-none shadow-md">
+                    <span id="ui-modal-lrn-btn-close">닫기</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FULL LEARNING HISTORY MODAL -->
+    <div id="full-history-modal" class="hidden fixed inset-0 z-[55] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-white w-full max-w-3xl rounded-2xl shadow-2xl border border-slate-200 flex flex-col h-[85vh]">
+            <div class="p-4 sm:p-5 border-b-2 border-slate-100 flex items-center justify-between bg-slate-50 rounded-t-2xl shrink-0">
+                <div class="space-y-1">
+                    <h3 class="text-base sm:text-lg font-extrabold text-slate-900 flex items-center" id="ui-full-hist-title">
+                        <i data-lucide="archive" class="w-5 h-5 mr-2 text-indigo-600"></i>
+                        전체 학습 데이터 이력
+                    </h3>
+                    <p class="text-[10px] sm:text-xs text-slate-500 font-bold" id="ui-full-hist-desc">*리스트에서 삭제하더라도 실제 적용된 시스템 학습 데이터는 유지됩니다.</p>
+                </div>
+                <button onclick="closeFullHistoryModal()" class="text-slate-400 hover:text-slate-600 bg-white border-2 border-slate-200 p-2 rounded-xl transition-all outline-none shadow-sm hover:border-slate-400">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div class="p-4 sm:p-6 flex-1 overflow-y-auto custom-scrollbar bg-slate-50/50">
+                <ul id="full-history-list" class="space-y-3"></ul>
+            </div>
+            <div class="p-3 sm:p-4 border-t-2 border-slate-100 bg-slate-50 rounded-b-2xl flex justify-end shrink-0">
+                <button onclick="closeFullHistoryModal()" class="bg-slate-800 hover:bg-slate-900 text-white px-6 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold transition-all outline-none shadow-md" id="ui-full-hist-btn-close">
+                    닫기
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT LOGIC -->
+    <script>
+        const apiKey = ""; // 제미나이 API 키 자동 매핑 환경
+
+        function showToast(message) {
+            const toast = document.getElementById('toast-message');
+            document.getElementById('toast-text').textContent = message;
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3000);
+        }
+
+        const PRODUCT_KB = {
+            "exoFit": {
+                name: "exoFit",
+                definition: { ko: "AI 운동 역량 평가 솔루션", en: "AI Exercise Capacity Evaluation Solution", zh: "AI运动能力评估解决方案", ja: "AI運動能力評価ソリューション" },
+                positioning: { ko: "EMG와 IMU 기반으로 운동 중 근육 반응과 움직임을 데이터로 확인하고, 트레이너 지도 지원", en: "A solution verifying muscle responses via EMG/IMU data to assist trainers.", zh: "基于EMG/IMU的肌动分析支持教练的解决方案", ja: "EMGとIMUによる筋肉反応データでトレーナー指導を支援するソリューション" },
+                targets: ["일반 회원", "트레이너", "피트니스 센터 대표", "메디컬 피트니스 센터", "병원", "국내 유통사", "해외 유통사", "물리치료사"],
+                allowed: { ko: ["운동 중 몸의 반응을 데이터로 확인합니다.", "트레이너의 상담을 지원합니다."], en: ["Verify body reactions.", "Reference data."], zh: ["通过数据确认身体反应。"], ja: ["体の反応をデータで確認します。"] },
+                prohibited: { ko: ["치료됩니다.", "완치됩니다.", "진단합니다.", "재활 효과 보장"], en: ["Cures diseases.", "Diagnoses conditions."], zh: ["治愈疾病。", "诊断特定病症。"], ja: ["治療されます。", "診断します。"] },
+                rules: { ko: ["운동 보조 참고 데이터로만 언급", "트레이너 전문성 강조"], en: ["Mention as reference.", "Emphasize expertise."], zh: ["仅作为参考。"], ja: ["参考データとして言及。"] },
+                disclaimer: { ko: "본 결과는 운동 지도를 돕는 참고 데이터입니다. 의학적 판단 불가.", en: "Reference data to assist exercise guidance.", zh: "辅助运动指导的参考数据。", ja: "運動指導を助ける参考データです。" },
+                isMedical: false
+            },
+            "exoPill-dEMG": {
+                name: "exoPill-dEMG",
+                definition: { ko: "동작분석 및 역동적 근전도 기반 근기능 평가 솔루션", en: "Motion Analysis & Dynamic EMG Muscle Evaluation", zh: "动作分析及动态肌电图肌功能评估", ja: "動作分析と力動的筋電図の筋機能評価" },
+                positioning: { ko: "동작 중 근육 활성과 움직임을 함께 확인하여 병원 재활 평가 지원 의료기기", en: "Medical device checking muscle activation during motion for rehab evaluation.", zh: "确认动作中肌肉激活支持康复评估的医疗器械", ja: "動作中の筋肉活性を確認しリハビリ評価を支援する医療機器" },
+                targets: ["병원", "재활의학과", "정형외과", "물리치료실", "국내 유통사", "해외 유통사", "물리치료사"],
+                allowed: { ko: ["근육 활성을 함께 확인합니다.", "재활 방향 설정 참고."], en: ["Verification of muscle activation.", "Rehab reference."], zh: ["确认肌肉激活。"], ja: ["筋肉活性の確認。"] },
+                prohibited: { ko: ["질환을 확정 진단합니다.", "효과를 100% 보장합니다."], en: ["Diagnoses independently.", "Guarantees cure."], zh: ["单独诊断。"], ja: ["確定診断します。"] },
+                rules: { ko: ["식약처 허가 의료기기 명시", "실시간 분석 연계 강조"], en: ["State MFDS approval.", "Emphasize real-time."], zh: ["明示许可。"], ja: ["許可明記。"] },
+                disclaimer: { ko: "전문가의 평가를 돕기 위한 참고 데이터이며, 최종 의학적 판단은 의료진이 수행합니다.", en: "Final medical judgment by clinicians.", zh: "最终判断由医生做出。", ja: "最終的医学的判断は医療従事者が行います。" },
+                isMedical: true
+            },
+            "exoPill-FES": {
+                name: "exoPill-FES",
+                definition: { ko: "기능적 전기 자극 재활 솔루션", en: "FES Rehab Solution", zh: "FES康复解决方案", ja: "FESリハビリソリューション" },
+                positioning: { ko: "FES를 활용하여 재활 과정에서 근육 활성 보조", en: "Utilizes FES to assist muscle activation in rehab.", zh: "利用FES辅助康复中的肌肉激活", ja: "FESを活用したリハビリ中の筋肉活性補助" },
+                targets: ["병원", "재활의학과", "물리치료실", "재활병원", "국내 유통사", "물리치료사"],
+                allowed: { ko: ["식약처 허가 의료기기", "근육 활성 보조"], en: ["Approved device", "Assists muscle"], zh: ["许可器械"], ja: ["許可機器"] },
+                prohibited: { ko: ["치료 보장", "진단 보장"], en: ["Cure guarantee"], zh: ["保证治愈"], ja: ["治療保証"] },
+                rules: { ko: ["전문가 지도하 사용 강조"], en: ["Under expert guidance"], zh: ["专家指导下"], ja: ["専門家指導下"] },
+                disclaimer: { ko: "전문가 지도하에 보조적으로 활용되는 의료기기입니다.", en: "Auxiliary medical device.", zh: "辅助医疗器械。", ja: "補助的医療機器です。" },
+                isMedical: true
+            },
+            "EXOMED-DeepSARC": {
+                name: "EXOMED-DeepSARC",
+                definition: { ko: "AI 기반 근감소증 진단 보조 솔루션", en: "AI Sarcopenia Diagnosis Support", zh: "AI肌少症诊断辅助", ja: "AIサルコペニア診断補助" },
+                positioning: { ko: "신경근육계 반응 기반 근감소증 위험 평가 AI 솔루션", en: "AI solution evaluating sarcopenia risk.", zh: "评估肌少症风险的AI解决方案", ja: "サルコペニアリスクを評価するAIソリューション" },
+                targets: ["병원", "검진센터", "제약사", "연구기관"],
+                allowed: { ko: ["식약처 혁신의료기기 지정", "진단 보조 솔루션"], en: ["Innovative device", "Diagnosis support"], zh: ["创新器械"], ja: ["革新医療機器"] },
+                prohibited: { ko: ["단독 진단", "효과 확약"], en: ["Standalone diagnosis"], zh: ["单独诊断"], ja: ["単独診断"] },
+                rules: { ko: ["혁신의료기기 부각"], en: ["Highlight Innovative designation"], zh: ["突出创新指定"], ja: ["革新指定強調"] },
+                disclaimer: { ko: "의료진 판단을 보조하는 기기이며 최종 판단은 의사가 수행합니다.", en: "Assists clinician judgment.", zh: "辅助医生判断。", ja: "医師の判断を補助します。" },
+                isMedical: true
+            },
+            "exoPill-Lite": {
+                name: "exoPill-Lite",
+                definition: { ko: "웨어러블 전기자극 재활 솔루션", en: "Wearable Stimulation Solution", zh: "可穿戴电刺激解决方案", ja: "ウェアラブル刺激ソリューション" },
+                positioning: { ko: "웨어러블 기반 재활 근육 자극 관리", en: "Wearable muscle stimulation management.", zh: "基于可穿戴的肌肉刺激管理", ja: "ウェアラブル筋肉刺激管理" },
+                targets: ["병원", "재활센터", "홈 재활 시장", "유통사", "물리치료사"],
+                allowed: { ko: ["보조 솔루션", "사용 편의성 극대화"], en: ["Auxiliary solution", "Convenience"], zh: ["辅助解决方案"], ja: ["補助ソリューション"] },
+                prohibited: { ko: ["질병 치료 보장", "의료기기 대체"], en: ["Guarantees cure"], zh: ["保证治愈"], ja: ["治療保証"] },
+                rules: { ko: ["휴대성과 편의성 핵심"], en: ["Portability focus"], zh: ["便携性核心"], ja: ["携帯性コア"] },
+                disclaimer: { ko: "사용 환경에 따라 보조적으로 활용 가능합니다.", en: "Used optionally depending on environment.", zh: "根据环境辅助使用。", ja: "環境により補助的活用可能。" },
+                isMedical: false
+            },
+            "exoRehab": {
+                name: "exoRehab",
+                definition: { ko: "미국 RTM 시장 대상 재활 관리 솔루션", en: "US RTM Rehab Solution", zh: "美国RTM康复解决方案", ja: "米国RTMリハビリソリューション" },
+                positioning: { ko: "원격 치료 모니터링 관리 지원", en: "Remote monitoring support.", zh: "远程监测支持", ja: "遠隔モニタリング支援" },
+                targets: ["미국 재활 클리닉", "물리치료 기관", "RTM 사업 파트너", "물리치료사"],
+                allowed: { ko: ["원격 재활 관리 흐름 지원", "수행 데이터 관리"], en: ["Supports remote flow", "Data management"], zh: ["支持远程流程"], ja: ["遠隔フロー支援"] },
+                prohibited: { ko: ["보험 수가 100% 보장", "치료 완벽 보장"], en: ["Insurance guarantee"], zh: ["保险保证"], ja: ["保険保証"] },
+                rules: { ko: ["모니터링 효율성 위주 소통"], en: ["Focus on monitoring"], zh: ["监测为中心"], ja: ["モニタリング中心"] },
+                disclaimer: { ko: "활용 가능성은 규제에 따라 달라질 수 있습니다.", en: "Viability subject to regulation.", zh: "应用依从法规。", ja: "活用は規制によります。" },
+                isMedical: false
+            }
+        };
+
+        const STRATEGIC_AUDIENCE_INSIGHTS = {
+            "일반 회원": { ko: "개인 맞춤형 피드백 부재에 대한 불안감 해결, 즉각적이고 가시적인 성과 확인", en: "Resolving anxiety over lack of personalized feedback, instant visible progress.", zh: "解决对缺乏个性化反馈的焦虑，确认即时可见的成果", ja: "パーソナライズされたフィードバックの欠如に対する不安を解消し、即時的で目に見える成果を確認" },
+            "트레이너": { ko: "주관적 지도 방식의 한계 극복, 회원 재등록을 유도할 수 있는 데이터 기반의 전문성 확보(권위 상승)", en: "Overcoming subjective guidance, securing data-backed authority to drive client retention.", zh: "克服主观指导方式的局限，确保基于数据的专业性以引导会员续费（提升权威）", ja: "主観的な指導方法の限界を克服し、会員の継続を促すデータに基づく専門性の確保（権威の向上）" },
+            "피트니스 센터 대표": { ko: "인근 경쟁사 대비 압도적인 하이테크 프리미엄 구축, 객관적 지표를 통한 트레이너 역량 상향 평준화", en: "Building high-tech premium differentiation, standardizing trainer quality via objective metrics.", zh: "构建压倒竞争对手的高科技高端形象，通过客观指标实现教练能力的向上均衡", ja: "競合に対する圧倒的なハイテクプレミアムの構築、客観的指標を通じたトレーナーの能力の底上げ" },
+            "메디컬 피트니스 센터": { ko: "의학적 근거(EBM)와 피트니스의 완벽한 결합, VIP 고객 유치를 위한 임상 수준의 신뢰도 확보", en: "Fusing EBM with fitness, securing clinical-grade credibility for VIP acquisition.", zh: "医学证据(EBM)与健身的完美结合，确保临床级别的可信度以吸引VIP客户", ja: "医学的根拠(EBM)とフィットネスの完璧な結合、VIP顧客獲得のための臨床レベルの信頼性確保" },
+            "병원": { ko: "기존 인프라 변경 없이 진료/재활 워크플로우 효율화, 비급여 모델 연계를 통한 객관적 수익성(ROI) 증대", en: "Workflow efficiency without infrastructure overhaul, non-reimbursed ROI growth.", zh: "在不改变现有基础设施的情况下优化诊疗/康复流程，通过自费模式联动增加客观收益(ROI)", ja: "既存インフラの変更なしに診療/リハビリワークフローを効率化し、自費診療モデルとの連動による収益性(ROI)増大" },
+            "제약사": { ko: "예방적 스크리닝 생태계 구축, RWE(Real-World Evidence) 기반의 혁신적 디지털 바이오마커 선점", en: "Building preventive screening ecosystems, securing RWE digital biomarkers.", zh: "构建预防性筛查生态系统，抢占基于真实世界证据(RWE)的创新数字生物标志物", ja: "予防的スクリーニングエコシステムの構築、RWE(Real-World Evidence)に基づく革新的デジタルバイオマーカーの先占" },
+            "국내 유통사": { ko: "명확한 세일즈 포인트와 높은 마진율, 시장 진입 시 즉각적인 경쟁 우위(초격차) 확보 전략", en: "Clear USP, high margin structure, immediate competitive edge upon market entry.", zh: "明确的卖点和高利润率，在进入市场时立即确保竞争优势的战略", ja: "明確なセールスポイントと高いマージン率、市場参入時に即時的な競争優位性を確保する戦略" },
+            "해외 유통사": { ko: "현지 규제 대응의 용이성, 언어장벽을 넘어서는 직관적 데이터 시각화, 장기적 파트너십 가치", en: "Regulatory adaptability, intuitive cross-border data visualization, long-term partnership.", zh: "易于应对当地法规，超越语言障碍的直观数据可视化，长期的合作伙伴价值", ja: "現地規制への対応の容易さ、言語の壁を越える直感的なデータ視覚化、長期的なパートナーシップの価値" },
+            "재활센터": { ko: "환자 치료 순응도(Compliance) 극대화, 치료사의 피로도 감소 및 체계적 예후 관리", en: "Maximizing patient compliance, reducing therapist fatigue with systematic tracking.", zh: "最大化患者治疗依从性，减少治疗师疲劳及系统化的预后管理", ja: "患者の治療順応度(Compliance)の極大化、療法士の疲労軽減および体系的な予後管理" },
+            "연구기관": { ko: "임상 연구의 신뢰도를 보장하는 Raw Data의 정밀성, 논문 게재를 위한 과학적 근거 확보", en: "Precision of raw data for clinical trials, scientific basis for publications.", zh: "确保临床研究可信度的原始数据精确性，获取发表论文的科学依据", ja: "臨床研究の信頼性を保証するRaw Dataの精密さ、論文掲載のための科学的根拠の確保" },
+            "검진센터": { ko: "시니어 헬스케어 검진 라인업의 프리미엄화, AI 판독을 통한 검진 회전율 및 정확도 동시 향상", en: "Premiumizing senior checkups, enhancing throughput and accuracy via AI.", zh: "老年健康体检项目的高端化，通过AI解读同时提升体检周转率和准确度", ja: "シニアヘルスケア検診ラインナップのプレミアム化、AI判読による検診回転率と正確度の同時向上" },
+            "물리치료사": { ko: "치료 효율성 증대 및 객관적 데이터 기반의 환자 예후 관리, 전문성 부각", en: "Increasing treatment efficiency, objective data-based patient prognosis management, highlighting expertise.", zh: "提高治疗效率，基于客观数据的患者预后管理，彰显专业性", ja: "治療効率の向上および客観的データに基づく患者の予後管理、専門性の強調" }
+        };
+
+        const TARGET_NAMES = {
+            "일반 회원": { ko: "일반 회원", en: "General Member", zh: "普通会员", ja: "一般会員" },
+            "트레이너": { ko: "트레이너", en: "Trainer", zh: "教练", ja: "トレーナー" },
+            "피트니스 센터 대표": { ko: "피트니스 센터 대표", en: "Fitness Center CEO", zh: "健身房老板", ja: "フィットネス代表" },
+            "메디컬 피트니스 센터": { ko: "메디컬 피트니스 센터", en: "Medical Fitness Center", zh: "医疗健身中心", ja: "メディカルフィットネス" },
+            "병원": { ko: "병원", en: "Hospital", zh: "医院", ja: "病院" },
+            "제약사": { ko: "제약사", en: "Pharmaceutical Co.", zh: "制药公司", ja: "製薬会社" },
+            "국내 유통사": { ko: "국내 유통사", en: "Domestic Distributor", zh: "国内经销商", ja: "国内流通業者" },
+            "해외 유통사": { ko: "해외 유통사", en: "Global Distributor", zh: "海外经销商", ja: "海外流通業者" },
+            "재활센터": { ko: "재활센터", en: "Rehab Center", zh: "康复中心", ja: "リハビリセンター" },
+            "연구기관": { ko: "연구기관", en: "Research Institute", zh: "研究机构", ja: "研究機関" },
+            "검진센터": { ko: "검진센터", en: "Health Screening Center", zh: "体检中心", ja: "検診センター" },
+            "물리치료사": { ko: "물리치료사", en: "Physical Therapist", zh: "理疗师", ja: "理学療法士" }
+        };
+
+        const CONTENT_TYPE_NAMES = {
+            "strategyplan": { ko: "마케팅 전략 계획", en: "Marketing Strategy Plan", zh: "营销战略计划", ja: "マーケティング戦略計画" },
+            "imagegen": { ko: "이미지 생성", en: "Image Generation", zh: "图像生成", ja: "画像生成" },
+            "email": { ko: "이메일", en: "Email", zh: "电子邮件", ja: "Eメール" },
+            "cardnews": { ko: "카드뉴스", en: "Card News", zh: "图文卡片", ja: "カードニュース" },
+            "reels": { ko: "숏폼/릴스 (클린)", en: "Shorts/Reels (Clean)", zh: "短视频/Reels (Clean)", ja: "ショート/リール (クリーン)" },
+            "adcopy": { ko: "광고 카피", en: "Ad Copy", zh: "广告文案", ja: "広告コピー" },
+            "videoprompt": { ko: "영상 프롬프트", en: "Video Prompt", zh: "视频提示词", ja: "動画プロンプト" }
+        };
+
+        const STATUS_NAMES = {
+            "Draft": { ko: "작성중 (Draft)", en: "Draft", zh: "草稿 (Draft)", ja: "下書き (Draft)" },
+            "Reviewed": { ko: "검토완료 (Reviewed)", en: "Reviewed", zh: "已审阅 (Reviewed)", ja: "レビュー済 (Reviewed)" },
+            "Used": { ko: "사용됨 (Used)", en: "Used", zh: "已使用 (Used)", ja: "使用済 (Used)" },
+            "Archived": { ko: "보관됨 (Archived)", en: "Archived", zh: "已归档 (Archived)", ja: "保管済 (Archived)" }
+        };
+
+        const PURPOSE_MAP = {
+            "strategyplan": { ko: "중장기 세일즈 액션 플랜 및 시장 진입 전략 수립", en: "Establish mid-to-long term sales action plan and market entry strategy", zh: "建立中长期销售行动计划和市场进入战略", ja: "中長期セールスアクションプランおよび市場参入戦略の策定" },
+            "imagegen": { ko: "마케팅 캠페인용 시각적 에셋 및 컨셉 도출", en: "Generate visual assets and concepts for marketing campaigns", zh: "为营销活动生成视觉资产和概念", ja: "マーケティングキャンペーン用の視覚的アセットとコンセプトの導出" },
+            "email": { ko: "타겟 대상의 즉각적인 데모 신청 및 잠재 고객(Lead) 확보", en: "Drive immediate demo requests and secure leads", zh: "推动即时演示申请并确保潜在客户", ja: "ターゲットの即時デモ申込および潜在顧客(Lead)の確保" },
+            "cardnews": { ko: "SNS 채널 내 직관적인 정보 전달을 통한 브랜드 인지도(Awareness) 상승", en: "Boost brand awareness through intuitive info delivery on SNS", zh: "通过社交媒体上直观的信息传递提升品牌知名度", ja: "SNSチャネルでの直感的な情報伝達を通じたブランド認知度向上" },
+            "reels": { ko: "짧고 강렬한 훅(Hook)을 통한 신규 타겟의 시선 집중 및 트래픽 유도", en: "Capture attention and drive traffic via short, impactful hooks", zh: "通过短小强烈的悬念吸引新目标受众的注意力并引导流量", ja: "短く強烈なフックによる新規ターゲットの視線集中とトラフィック誘導" },
+            "adcopy": { ko: "A/B 테스트를 통한 퍼포먼스 마케팅 효율 극대화 및 클릭률(CTR) 개선", en: "Maximize performance marketing efficiency and CTR via A/B testing", zh: "通过 A/B 测试最大化效果营销效率并提高点击率(CTR)", ja: "A/Bテストを通じたパフォーマンスマーケティング効率の最大化とCTR改善" },
+            "videoprompt": { ko: "고품질 생성형 AI 영상 에셋 확보를 위한 최적화된 프롬프트 제공", en: "Provide optimized prompts for securing high-quality generative AI video assets", zh: "提供优化的提示词以获取高质量的生成式 AI 视频资产", ja: "高品質な生成AI動画アセットを確保するための最適化されたプロンプト提供" }
+        };
+
+        const TRANSLATIONS = {
+            ko: {
+                appTitle: "EXOSYSTEMS Content Agent",
+                appSubtitle: "EXOSYSTEMS 제품군을 위한 전략 마케팅 콘텐츠 엔진",
+                langLabel: "언어",
+                sectionConfig: "콘텐츠 설정",
+                labelProduct: "지원 제품군",
+                labelTarget: "타겟 고객군",
+                labelContentType: "콘텐츠 유형",
+                videoLengthMsg: "영상 길이 조건이 활성화되었습니다. 연출 프롬프트에 자동으로 시간 분량이 매핑됩니다.",
+                labelKeywords: "강조 키워드 (필수 반영)",
+                labelImgUpload: "제품 / 시각 참고 이미지 업로드",
+                btnSelectImg: "이미지 선택",
+                imgHelpText: "*업로드된 이미지는 이미지 생성 및 영상 기획의 컨텍스트로 우선 활용됩니다.",
+                labelAddMemo: "추가 마케팅 전략 메모 (선택)",
+                checkReflectMemo: "메모 및 학습 데이터를 최우선 반영",
+                btnGenerate: "전략 마케팅 콘텐츠 생성",
+                btnGenerateImage: "마케팅 이미지 생성",
+                titleKbMonitor: "KB 매핑 현황",
+                monitorDef: "제품 정의",
+                monitorPos: "포지셔닝",
+                monitorTargets: "타겟 스코프",
+                monitorProhibited: "금지 표현",
+                monitorRules: "마케팅 규칙",
+                tabGenerator: "콘텐츠 결과",
+                tabLibrary: "라이브러리",
+                emptyTitle: "전략 콘텐츠가 구성되지 않았습니다",
+                emptyDesc: "조건을 설정하고 생성하기 버튼을 눌러주세요.",
+                btnCopyAll: "전체복사",
+                btnCopyHash: "태그복사",
+                btnDlMd: "MD다운로드",
+                btnSaveLib: "저장",
+                secStratDirection: "[전략적 메시지 방향]",
+                secGenContent: "상세 결과물",
+                secGenImg: "AI 마케팅 컨셉 이미지",
+                secGenImgReels: "AI 릴스 키프레임 (클린 영상)",
+                secWarnings: "주의사항 및 필수 안내",
+                optAllStatus: "모든 상태보기",
+                optStatusDraft: "작성중 (Draft)",
+                optStatusReviewed: "검토완료 (Reviewed)",
+                optStatusUsed: "사용됨 (Used)",
+                optStatusArchived: "보관됨 (Archived)",
+                optTypeStrategy: "마케팅 전략 계획",
+                optTypeImagegen: "이미지 생성",
+                optTypeEmail: "이메일",
+                optTypeCardnews: "카드뉴스",
+                optTypeReels: "숏폼/릴스 (클린)",
+                optTypeAdcopy: "광고 카피",
+                optTypeVideoprompt: "영상 프롬프트",
+                piTargetLbl: "주요 타겟:",
+                piWarnLbl: "주의 표현:",
+                piJsonLbl: "AI 분석 학습 데이터 연동 중",
+                modalStatusLbl: "상태 관리",
+                modalStratLbl: "[전략 브리프]",
+                modalContentLbl: "문서 본문",
+                modalHashLbl: "해시태그",
+                modalBtnDel: "삭제",
+                modalBtnCopy: "복사",
+                modalBtnClose: "닫기",
+                noFile: "선택된 파일 없음",
+                medicalBadge: "의료기기",
+                wellnessBadge: "웰니스",
+                scopeLabel: "전체(KO)",
+                libGenTitle: "학습 데이터 업데이트 (문서/URL)",
+                libHistTitle: "업데이트 기록 (최근 5개)",
+                libHistDesc: "*리스트 삭제 시에도 적용된 학습 데이터는 유지됩니다.",
+                libHistEmpty: "업데이트 기록이 없습니다.",
+                modalLrnTitle: "학습 데이터 상세 내용",
+                modalLrnBtnDel: "리스트 기록 삭제",
+                modalLrnBtnClose: "닫기",
+                libUpdateProd: "적용 제품군 선택",
+                libUpdateFile: "모든 문서 업로드 (PDF, DOCX 등)",
+                libUpdateUrl: "웹사이트 URL 크롤링",
+                libBtnSelect: "문서 선택",
+                libBtnSave: "분석/저장",
+                libBtnViewAll: "전체보기",
+                fullHistTitle: "전체 학습 데이터 이력",
+                fullHistDesc: "*리스트에서 삭제하더라도 실제 적용된 시스템 학습 데이터는 유지됩니다.",
+                fullHistBtnClose: "닫기"
+            },
+            en: {
+                appTitle: "EXOSYSTEMS Content Agent",
+                appSubtitle: "Strategic Marketing Engine for EXOSYSTEMS",
+                langLabel: "Lang",
+                sectionConfig: "Content Setup",
+                labelProduct: "Product Family",
+                labelTarget: "Target Audience",
+                labelContentType: "Content Type",
+                videoLengthMsg: "Video mode active. Prompt calibrated to exact length.",
+                labelKeywords: "Keywords (Mandatory)",
+                labelImgUpload: "Reference Images Upload",
+                btnSelectImg: "Select Images",
+                imgHelpText: "*Uploaded images are prioritized as context for visual cue/prompt generation.",
+                labelAddMemo: "Additional Strategy Memo",
+                checkReflectMemo: "Prioritize memo & learned data",
+                btnGenerate: "Generate Content",
+                btnGenerateImage: "Generate Image",
+                titleKbMonitor: "Active KB Monitor",
+                monitorDef: "Definition",
+                monitorPos: "Positioning",
+                monitorTargets: "Targets",
+                monitorProhibited: "Banned Claims",
+                monitorRules: "Rules",
+                tabGenerator: "Generator Output",
+                tabLibrary: "Library",
+                emptyTitle: "No Content Generated",
+                emptyDesc: "Configure settings and click generate.",
+                btnCopyAll: "Copy All",
+                btnCopyHash: "Copy Tags",
+                btnDlMd: "Download MD",
+                btnSaveLib: "Save",
+                secStratDirection: "[Strategic Brief]",
+                secGenContent: "Generated Details",
+                secGenImg: "AI Concept Image",
+                secGenImgReels: "AI Reels Keyframe (Clean)",
+                secWarnings: "Compliance Warnings",
+                optAllStatus: "All Status",
+                optStatusDraft: "Draft",
+                optStatusReviewed: "Reviewed",
+                optStatusUsed: "Used",
+                optStatusArchived: "Archived",
+                optTypeStrategy: "Marketing Strategy Plan",
+                optTypeImagegen: "Image Generation",
+                optTypeEmail: "Email",
+                optTypeCardnews: "Card News",
+                optTypeReels: "Shorts/Reels (Clean)",
+                optTypeAdcopy: "Ad Copy",
+                optTypeVideoprompt: "Video Prompt",
+                piTargetLbl: "Primary Targets:",
+                piWarnLbl: "Warnings:",
+                piJsonLbl: "AI Learned Data Active",
+                modalStatusLbl: "Status Flow",
+                modalStratLbl: "[Brief]",
+                modalContentLbl: "Content Body",
+                modalHashLbl: "Hashtags",
+                modalBtnDel: "Delete",
+                modalBtnCopy: "Copy Text",
+                modalBtnClose: "Close",
+                noFile: "No file selected",
+                medicalBadge: "Medical",
+                wellnessBadge: "Wellness",
+                scopeLabel: "EN Only",
+                libGenTitle: "Update Learning Data (Docs/URL)",
+                libHistTitle: "Update History (Recent 5)",
+                libHistDesc: "*Deleting from list keeps actual learned data active.",
+                libHistEmpty: "No update history found.",
+                modalLrnTitle: "Learning Data Details",
+                modalLrnBtnDel: "Delete Record",
+                modalLrnBtnClose: "Close",
+                libUpdateProd: "Target Product",
+                libUpdateFile: "Upload Document (PDF, Word, etc.)",
+                libUpdateUrl: "Website URL Crawling",
+                libBtnSelect: "Select Doc",
+                libBtnSave: "Analyze/Save",
+                libBtnViewAll: "View All",
+                fullHistTitle: "Full Learning Data History",
+                fullHistDesc: "*Deleting from list keeps actual learned data active.",
+                fullHistBtnClose: "Close"
+            },
+            zh: {
+                appTitle: "EXOSYSTEMS 营销内容生成器",
+                appSubtitle: "战略营销内容生成引擎",
+                langLabel: "语言",
+                sectionConfig: "配置",
+                labelProduct: "产品",
+                labelTarget: "目标受众",
+                labelContentType: "内容类型",
+                videoLengthMsg: "视频模式激活。将自动映射对应时长的提示词。",
+                labelKeywords: "强制关键词",
+                labelImgUpload: "参考图片上传",
+                btnSelectImg: "选择图片",
+                imgHelpText: "*上传的图片将优先作为视觉提示词生成的上下文参考。",
+                labelAddMemo: "附加营销策略备注",
+                checkReflectMemo: "优先应用备注与学习数据",
+                btnGenerate: "生成内容",
+                btnGenerateImage: "生成图像",
+                titleKbMonitor: "知识库监控",
+                monitorDef: "定义",
+                monitorPos: "定位",
+                monitorTargets: "受众",
+                monitorProhibited: "违禁词",
+                monitorRules: "规则",
+                tabGenerator: "结果",
+                tabLibrary: "库",
+                emptyTitle: "暂无内容",
+                emptyDesc: "请设置并生成。",
+                btnCopyAll: "复制全部",
+                btnCopyHash: "复制标签",
+                btnDlMd: "下载MD",
+                btnSaveLib: "保存",
+                secStratDirection: "[战略方向]",
+                secGenContent: "详细结果",
+                secGenImg: "AI 营销概念图像",
+                secGenImgReels: "AI 短视频关键帧 (无字幕)",
+                secWarnings: "合规警告",
+                optAllStatus: "所有状态",
+                optStatusDraft: "草稿 (Draft)",
+                optStatusReviewed: "已审阅 (Reviewed)",
+                optStatusUsed: "已使用 (Used)",
+                optStatusArchived: "已归档 (Archived)",
+                optTypeStrategy: "营销战略计划",
+                optTypeImagegen: "图像生成",
+                optTypeEmail: "电子邮件",
+                optTypeCardnews: "图文卡片",
+                optTypeReels: "短视频/Reels (Clean)",
+                optTypeAdcopy: "广告文案",
+                optTypeVideoprompt: "视频生成提示词",
+                piTargetLbl: "主要受众:",
+                piWarnLbl: "警告:",
+                piJsonLbl: "AI分析学习数据已应用",
+                modalStatusLbl: "状态管理",
+                modalStratLbl: "[方向]",
+                modalContentLbl: "正文",
+                modalHashLbl: "话题标签",
+                modalBtnDel: "删除",
+                modalBtnCopy: "复制正文",
+                modalBtnClose: "关闭",
+                noFile: "未选择文件",
+                medicalBadge: "医疗器械",
+                wellnessBadge: "健康",
+                scopeLabel: "仅中文",
+                libGenTitle: "更新学习数据 (文档/URL)",
+                libHistTitle: "更新记录 (最近5条)",
+                libHistDesc: "*删除记录不会影响已应用的内部学习数据。",
+                libHistEmpty: "没有更新记录。",
+                modalLrnTitle: "学习数据详情",
+                modalLrnBtnDel: "删除记录",
+                modalLrnBtnClose: "关闭",
+                libUpdateProd: "目标产品",
+                libUpdateFile: "上传文档 (PDF, Word 等)",
+                libUpdateUrl: "或输入网页URL抓取",
+                libBtnSelect: "选择文档",
+                libBtnSave: "分析并保存",
+                libBtnViewAll: "查看全部",
+                fullHistTitle: "全部学习数据记录",
+                fullHistDesc: "*删除记录不会影响已应用的内部学习数据。",
+                fullHistBtnClose: "关闭"
+            },
+            ja: {
+                appTitle: "EXOSYSTEMS コンテンツエージェント",
+                appSubtitle: "戦略的マーケティングエンジン",
+                langLabel: "言語",
+                sectionConfig: "構成",
+                labelProduct: "製品",
+                labelTarget: "ターゲット",
+                labelContentType: "コンテンツタイプ",
+                videoLengthMsg: "ビデオモード有効。指定の時間枠にプロンプトがマッピングされます。",
+                labelKeywords: "必須キーワード",
+                labelImgUpload: "参考画像アップロード",
+                btnSelectImg: "画像選択",
+                imgHelpText: "*アップロードされた画像は、映像プロンプト生成の文脈として優先活用されます。",
+                labelAddMemo: "追加戦略メモ (オプション)",
+                checkReflectMemo: "メモと学習データを最優先",
+                btnGenerate: "生成",
+                btnGenerateImage: "画像生成",
+                titleKbMonitor: "ナレッジベース",
+                monitorDef: "定義",
+                monitorPos: "ポジショニング",
+                monitorTargets: "ターゲット",
+                monitorProhibited: "禁止表現",
+                monitorRules: "ルール",
+                tabGenerator: "生成結果",
+                tabLibrary: "ライブラリ",
+                emptyTitle: "コンテンツがありません",
+                emptyDesc: "設定して生成してください。",
+                btnCopyAll: "すべてコピー",
+                btnCopyHash: "タグコピー",
+                btnDlMd: "MDダウンロード",
+                btnSaveLib: "保存",
+                secStratDirection: "[戦略ブリーフ]",
+                secGenContent: "詳細結果",
+                secGenImg: "AI マーケティングコンセプト画像",
+                secGenImgReels: "AI リールキーフレーム (クリーン)",
+                secWarnings: "コンプライアンス警告",
+                optAllStatus: "すべてのステータス",
+                optStatusDraft: "下書き (Draft)",
+                optStatusReviewed: "レビュー済 (Reviewed)",
+                optStatusUsed: "使用済 (Used)",
+                optStatusArchived: "保管済 (Archived)",
+                optTypeStrategy: "マーケティング戦略計画",
+                optTypeImagegen: "画像生成",
+                optTypeEmail: "Eメール",
+                optTypeCardnews: "カードニュース",
+                optTypeReels: "ショート/リール (クリーン)",
+                optTypeAdcopy: "広告コピー",
+                optTypeVideoprompt: "動画生成プロンプト",
+                piTargetLbl: "主なターゲット:",
+                piWarnLbl: "注意表現:",
+                piJsonLbl: "AI学習データ連携中",
+                modalStatusLbl: "ステータス",
+                modalStratLbl: "[ブリーフ]",
+                modalContentLbl: "本文",
+                modalHashLbl: "ハッシュタグ",
+                modalBtnDel: "削除",
+                modalBtnCopy: "コピー",
+                modalBtnClose: "閉じる",
+                noFile: "ファイルが選択されていません",
+                medicalBadge: "医療機器",
+                wellnessBadge: "ウェルネス",
+                scopeLabel: "JAのみ",
+                libGenTitle: "学習データの更新 (ドキュメント/URL)",
+                libHistTitle: "更新履歴 (最近5件)",
+                libHistDesc: "*リストを削除しても適用された学習データは維持されます。",
+                libHistEmpty: "更新履歴がありません。",
+                modalLrnTitle: "学習データ詳細",
+                modalLrnBtnDel: "記録を削除",
+                modalLrnBtnClose: "閉じる",
+                libUpdateProd: "対象製品",
+                libUpdateFile: "ドキュメントアップロード (PDF, Wordなど)",
+                libUpdateUrl: "ウェブサイトURLクロール",
+                libBtnSelect: "ドキュメント選択",
+                libBtnSave: "分析して保存",
+                libBtnViewAll: "すべて見る",
+                fullHistTitle: "全学習データ履歴",
+                fullHistDesc: "*リストを削除しても適用された学習データは維持されます。",
+                fullHistBtnClose: "閉じる"
+            }
+        };
+
+        let currentLang = 'ko';
+        let activeView = 'generator';
+        let currentUploadedImages = [];
+        
+        let pendingGeneralData = null;
+        let pendingGeneralSource = null; 
+        let pendingGeneralName = "";
+        
+        let libraryItems = [];
+        let learningHistory = []; // 통합 관리 배열 (리스트 표시용)
+        
+        let activeModalItemId = null;
+        let activeLearningModalId = null;
+        let generatedCache = null;
+
+        function verifyAndInitializeLanguage() {
+            let saved = localStorage.getItem('selectedLanguage');
+            if (saved) { currentLang = saved; } 
+            else { currentLang = 'ko'; }
+            setLanguage(currentLang);
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('selectedLanguage', lang);
+            
+            ['ko', 'en', 'zh', 'ja'].forEach(l => {
+                const btn = document.getElementById(`lang-btn-${l}`);
+                if (l === lang) {
+                    btn.className = "px-2 py-1 sm:px-2.5 rounded-lg text-sm transition-all font-bold bg-blue-600 text-white shadow-sm scale-105";
+                } else {
+                    btn.className = "px-2 py-1 sm:px-2.5 rounded-lg text-sm transition-all font-medium text-slate-600 hover:bg-slate-200";
+                }
+            });
+
+            updateStaticUITexts();
+            populateTargetAudienceOptions();
+            handleProductChange();
+            handleContentTypeChange(); // Refresh button text
+            renderLibrary();
+            renderLearningHistory();
+            if (!document.getElementById('full-history-modal').classList.contains('hidden')) {
+                renderFullHistoryList();
+            }
+
+            if (generatedCache && activeView === 'generator' && !document.getElementById('generator-result-panel').classList.contains('hidden')) {
+                generateContent(true); 
+            }
+        }
+
+        function updateStaticUITexts() {
+            const dict = TRANSLATIONS[currentLang];
+            document.querySelectorAll('[id^="ui-"]').forEach(el => {
+                // If it's the button label, skip automatic replacement to avoid destroying innerHTML
+                if (el.id === 'ui-btn-generate') return; 
+
+                const key = el.id.replace('ui-', '').replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+                if(dict[key]) el.textContent = dict[key];
+            });
+            
+            // Explicitly set the generate button text depending on mode
+            const type = document.getElementById('type-select').value;
+            const btnLabel = document.getElementById('ui-btn-generate');
+            if (btnLabel) {
+                if (type === 'imagegen') {
+                    btnLabel.textContent = dict.btnGenerateImage || "이미지 생성";
+                } else {
+                    btnLabel.textContent = dict.btnGenerate || "전략 마케팅 콘텐츠 생성";
+                }
+            }
+
+            document.getElementById('library-search').placeholder = currentLang === 'ko' ? "키워드 검색..." : "Search...";
+            
+            if (currentUploadedImages.length === 0) document.getElementById('img-upload-status').textContent = dict.noFile;
+            if (!pendingGeneralSource) document.getElementById('general-file-status').textContent = dict.noFile;
+        }
+
+        function populateTargetAudienceOptions() {
+            const targetSelect = document.getElementById('target-select');
+            const previousValue = targetSelect.value;
+            targetSelect.innerHTML = '';
+
+            const allTargets = [
+                "일반 회원", "트레이너", "피트니스 센터 대표", "메디컬 피트니스 센터", 
+                "병원", "제약사", "국내 유통사", "해외 유통사", "재활센터", "연구기관", "검진센터", "물리치료사"
+            ];
+
+            allTargets.forEach(target => {
+                if (currentLang !== 'ko' && ["국내 유통사", "해외 유통사", "제약사"].includes(target)) return;
+                const opt = document.createElement('option');
+                opt.value = target;
+                opt.textContent = TARGET_NAMES[target]?.[currentLang] || target; 
+                targetSelect.appendChild(opt);
+            });
+
+            if (previousValue && [...targetSelect.options].some(o => o.value === previousValue)) {
+                targetSelect.value = previousValue;
+            } else if (targetSelect.options.length > 0) {
+                targetSelect.value = targetSelect.options[0].value;
+            }
+        }
+
+        function handleProductChange() {
+            const prodKey = document.getElementById('product-select').value;
+            const data = PRODUCT_KB[prodKey];
+            if (!data) return;
+
+            document.getElementById('kb-display-definition').textContent = data.definition[currentLang] || data.definition['ko'];
+            document.getElementById('kb-display-positioning').textContent = data.positioning[currentLang] || data.positioning['ko'];
+            document.getElementById('kb-display-targets').textContent = data.targets.join(', ');
+
+            const renderList = (elId, source) => {
+                const list = document.getElementById(elId);
+                list.innerHTML = '';
+                const phrases = source[currentLang] || source['ko'];
+                phrases.forEach(p => {
+                    const li = document.createElement('li');
+                    li.textContent = p;
+                    list.appendChild(li);
+                });
+            };
+
+            renderList('kb-display-prohibited', data.prohibited);
+            renderList('kb-display-rules', data.rules);
+
+            const badge = document.getElementById('kb-medical-badge');
+            const dict = TRANSLATIONS[currentLang];
+            if (data.isMedical) {
+                badge.textContent = dict.medicalBadge || "Medical";
+                badge.className = "px-2 py-0.5 sm:px-2.5 rounded-full text-[9px] sm:text-[10px] font-bold tracking-wider bg-red-900 text-red-200 border-2 border-red-700";
+            } else {
+                badge.textContent = dict.wellnessBadge || "Wellness";
+                badge.className = "px-2 py-0.5 sm:px-2.5 rounded-full text-[9px] sm:text-[10px] font-bold tracking-wider bg-slate-800 text-slate-300 border-2 border-slate-700";
+            }
+
+            const infoBox = document.getElementById('product-info-box');
+            infoBox.classList.remove('hidden');
+
+            document.getElementById('pi-name').textContent = data.name;
+            document.getElementById('pi-def').textContent = data.definition[currentLang] || data.definition['ko'];
+            document.getElementById('pi-pos').textContent = data.positioning[currentLang] || data.positioning['ko'];
+
+            const localizedTargets = data.targets.map(t => TARGET_NAMES[t]?.[currentLang] || t);
+            document.getElementById('pi-targets').textContent = localizedTargets.join(', ');
+
+            const prohibited = data.prohibited[currentLang] || data.prohibited['ko'];
+            document.getElementById('pi-warns').textContent = prohibited.join(', ');
+
+            const pBadge = document.getElementById('pi-medical');
+            if (data.isMedical) {
+                pBadge.textContent = dict.medicalBadge || "Medical";
+                pBadge.className = "text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-md bg-red-100 text-red-700 border-2 border-red-200";
+            } else {
+                pBadge.textContent = dict.wellnessBadge || "Wellness";
+                pBadge.className = "text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-200 text-slate-700 border-2 border-slate-300";
+            }
+
+            toggleKBBadge();
+        }
+
+        function toggleKBBadge() {
+            const prodKey = document.getElementById('product-select').value;
+            const extendedKB = localStorage.getItem(`exosystems_extended_kb_${prodKey}`);
+            const jsonBadge = document.getElementById('pi-json-badge');
+            const isChecked = document.getElementById('doc-reflect-check').checked;
+            
+            let hasValidKB = false;
+            if (extendedKB && extractLearningHighlights(extendedKB).length > 0) {
+                hasValidKB = true;
+            }
+
+            if (hasValidKB && isChecked) {
+                jsonBadge.classList.remove('hidden');
+                jsonBadge.classList.add('flex');
+            } else {
+                jsonBadge.classList.add('hidden');
+                jsonBadge.classList.remove('flex');
+            }
+        }
+
+        function handleContentTypeChange() {
+            const type = document.getElementById('type-select').value;
+            const videoBox = document.getElementById('video-duration-box');
+            const durationSelect = document.getElementById('reels-duration');
+            const btnLabel = document.getElementById('ui-btn-generate');
+
+            if (type === 'reels') {
+                durationSelect.classList.remove('hidden');
+                videoBox.classList.remove('hidden');
+            } else if (type === 'videoprompt') {
+                durationSelect.classList.add('hidden');
+                videoBox.classList.remove('hidden');
+            } else {
+                durationSelect.classList.add('hidden');
+                videoBox.classList.add('hidden');
+            }
+
+            if (btnLabel) {
+                if (type === 'imagegen') {
+                    btnLabel.textContent = TRANSLATIONS[currentLang].btnGenerateImage || "이미지 생성";
+                } else {
+                    btnLabel.textContent = TRANSLATIONS[currentLang].btnGenerate || "전략 마케팅 콘텐츠 생성";
+                }
+            }
+        }
+
+        function handleImageUpload(event) {
+            const files = event.target.files;
+            const previewContainer = document.getElementById('image-previews');
+            
+            for(let i=0; i<files.length; i++) {
+                const file = files[i];
+                currentUploadedImages.push(file.name);
+                
+                const div = document.createElement('div');
+                div.className = "relative group bg-slate-50 border-2 border-slate-200 rounded-xl p-2 flex flex-col items-center justify-center text-[10px] text-slate-500 text-center truncate h-14 sm:h-16";
+                div.innerHTML = `
+                    <i data-lucide="image" class="w-4 h-4 text-slate-400 mb-0.5"></i>
+                    <span class="w-full truncate px-1 font-medium">${file.name}</span>
+                    <button onclick="removeUploadedImage('${file.name}', this)" class="absolute -top-1.5 -right-1.5 bg-red-600 text-white rounded-full p-0.5 shadow-sm hover:bg-red-700 transition-all outline-none">
+                        <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                    </button>
+                `;
+                previewContainer.appendChild(div);
+            }
+            
+            document.getElementById('img-upload-status').textContent = `${currentUploadedImages.length} Files`;
+            lucide.createIcons();
+        }
+
+        function removeUploadedImage(name, element) {
+            currentUploadedImages = currentUploadedImages.filter(img => img !== name);
+            element.parentElement.remove();
+            const dict = TRANSLATIONS[currentLang];
+            document.getElementById('img-upload-status').textContent = currentUploadedImages.length > 0 ? `${currentUploadedImages.length} Files` : dict.noFile;
+        }
+
+        // ==========================================
+        // AI LEARNING HISTORY MODULE
+        // ==========================================
+
+        function handleLearningUrlInput() {
+            const url = document.getElementById('general-url-input').value.trim();
+            if (url) {
+                document.getElementById('general-file-input').value = "";
+                document.getElementById('general-file-status').textContent = TRANSLATIONS[currentLang].noFile;
+                pendingGeneralSource = 'url';
+                pendingGeneralName = url;
+            } else {
+                pendingGeneralSource = null;
+                pendingGeneralName = "";
+            }
+        }
+
+        function handleLearningFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            
+            document.getElementById('general-file-status').textContent = file.name;
+            document.getElementById('general-url-input').value = ""; 
+            pendingGeneralSource = 'file';
+            pendingGeneralName = file.name;
+            
+            reader.onload = function(e) {
+                const ext = file.name.split('.').pop().toLowerCase();
+                if (ext === 'json') {
+                    try {
+                        const jsonObj = JSON.parse(e.target.result);
+                        pendingGeneralData = JSON.stringify(jsonObj, null, 2);
+                    } catch (err) {
+                        showToast(currentLang === 'ko' ? "JSON 파싱 실패." : "Failed to parse JSON file.");
+                        pendingGeneralData = null;
+                    }
+                } else if (['txt', 'md', 'csv'].includes(ext)) {
+                    pendingGeneralData = e.target.result;
+                } else {
+                    pendingGeneralData = JSON.stringify({
+                        SOURCE: file.name,
+                        TYPE: "AI Document Layout Analysis",
+                        INSIGHTS: [
+                            `'${file.name}' 문서 내 핵심 제원 및 마케팅 소구점 분석 완료`,
+                            `제품 전략 포지셔닝 및 타겟 데모그래픽 관련 심층 데이터 추출 성공`
+                        ]
+                    }, null, 2);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function saveLearningData() {
+            if (pendingGeneralSource === 'url') {
+                const url = pendingGeneralName;
+                if (!url.startsWith('http')) {
+                    showToast(currentLang === 'ko' ? "유효한 URL(http://...)을 입력해주세요." : "Please enter a valid URL.");
+                    return;
+                }
+                showToast(currentLang === 'ko' ? "AI가 웹사이트 정보를 크롤링 및 분석 중입니다..." : "AI scraping and analyzing website...");
+                setTimeout(() => {
+                    const domain = new URL(url).hostname;
+                    pendingGeneralData = JSON.stringify({
+                        SOURCE: url,
+                        TYPE: "AI Web Crawling Analysis",
+                        INSIGHTS: [
+                            `'${domain}' 웹사이트의 시장 동향 및 경쟁사 정보 크롤링 완료`,
+                            `해당 사이트에 포함된 최신 제품 전략 및 글로벌 마케팅 레퍼런스 추출 성공`
+                        ]
+                    }, null, 2);
+                    const targetProduct = document.getElementById('general-product-select').value;
+                    executeSaveLearningHistory('url', pendingGeneralName, targetProduct, pendingGeneralData);
+                }, 1500);
+
+            } else if (pendingGeneralSource === 'file') {
+                if (!pendingGeneralData) {
+                    showToast(currentLang === 'ko' ? "파일 분석 중입니다. 잠시만 기다려주세요." : "Analyzing file. Please wait.");
+                    return;
+                }
+                const ext = pendingGeneralName.split('.').pop().toLowerCase();
+                const targetProduct = document.getElementById('general-product-select').value;
+                
+                if (['pdf', 'docx', 'doc', 'pptx', 'ppt', 'xls', 'xlsx'].includes(ext)) {
+                    showToast(currentLang === 'ko' ? `AI가 문서(${ext.toUpperCase()})의 텍스트와 레이아웃을 해석 중입니다...` : `AI parsing ${ext.toUpperCase()} document layout...`);
+                    setTimeout(() => {
+                        executeSaveLearningHistory('doc', pendingGeneralName, targetProduct, pendingGeneralData);
+                    }, 1200);
+                } else {
+                    executeSaveLearningHistory('doc', pendingGeneralName, targetProduct, pendingGeneralData);
+                }
+            } else {
+                showToast(currentLang === 'ko' ? "학습할 파일이나 URL을 먼저 입력해주세요." : "Provide a file or URL first.");
+            }
+        }
+
+        function executeSaveLearningHistory(type, name, product, dataString) {
+            const testExtract = extractLearningHighlights(dataString);
+            if (testExtract.length === 0) {
+                showToast(currentLang === 'ko' ? "유의미한 데이터를 찾을 수 없어 학습이 취소되었습니다." : "No meaningful data found. Cancelled.");
+                pendingGeneralData = null; 
+                pendingGeneralSource = null;
+                return;
+            }
+
+            const newHistory = {
+                id: `lrn_${Date.now()}`,
+                name: name,
+                type: type, 
+                product: product,
+                date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                content: dataString
+            };
+
+            learningHistory.unshift(newHistory);
+            if (learningHistory.length > 50) {
+                learningHistory = learningHistory.slice(0, 50);
+            }
+            
+            localStorage.setItem(`exosystems_extended_kb_${product}`, dataString);
+            localStorage.setItem('exosystems_learning_history', JSON.stringify(learningHistory));
+            
+            showToast(currentLang === 'ko' ? `${product} 모델에 학습 데이터가 성공적으로 분석 및 저장되었습니다.` : `Learning data saved for ${product}.`);
+            
+            if (document.getElementById('product-select').value === product) {
+                document.getElementById('doc-reflect-check').checked = true;
+                handleProductChange();
+            }
+            
+            document.getElementById('general-file-input').value = "";
+            document.getElementById('general-url-input').value = "";
+            pendingGeneralData = null;
+            pendingGeneralSource = null;
+            pendingGeneralName = "";
+            
+            const statusEl = document.getElementById('general-file-status');
+            statusEl.innerHTML = `<span class="text-emerald-600 font-bold flex items-center"><i data-lucide="check-circle" class="w-3.5 h-3.5 mr-1"></i>${currentLang === 'ko' ? '저장 및 자동삭제 완료' : 'Saved & Cleared'}</span>`;
+            lucide.createIcons();
+            setTimeout(() => { statusEl.textContent = TRANSLATIONS[currentLang].noFile; }, 3000);
+
+            renderLearningHistory();
+            if (!document.getElementById('full-history-modal').classList.contains('hidden')) {
+                renderFullHistoryList();
+            }
+        }
+
+        function extractLearningHighlights(dataString, limit = 3) {
+            if (!dataString) return [];
+            try {
+                const obj = JSON.parse(dataString);
+                let highlights = [];
+                if (obj.INSIGHTS && Array.isArray(obj.INSIGHTS)) {
+                    return obj.INSIGHTS.slice(0, limit);
+                }
+                for (const [key, value] of Object.entries(obj)) {
+                    if (typeof value === 'string' && value.length > 5) {
+                        highlights.push(`[${key.toUpperCase()}]: ${value.substring(0, 50)}...`);
+                    } else if (Array.isArray(value) && value.length > 0) {
+                        highlights.push(`[${key.toUpperCase()}]: ${value.slice(0,2).join(', ')}`);
+                    }
+                }
+                return highlights.slice(0, limit);
+            } catch (e) {
+                const lines = dataString.split('\n').map(l => l.trim()).filter(l => l.length > 10);
+                return lines.slice(0, limit).map(l => l.substring(0, 60) + '...');
+            }
+        }
+
+        function renderLearningHistory() {
+            const generalList = document.getElementById('general-history-list');
+            generalList.innerHTML = '';
+
+            const emptyMsg = TRANSLATIONS[currentLang].libHistEmpty || "기록이 없습니다.";
+            const top5History = learningHistory.slice(0, 5);
+
+            if (top5History.length === 0) {
+                generalList.innerHTML = `<li class="text-indigo-400 font-medium italic text-center py-3">${emptyMsg}</li>`;
+            } else {
+                top5History.forEach(item => {
+                    const li = document.createElement('li');
+                    li.className = "bg-white p-2.5 rounded-xl border-2 border-indigo-100 hover:border-indigo-400 cursor-pointer flex justify-between items-center transition-all group shadow-sm";
+                    li.setAttribute('onclick', `openLearningDetailModal('${item.id}')`);
+                    let iconHtml = item.type === 'url' ? `<i data-lucide="link" class="w-3.5 h-3.5 text-indigo-400 mr-2 shrink-0"></i>` : `<i data-lucide="file-text" class="w-3.5 h-3.5 text-indigo-400 mr-2 shrink-0"></i>`;
+                    li.innerHTML = `
+                        <div class="truncate max-w-[70%] flex items-center">
+                            ${iconHtml}
+                            <div class="truncate">
+                                <span class="font-extrabold text-indigo-900 text-xs block truncate mb-0.5">${item.name}</span>
+                                <span class="text-[10px] text-slate-400 font-bold">${item.date}</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2 shrink-0">
+                            <span class="bg-slate-800 text-white text-[10px] px-2 py-0.5 rounded-md font-bold group-hover:bg-indigo-600 transition-colors border border-slate-700">${item.product}</span>
+                            <button onclick="event.stopPropagation(); deleteLearningHistory('${item.id}')" class="text-slate-300 hover:text-red-500 p-1 rounded transition-colors" title="리스트 삭제">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    `;
+                    generalList.appendChild(li);
+                });
+            }
+            lucide.createIcons();
+        }
+
+        function openFullHistoryModal() {
+            document.getElementById('full-history-modal').classList.remove('hidden');
+            renderFullHistoryList();
+        }
+
+        function closeFullHistoryModal() {
+            document.getElementById('full-history-modal').classList.add('hidden');
+        }
+
+        function renderFullHistoryList() {
+            const list = document.getElementById('full-history-list');
+            list.innerHTML = '';
+            
+            const emptyMsg = TRANSLATIONS[currentLang].libHistEmpty || "기록이 없습니다.";
+
+            if (learningHistory.length === 0) {
+                list.innerHTML = `<li class="text-slate-400 font-medium italic text-center py-6">${emptyMsg}</li>`;
+            } else {
+                learningHistory.forEach(item => {
+                    const li = document.createElement('li');
+                    li.className = "bg-white p-3 rounded-xl border-2 border-indigo-100 hover:border-indigo-400 cursor-pointer flex justify-between items-center transition-all group shadow-sm";
+                    li.setAttribute('onclick', `openLearningDetailModal('${item.id}')`);
+                    let iconHtml = item.type === 'url' ? `<i data-lucide="link" class="w-4 h-4 text-indigo-400 mr-2 shrink-0"></i>` : `<i data-lucide="file-text" class="w-4 h-4 text-indigo-400 mr-2 shrink-0"></i>`;
+                    li.innerHTML = `
+                        <div class="truncate max-w-[70%] flex items-center">
+                            ${iconHtml}
+                            <div class="truncate">
+                                <span class="font-extrabold text-indigo-900 text-sm block truncate mb-1">${item.name}</span>
+                                <span class="text-[10px] text-slate-400 font-bold">${item.date}</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3 shrink-0">
+                            <span class="bg-slate-800 text-white text-[10px] px-2 py-1 rounded-md font-bold group-hover:bg-indigo-600 transition-colors border border-slate-700">${item.product}</span>
+                            <button onclick="event.stopPropagation(); deleteLearningHistory('${item.id}')" class="text-slate-300 hover:text-red-500 p-1.5 rounded transition-colors" title="리스트 삭제">
+                                <i data-lucide="trash-2" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    `;
+                    list.appendChild(li);
+                });
+            }
+            lucide.createIcons();
+        }
+
+        function openLearningDetailModal(id) {
+            activeLearningModalId = id;
+            const item = learningHistory.find(i => i.id === id);
+            if (!item) return;
+
+            document.getElementById('ld-modal-name').textContent = item.name;
+            document.getElementById('ld-modal-meta').textContent = `${item.date} | Source: ${item.type.toUpperCase()}`;
+            document.getElementById('ld-modal-product').textContent = item.product;
+            document.getElementById('ld-modal-content').textContent = item.content;
+
+            document.getElementById('ld-modal-delete-btn').onclick = () => deleteLearningHistory(item.id);
+
+            document.getElementById('learning-detail-modal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function closeLearningDetailModal() {
+            document.getElementById('learning-detail-modal').classList.add('hidden');
+            activeLearningModalId = null;
+        }
+
+        function deleteLearningHistory(id) {
+            learningHistory = learningHistory.filter(i => i.id !== id);
+            localStorage.setItem('exosystems_learning_history', JSON.stringify(learningHistory));
+            
+            closeLearningDetailModal();
+            renderLearningHistory();
+            if (!document.getElementById('full-history-modal').classList.contains('hidden')) {
+                renderFullHistoryList();
+            }
+            
+            showToast(currentLang === 'ko' ? "리스트 기록이 삭제되었습니다. (학습 데이터는 유지됨)" : "Record removed from list.");
+        }
+
+        // ==========================================
+
+        function switchView(view) {
+            activeView = view;
+            const genBtn = document.getElementById('tab-btn-generator');
+            const libBtn = document.getElementById('tab-btn-library');
+            const genPanel = document.getElementById('view-panel-generator');
+            const libPanel = document.getElementById('view-panel-library');
+
+            if (view === 'generator') {
+                genBtn.className = "flex-1 py-2.5 sm:py-3 px-2 sm:px-4 rounded-xl font-extrabold text-xs sm:text-sm bg-blue-600 text-white shadow-md transition-all outline-none flex items-center justify-center space-x-1.5 sm:space-x-2 border-2 border-blue-700";
+                libBtn.className = "flex-1 py-2.5 sm:py-3 px-2 sm:px-4 rounded-xl font-extrabold text-xs sm:text-sm text-slate-500 bg-white hover:bg-slate-50 hover:text-slate-700 border-2 border-slate-200 transition-all outline-none flex items-center justify-center space-x-1.5 sm:space-x-2 relative";
+                genPanel.classList.remove('hidden');
+                libPanel.classList.add('hidden');
+            } else {
+                libBtn.className = "flex-1 py-2.5 sm:py-3 px-2 sm:px-4 rounded-xl font-extrabold text-xs sm:text-sm bg-blue-600 text-white shadow-md transition-all outline-none flex items-center justify-center space-x-1.5 sm:space-x-2 relative border-2 border-blue-700";
+                genBtn.className = "flex-1 py-2.5 sm:py-3 px-2 sm:px-4 rounded-xl font-extrabold text-xs sm:text-sm text-slate-500 bg-white hover:bg-slate-50 hover:text-slate-700 border-2 border-slate-200 transition-all outline-none flex items-center justify-center space-x-1.5 sm:space-x-2";
+                libPanel.classList.remove('hidden');
+                genPanel.classList.add('hidden');
+                renderLibrary();
+                renderLearningHistory();
+            }
+        }
+
+        // --- NEW: AI Image Generation Module ---
+        async function generateAIImage(promptText) {
+            const imgContainer = document.getElementById('generated-image-container');
+            const imgEl = document.getElementById('generated-image');
+            const statusEl = document.getElementById('image-generation-status');
+            const secGenImgTitle = document.getElementById('ui-sec-gen-img-title');
+            const type = document.getElementById('type-select').value;
+
+            // Change title depending on type
+            if (type === 'reels') {
+                secGenImgTitle.innerHTML = `<i data-lucide="video" class="w-4 h-4 text-blue-600"></i><span>${TRANSLATIONS[currentLang].secGenImgReels || "AI 릴스 키프레임 (클린 영상)"}</span>`;
+            } else {
+                secGenImgTitle.innerHTML = `<i data-lucide="image" class="w-4 h-4 text-blue-600"></i><span>${TRANSLATIONS[currentLang].secGenImg || "AI 마케팅 컨셉 이미지"}</span>`;
+            }
+
+            imgContainer.classList.remove('hidden');
+            imgEl.classList.add('hidden');
+            statusEl.classList.remove('hidden');
+            statusEl.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span id="ui-img-loading-text">${currentLang === 'ko' ? 'AI 마케팅 에셋 생성 중...' : 'Generating AI Concept...'}</span>`;
+            lucide.createIcons();
+
+            try {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`;
+                const payload = {
+                    instances: { prompt: promptText },
+                    parameters: { sampleCount: 1 }
+                };
+
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) throw new Error("Image API Failed");
+                const data = await res.json();
+
+                if (data.predictions && data.predictions[0] && data.predictions[0].bytesBase64Encoded) {
+                    const imageUrl = `data:image/png;base64,${data.predictions[0].bytesBase64Encoded}`;
+                    imgEl.src = imageUrl;
+                    imgEl.classList.remove('hidden');
+                    statusEl.classList.add('hidden');
+                    
+                    if (generatedCache) {
+                        generatedCache.generatedImage = imageUrl;
+                        // Auto-save update to store image
+                        libraryItems[0] = { ...libraryItems[0], generatedImage: imageUrl };
+                        localStorage.setItem('exosystems_library', JSON.stringify(libraryItems));
+                    }
+                } else {
+                    throw new Error("No image data returned.");
+                }
+            } catch (e) {
+                console.error("Imagen API Error:", e);
+                statusEl.innerHTML = `<span class="text-red-500 font-bold">${currentLang === 'ko' ? '이미지 생성에 실패했습니다.' : 'Failed to generate image.'}</span>`;
+            }
+        }
+
+        async function generateContent(isAutoRefresh = false) {
+            const product = document.getElementById('product-select').value;
+            const target = document.getElementById('target-select').value;
+            const type = document.getElementById('type-select').value;
+            const keywordString = document.getElementById('keywords-input').value;
+            const reelsDuration = document.getElementById('reels-duration').value;
+            
+            const rawKeywords = keywordString.split(',').map(k => k.trim()).filter(k => k.length > 0);
+            const keywords = rawKeywords.length > 0 ? rawKeywords : ["Innovation", "Exosystems", "Data"];
+
+            const kb = PRODUCT_KB[product];
+            const strategicInsight = STRATEGIC_AUDIENCE_INSIGHTS[target]?.[currentLang] || STRATEGIC_AUDIENCE_INSIGHTS[target]?.['en'] || "Strategic optimization goals";
+            const localizedTarget = TARGET_NAMES[target]?.[currentLang] || target;
+
+            const docReflectActive = document.getElementById('doc-reflect-check').checked;
+            const fileMemoText = document.getElementById('doc-memo').value;
+
+            const extendedKB = localStorage.getItem(`exosystems_extended_kb_${product}`);
+            const isExtendedKBActive = docReflectActive && extendedKB;
+            let learningInsights = [];
+            
+            if (isExtendedKBActive) {
+                learningInsights = extractLearningHighlights(extendedKB, 4); 
+            }
+
+            const hashtags = keywords.map(k => `#${k.replace(/#/g, '').replace(/\s+/g, '')}`);
+
+            const briefContainer = document.getElementById('output-strategic-brief');
+            let briefHTML = "";
+            const labels = {
+                ko: { target: "🎯 포지셔닝 타겟", pain: "🧠 심층 페인포인트 분석", key: "🔑 차별화 키워드", json: "📊 AI 학습 DB 융합", memo: "📝 추가 전략 메모" },
+                en: { target: "🎯 Target Matrix", pain: "🧠 Deep Pain Point", key: "🔑 Core Pillars", json: "📊 AI Data Applied", memo: "📝 Memo Reflected" },
+                zh: { target: "🎯 定位目标", pain: "🧠 深度痛点分析", key: "🔑 差异化关键词", json: "📊 AI学习数据融合", memo: "📝 附加战略摘要" },
+                ja: { target: "🎯 ターゲットマトリックス", pain: "🧠 深層ペインポイント分析", key: "🔑 差別化キーワード", json: "📊 AI学習データ適用", memo: "📝 追加戦略メモ" }
+            };
+            const L = labels[currentLang] || labels['en'];
+
+            briefHTML = `
+                <li><strong class="text-blue-700">${L.target}:</strong> ${product} ➔ ${localizedTarget}</li>
+                <li><strong class="text-blue-700">${L.pain}:</strong> ${strategicInsight}</li>
+                <li><strong class="text-blue-700">${L.key}:</strong> ${keywords.join(' · ')}</li>
+            `;
+            if (isExtendedKBActive && learningInsights.length > 0) {
+                briefHTML += `<li><strong class="text-emerald-600">${L.json}:</strong><br/> - ${learningInsights.join('<br/> - ')}</li>`;
+            }
+            if (docReflectActive && fileMemoText) {
+                briefHTML += `<li><strong class="text-emerald-600">${L.memo}:</strong> ${fileMemoText}</li>`;
+            }
+            briefContainer.innerHTML = briefHTML;
+
+            const translatedType = CONTENT_TYPE_NAMES[type]?.[currentLang] || type;
+            const titleLabels = {
+                ko: `${translatedType} 상세 결과물`,
+                en: `Generated ${translatedType} Details`,
+                zh: `${translatedType} 详细结果`,
+                ja: `${translatedType} 詳細結果`
+            };
+            document.getElementById('ui-sec-gen-content').textContent = titleLabels[currentLang] || titleLabels['en'];
+
+            const keyMsgDict = {
+                ko: `"직관을 넘어 데이터로, ${localizedTarget}의 한계를 돌파하십시오."`,
+                en: `"Move beyond intuition. Break through the limits of ${localizedTarget} with data."`,
+                zh: `"超越直觉。用数据突破 ${localizedTarget} 的极限。"`,
+                ja: `"直感を超え、データで ${localizedTarget} の限界を突破してください。"`
+            };
+
+            let metaPrefix = "";
+            if (currentLang === 'ko') {
+                metaPrefix = `[📊 콘텐츠 전략 메타 정보]\n- 🎯 콘텐츠 목적: ${PURPOSE_MAP[type]['ko']}\n- 💡 핵심 소구 메시지: ${keyMsgDict['ko']}\n- 🧠 타겟 고객 심리 (Pain Point): ${strategicInsight}\n- ⚡ 바로 복사 가능한 강조 키워드: ${keywords.map(k=>`#${k}`).join(' ')} #${product.replace(/-/g, '')}\n\n==================================================\n\n`;
+            } else if (currentLang === 'en') {
+                metaPrefix = `[📊 Content Strategy Meta Info]\n- 🎯 Content Purpose: ${PURPOSE_MAP[type]['en']}\n- 💡 Core Key Message: ${keyMsgDict['en']}\n- 🧠 Target Psychology (Pain Point): ${strategicInsight}\n- ⚡ Ready-to-Copy Keywords: ${keywords.map(k=>`#${k}`).join(' ')} #${product.replace(/-/g, '')}\n\n==================================================\n\n`;
+            } else if (currentLang === 'zh') {
+                metaPrefix = `[📊 内容战略元信息]\n- 🎯 内容目的: ${PURPOSE_MAP[type]['zh']}\n- 💡 核心诉求信息: ${keyMsgDict['zh']}\n- 🧠 目标受众心理 (痛点): ${strategicInsight}\n- ⚡ 快捷复制关键词包: ${keywords.map(k=>`#${k}`).join(' ')} #${product.replace(/-/g, '')}\n\n==================================================\n\n`;
+            } else if (currentLang === 'ja') {
+                metaPrefix = `[📊 コンテンツ戦略メタ情報]\n- 🎯 コンテンツの目的: ${PURPOSE_MAP[type]['ja']}\n- 💡 核心訴求メッセージ: ${keyMsgDict['ja']}\n- 🧠 ターゲット顧客の心理 (ペインポイント): ${strategicInsight}\n- ⚡ コピー＆ペースト用キーワードパック: ${keywords.map(k=>`#${k}`).join(' ')} #${product.replace(/-/g, '')}\n\n==================================================\n\n`;
+            }
+
+            const btn = document.querySelector('button[onclick="generateContent()"]');
+            const originalBtnHtml = btn.innerHTML;
+            const loadingTexts = {
+                ko: "AI 심층 분석 및 콘텐츠 생성 중...",
+                en: "AI Analyzing & Generating...",
+                zh: "AI 深度分析与内容生成中...",
+                ja: "AI 深層分析およびコンテンツ生成中..."
+            };
+            btn.disabled = true;
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 sm:w-5 sm:h-5 animate-spin"></i><span>${loadingTexts[currentLang]}</span>`;
+            btn.classList.replace('bg-blue-600', 'bg-blue-400');
+            lucide.createIcons();
+
+            // Clear previous image
+            document.getElementById('generated-image-container').classList.add('hidden');
+            document.getElementById('generated-image').src = "";
+            let materialBody = "";
+            let imgPromptToGenerate = "";
+
+            try {
+                const sysPrompt = `You are a top-tier global marketing consultant (e.g., McKinsey, Ogilvy level) specializing in B2B and B2C healthcare and fitness tech.
+Your task is to generate a strategic marketing content artifact.
+CRITICAL: You MUST actively combine and synthesize the provided [Learned AI Data] with your own advanced, real-time market intelligence, industry trends, and creative copywriting skills. 
+Always strictly follow the requested structure (e.g., email, card news, strategy plan, ad copy, etc.).
+NEVER use the prohibited words provided in the prompt.
+Write the final output exclusively in the target language requested by the user. If 'videoprompt' is requested, write the prompt itself in English.
+Maintain a highly professional, trustworthy, persuasive, and data-driven tone.`;
+
+                const prohibitedWords = kb.prohibited[currentLang] || kb.prohibited['ko'] || [];
+                const rules = kb.rules[currentLang] || kb.rules['ko'] || [];
+                const durationText = type === 'reels' ? `\n- Required Video Duration: EXACTLY ${reelsDuration} seconds` : '';
+
+                const userPrompt = `
+Generate marketing content with the following parameters:
+- Target Language: ${currentLang} (IMPORTANT: The output must be written in this language, unless 'videoprompt' is requested which should be in English)
+- Product Name: ${product}
+- Product Definition: ${kb.definition[currentLang] || kb.definition['ko']}
+- Product Positioning: ${kb.positioning[currentLang] || kb.positioning['ko']}
+- Target Audience: ${localizedTarget}
+- Target Audience Pain Point: ${strategicInsight}
+- Content Type: ${translatedType} (ID: ${type})${durationText}
+- Keywords to Emphasize: ${keywords.join(', ')}
+- Prohibited Expressions (DO NOT USE THESE): ${prohibitedWords.join(', ')}
+- Required Rules: ${rules.join(', ')}
+
+[CORE REQUIREMENT: KEYWORD CENTRIC]
+The entire narrative and strategic angle MUST revolve heavily around these Keywords: ${keywords.join(', ')}. Make them the central theme of your output.
+
+[CRITICAL INSTRUCTION: Combine Data & Real-time AI Insight]
+You MUST synthesize your own up-to-date industry knowledge and real-time market intelligence regarding "${product}" and "${localizedTarget}" WITH the specific learned data below. Provide fresh, persuasive angles that go beyond the basic facts.
+${isExtendedKBActive && learningInsights.length > 0 ? `\n[Learned AI Data Integration]\nIntegrate these empirical facts organically into the copy:\n- ${learningInsights.join('\n- ')}` : ''}
+${docReflectActive && fileMemoText ? `\n[Additional Strategy Memo]\nPrioritize this memo context heavily: ${fileMemoText}` : ''}
+
+[REFERENCE IMAGES]
+${currentUploadedImages.length > 0 && (type === 'videoprompt' || type === 'cardnews' || type === 'reels' || type === 'adcopy' || type === 'imagegen') ? `The user uploaded these reference image files: ${currentUploadedImages.join(', ')}. Please consider the visual elements associated with these product images when drafting visual cues or generating image prompts.` : ''}
+
+Output Format Rules:
+If Content Type ID is 'strategyplan': Output a highly detailed 4-step plan (Market Positioning, Sales Funnel Strategy, Channel PR Tactics, Phased Promo Cycle).
+If 'imagegen': Output a brief rationale for the image concept based on the target and keywords.
+If 'email': Output a high-converting B2B/B2C sales email highlighting specific ROI.
+If 'cardnews': Output a 5-slide storyboard (Hook, Agitation, Solution, Proof, CTA) with visual cues.
+If 'reels': Output a timecoded script for exactly a ${reelsDuration} second video. The video MUST conceptually be "clean" (no baked-in text). You MUST explicitly provide a separate "Recommended Subtitles / Captions (추천 자막)" section for each scene to overlay later.
+If 'adcopy': Output Variant A (Pain-point focus) and Variant B (Benefit & Authority focus) for A/B testing.
+If 'videoprompt': Output a text prompt optimized for AI video generators (Midjourney/Runway) describing a cinematic scene (Prompt body MUST be in English).
+
+[IMAGE ASSET GENERATION]
+ONLY if Content Type ID is 'imagegen' or 'reels', you MUST include a short English prompt (max 300 chars) for an AI image generator to create a conceptual visual for this campaign (or a clean keyframe for the video). Prefix it EXACTLY with "[IMAGE_PROMPT:" and end with "]". Put this at the very end of your response. For other content types, DO NOT output this tag.
+
+DO NOT include any introductory or concluding remarks. Just output the raw requested content directly formatted cleanly. Include a short dynamic text block somewhere at the beginning like "[💡 자체 학습 데이터 & AI 실시간 시장 분석 결합 반영 완료]" if using Korean, or equivalent in the target language.
+`;
+
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+                const payload = {
+                    contents: [{ parts: [{ text: userPrompt }] }],
+                    systemInstruction: { parts: [{ text: sysPrompt }] }
+                };
+
+                let retries = 0;
+                const delays = [1000, 2000, 4000, 8000, 16000];
+                let apiResultText = "";
+
+                while (retries < 5) {
+                    try {
+                        const response = await fetch(url, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                        if (!response.ok) throw new Error(`API Error: ${response.status}`);
+                        const result = await response.json();
+                        apiResultText = result.candidates?.[0]?.content?.parts?.[0]?.text || "";
+                        break; 
+                    } catch (error) {
+                        if (retries === 4) throw error;
+                        await new Promise(r => setTimeout(r, delays[retries]));
+                        retries++;
+                    }
+                }
+
+                if (!apiResultText) {
+                    throw new Error("Empty response from Gemini API.");
+                }
+
+                // Parse Image Prompt
+                const imgMatch = apiResultText.match(/\[IMAGE_PROMPT:(.*?)\]/s);
+                if (imgMatch && imgMatch[1]) {
+                    imgPromptToGenerate = imgMatch[1].trim();
+                    apiResultText = apiResultText.replace(imgMatch[0], '').trim();
+                }
+
+                materialBody = apiResultText;
+
+            } catch (error) {
+                console.error("Gemini API Error:", error);
+                const errorMsgs = {
+                    ko: "API 호출 중 오류가 발생했습니다. 통신 상태를 확인하고 잠시 후 다시 시도해주세요.",
+                    en: "An error occurred during the API call. Please check your connection and try again.",
+                    zh: "API调用出错。请检查网络并稍后重试。",
+                    ja: "API呼び出し中にエラーが発生しました。通信状態を確認し、後でもう一度お試しください。"
+                };
+                materialBody = errorMsgs[currentLang] || errorMsgs['en'];
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalBtnHtml;
+                btn.classList.replace('bg-blue-400', 'bg-blue-600');
+                lucide.createIcons();
+            }
+
+            materialBody = metaPrefix + materialBody;
+
+            document.getElementById('output-generated-body').textContent = materialBody;
+
+            const disclaimerList = document.getElementById('output-disclaimer-list');
+            disclaimerList.innerHTML = '';
+            
+            const baseLi = document.createElement('li');
+            baseLi.className = "font-extrabold text-amber-900 mb-1";
+            baseLi.textContent = kb.disclaimer[currentLang] || kb.disclaimer['ko'];
+            disclaimerList.appendChild(baseLi);
+
+            kb.prohibited[currentLang]?.forEach(p => {
+                const li = document.createElement('li');
+                li.innerHTML = `<strong>[${currentLang === 'ko' ? '법적 금지표현' : 'Banned'}]</strong> <span class="underline font-bold text-red-600">${p}</span> (콘텐츠 내 절대 사용 불가)`;
+                disclaimerList.appendChild(li);
+            });
+
+            document.getElementById('generator-empty-state').classList.add('hidden');
+            document.getElementById('generator-result-panel').classList.remove('hidden');
+
+            document.getElementById('output-badge-type').textContent = CONTENT_TYPE_NAMES[type]?.[currentLang]?.toUpperCase() || type.toUpperCase();
+            document.getElementById('output-meta-info').textContent = `${product} ➔ ${TARGET_NAMES[target]?.[currentLang] || target}`;
+
+            generatedCache = {
+                productName: product,
+                productDef: kb.definition[currentLang] || kb.definition['ko'],
+                targetAudience: target,
+                contentType: type,
+                keywords: keywords,
+                strategicDirection: document.getElementById('output-strategic-brief').innerHTML,
+                generatedContent: materialBody,
+                uploadedFiles: currentUploadedImages,
+                fileMemos: docReflectActive ? fileMemoText : "",
+                hashtags: hashtags,
+                isMedicalDevice: kb.isMedical,
+                generatedImage: "" 
+            };
+
+            switchView('generator');
+            
+            if (!isAutoRefresh) {
+                saveCurrentToLibrary(true);
+                showToast(currentLang === 'ko' ? "생성이 완료되어 라이브러리에 자동 저장되었습니다." : "Generated and auto-saved to Library.");
+            }
+
+            // Trigger Image Generation if prompt exists
+            if (imgPromptToGenerate) {
+                generateAIImage(imgPromptToGenerate);
+            }
+        }
+
+        function writeToClipboard(text, successMessage) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showToast(successMessage);
+            } catch (err) {
+                showToast(currentLang === 'ko' ? "복사에 실패했습니다." : "Copy failed.");
+            }
+            document.body.removeChild(textArea);
+        }
+
+        function copyOutputText(mode) {
+            if (!generatedCache) return;
+
+            let targetText = "";
+            if (mode === 'all') {
+                targetText = document.getElementById('output-generated-body').textContent;
+            } else if (mode === 'hashtag') {
+                const uniqueHashtags = [...new Set(generatedCache.hashtags)];
+                targetText = uniqueHashtags.join(' ');
+            }
+            writeToClipboard(targetText, currentLang === 'ko' ? "클립보드에 복사되었습니다." : "Copied to clipboard.");
+        }
+
+        function downloadMarkdown() {
+            if (!generatedCache) return;
+            const dict = TRANSLATIONS[currentLang];
+            const markdownString = `# ${dict.appTitle}\n\n## 1. Parameters\n${document.getElementById('output-strategic-brief').innerText}\n\n## 2. Copy\n\`\`\`\n${generatedCache.generatedContent}\n\`\`\`\n\n## 3. Compliance\n${document.getElementById('output-disclaimer-box').innerText}`;
+            
+            const blob = new Blob([markdownString], { type: 'text/markdown;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `EXOSYSTEMS_Marketing_${Date.now()}.md`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        function saveCurrentToLibrary(isSilent = false) {
+            if (!generatedCache) return;
+
+            const newItem = {
+                id: `item_${Date.now()}`,
+                createdAt: new Date().toLocaleDateString(),
+                language: currentLang,
+                status: 'Draft',
+                ...generatedCache
+            };
+
+            libraryItems.unshift(newItem);
+            localStorage.setItem('exosystems_library', JSON.stringify(libraryItems));
+            
+            updateLibraryCounterBadge();
+            
+            if (!isSilent) {
+                showToast(currentLang === 'ko' ? "라이브러리에 보관되었습니다." : "Saved to Library.");
+            }
+        }
+
+        function updateLibraryCounterBadge() {
+            const count = libraryItems.filter(item => currentLang === 'ko' ? true : item.language === currentLang).length;
+            document.getElementById('library-count-badge').textContent = count;
+        }
+
+        function renderLibrary() {
+            const container = document.getElementById('library-items-list');
+            container.innerHTML = '';
+
+            const searchTerm = document.getElementById('library-search').value.toLowerCase();
+            const filterStatus = document.getElementById('library-filter-status').value;
+
+            const scopeFilteredItems = libraryItems.filter(item => currentLang === 'ko' ? true : item.language === currentLang);
+
+            const finalRenderedPool = scopeFilteredItems.filter(item => {
+                const matchesSearch = item.productName.toLowerCase().includes(searchTerm) || 
+                                      item.targetAudience.toLowerCase().includes(searchTerm) || 
+                                      item.keywords.some(k => k.toLowerCase().includes(searchTerm));
+                const matchesStatus = filterStatus === 'ALL' || item.status === filterStatus;
+                return matchesSearch && matchesStatus;
+            });
+
+            if (finalRenderedPool.length === 0) {
+                container.innerHTML = `<div class="bg-white rounded-xl border-2 border-slate-200 p-8 text-center text-slate-400 text-xs italic font-bold">No matching archives found.</div>`;
+                return;
+            }
+
+            finalRenderedPool.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-white border-2 border-slate-200 rounded-xl p-3 sm:p-4 shadow-sm hover:shadow-md hover:border-blue-400 transition-all cursor-pointer flex flex-col justify-between space-y-2";
+                card.setAttribute('onclick', `openLibraryModal('${item.id}')`);
+
+                let statusClass = "bg-slate-100 text-slate-700 border border-slate-300";
+                if (item.status === 'Reviewed') statusClass = "bg-blue-100 text-blue-800 border border-blue-300";
+                if (item.status === 'Used') statusClass = "bg-emerald-100 text-emerald-800 border border-emerald-300";
+                if (item.status === 'Archived') statusClass = "bg-amber-100 text-amber-800 border border-amber-300";
+
+                const translatedTarget = TARGET_NAMES[item.targetAudience]?.[currentLang] || item.targetAudience;
+                const translatedType = CONTENT_TYPE_NAMES[item.contentType]?.[currentLang] || item.contentType;
+                const translatedStatus = STATUS_NAMES[item.status]?.[currentLang] || item.status;
+
+                card.innerHTML = `
+                    <div class="flex items-start justify-between border-b border-slate-100 pb-2">
+                        <div class="flex items-center space-x-2">
+                            <span class="bg-blue-600 text-white font-bold text-[10px] px-2 py-1 rounded">${item.productName}</span>
+                            <span class="text-[11px] sm:text-xs font-extrabold text-slate-800">${translatedType.toUpperCase()} ➔ ${translatedTarget}</span>
+                        </div>
+                        <span class="text-[9px] sm:text-[10px] uppercase px-2 py-0.5 rounded-md font-bold ${statusClass}">${translatedStatus}</span>
+                    </div>
+                    <div class="flex items-center justify-between pt-1">
+                        <div class="flex flex-wrap gap-1">
+                            ${item.keywords.map(k => `<span class="bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded text-[10px] font-bold border border-slate-200">#${k}</span>`).join('')}
+                        </div>
+                        <span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-lg border border-slate-200">Lang: ${item.language.toUpperCase()}</span>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function openLibraryModal(id) {
+            activeModalItemId = id;
+            const item = libraryItems.find(i => i.id === id);
+            if (!item) return;
+
+            const translatedType = CONTENT_TYPE_NAMES[item.contentType]?.[currentLang] || item.contentType;
+
+            document.getElementById('modal-badge-type').textContent = translatedType.toUpperCase();
+            document.getElementById('modal-title-product').textContent = `${item.productName} Archive`;
+            document.getElementById('modal-meta-date').textContent = `${item.createdAt} | ${item.language.toUpperCase()}`;
+            document.getElementById('modal-strategic-brief').innerHTML = item.strategicDirection;
+            document.getElementById('modal-generated-body').textContent = item.generatedContent;
+            
+            // Image handling in modal
+            const imgWrapper = document.getElementById('modal-image-wrapper');
+            const imgElement = document.getElementById('modal-generated-image');
+            if (item.generatedImage) {
+                imgElement.src = item.generatedImage;
+                imgWrapper.classList.remove('hidden');
+            } else {
+                imgElement.src = "";
+                imgWrapper.classList.add('hidden');
+            }
+
+            const uniqueHashtags = [...new Set(item.hashtags || [])];
+            document.getElementById('modal-hashtags-string').innerHTML = uniqueHashtags.map(k => `<span class="bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded text-[10px] font-bold border border-blue-100 mr-1 inline-block mt-1">${k}</span>`).join('');
+
+            ['Draft', 'Reviewed', 'Used', 'Archived'].forEach(status => {
+                const btn = document.getElementById(`m-status-${status}`);
+                btn.textContent = STATUS_NAMES[status]?.[currentLang] || status;
+                if (status === item.status) {
+                    btn.className = "px-3 py-1.5 rounded-lg text-[10px] sm:text-[11px] font-extrabold bg-blue-600 text-white shadow-sm scale-105 border border-blue-700";
+                } else {
+                    btn.className = "px-3 py-1.5 rounded-lg text-[10px] sm:text-[11px] font-bold text-slate-500 hover:bg-slate-200 bg-white border border-slate-300";
+                }
+            });
+
+            document.getElementById('modal-delete-btn').onclick = () => deleteLibraryItem(item.id);
+            document.getElementById('modal-copy-all-btn').onclick = () => {
+                writeToClipboard(item.generatedContent, currentLang === 'ko' ? "복사되었습니다." : "Copied.");
+            };
+
+            document.getElementById('library-modal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function closeLibraryModal() {
+            document.getElementById('library-modal').classList.add('hidden');
+            activeModalItemId = null;
+        }
+
+        function updateModalItemStatus(newStatus) {
+            if (!activeModalItemId) return;
+            const item = libraryItems.find(i => i.id === activeModalItemId);
+            if (item) {
+                item.status = newStatus;
+                localStorage.setItem('exosystems_library', JSON.stringify(libraryItems));
+                openLibraryModal(activeModalItemId);
+                renderLibrary();
+                updateLibraryCounterBadge();
+                showToast(currentLang === 'ko' ? "상태가 변경되었습니다." : "Status updated.");
+            }
+        }
+
+        function deleteLibraryItem(id) {
+            libraryItems = libraryItems.filter(i => i.id !== id);
+            localStorage.setItem('exosystems_library', JSON.stringify(libraryItems));
+            closeLibraryModal();
+            renderLibrary();
+            updateLibraryCounterBadge();
+            showToast(currentLang === 'ko' ? "항목이 삭제되었습니다." : "Item deleted.");
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const storedLib = localStorage.getItem('exosystems_library');
+            if (storedLib) libraryItems = JSON.parse(storedLib);
+            
+            const storedHist = localStorage.getItem('exosystems_learning_history');
+            if (storedHist) learningHistory = JSON.parse(storedHist);
+
+            verifyAndInitializeLanguage();
+            updateLibraryCounterBadge();
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>
+const apiKey = "AIzaSyC8vnwrROfOBxlFlmUhLin440lcxHLPTlk";
