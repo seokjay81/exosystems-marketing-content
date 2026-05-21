@@ -190,7 +190,7 @@
                 <div class="flex items-center justify-between border-b-2 border-slate-100 pb-3">
                     <div class="flex items-center space-x-2">
                         <i data-lucide="database" class="text-blue-600 w-4 h-4 sm:w-5 sm:h-5"></i>
-                        <h3 class="text-sm sm:text-base font-extrabold text-slate-900" id="ui-title-kb-monitor">Knowledge Base 매핑 현황</h3>
+                        <h3 class="text-sm sm:text-base font-extrabold text-slate-900" id="ui-title-kb-monitor">KB 매핑 현황</h3>
                     </div>
                     <span id="kb-medical-badge" class="px-2 py-0.5 sm:px-2.5 rounded-md text-[9px] sm:text-[10px] font-bold tracking-wider"></span>
                 </div>
@@ -360,35 +360,42 @@
                             </select>
                         </div>
                         
-                        <!-- File / URL / Text Inputs Grid -->
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
-                            <div class="space-y-1">
-                                <label class="text-[11px] font-bold text-indigo-800 block" id="ui-lib-update-file">모든 문서/JSON 업로드</label>
-                                <div class="flex items-center space-x-2">
-                                    <button onclick="document.getElementById('general-file-input').click()" class="bg-white border-2 border-indigo-300 hover:bg-indigo-100 text-indigo-700 px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-1 outline-none whitespace-nowrap">
-                                        <i data-lucide="upload-cloud" class="w-4 h-4"></i> 
-                                        <span id="ui-lib-btn-select">문서 선택</span>
-                                    </button>
-                                    <span id="general-file-status" class="text-[10px] sm:text-[11px] text-indigo-600 font-bold truncate flex-1">선택 없음</span>
-                                    <input type="file" id="general-file-input" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.md,.json,.csv" class="hidden" onchange="handleLearningFileSelect(event)">
+                        <!-- File / URL / Text Inputs Layout -->
+                        <div class="space-y-4">
+                            <!-- Top Row: File Upload and URL inputs -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-start">
+                                <div class="space-y-1">
+                                    <label class="text-[11px] font-bold text-indigo-800 block" id="ui-lib-update-file">모든 문서/JSON 업로드</label>
+                                    <div class="flex items-center space-x-2 bg-white border-2 border-indigo-200 rounded-xl px-3 py-1.5 h-11 shadow-sm">
+                                        <button onclick="document.getElementById('general-file-input').click()" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1 outline-none whitespace-nowrap border border-indigo-200">
+                                            <i data-lucide="upload-cloud" class="w-3.5 h-3.5"></i> 
+                                            <span id="ui-lib-btn-select">문서 선택</span>
+                                        </button>
+                                        <span id="general-file-status" class="text-[10px] sm:text-[11px] text-indigo-600 font-bold truncate flex-1 ml-2">선택 없음</span>
+                                        <input type="file" id="general-file-input" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.md,.json,.csv" class="hidden" onchange="handleLearningFileSelect(event)">
+                                    </div>
                                 </div>
-                            </div>
-                            
-                            <div class="space-y-1">
-                                <label class="text-[11px] font-bold text-indigo-800 block" id="ui-lib-update-url">또는 웹사이트 URL 분석</label>
-                                <div class="relative">
-                                    <i data-lucide="link" class="w-4 h-4 text-indigo-400 absolute left-2.5 top-1/2 transform -translate-y-1/2"></i>
-                                    <input type="url" id="general-url-input" class="w-full bg-white border-2 border-indigo-300 rounded-xl pl-8 pr-3 py-2 text-xs outline-none focus:border-indigo-500 font-bold text-slate-800 placeholder-indigo-300 transition-all hover:border-indigo-400" placeholder="https://..." oninput="handleLearningUrlInput()">
+                                
+                                <div class="space-y-1">
+                                    <label class="text-[11px] font-bold text-indigo-800 block" id="ui-lib-update-url">또는 웹사이트 URL 분석</label>
+                                    <div class="relative h-11 flex items-center">
+                                        <i data-lucide="link" class="w-4 h-4 text-indigo-400 absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+                                        <input type="url" id="general-url-input" class="w-full h-11 bg-white border-2 border-indigo-200 rounded-xl pl-9 pr-3 text-xs outline-none focus:border-indigo-500 font-bold text-slate-800 placeholder-indigo-300 transition-all hover:border-indigo-400 shadow-sm" placeholder="https://..." oninput="handleLearningUrlInput()">
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="space-y-1">
+                            <!-- Bottom Row: Expanded Workspace for Direct Text / Strategy Entry -->
+                            <div class="space-y-1 pt-1">
                                 <label class="text-[11px] font-bold text-indigo-800 block" id="ui-lib-update-text">직접 텍스트/전략 입력</label>
-                                <div class="flex items-start space-x-2">
-                                    <textarea id="general-text-input" rows="1" class="w-full bg-white border-2 border-indigo-300 rounded-xl px-3 py-2 text-xs outline-none focus:border-indigo-500 font-bold text-slate-800 placeholder-indigo-300 transition-all hover:border-indigo-400 custom-scrollbar" placeholder="추가 정보 및 전략 입력..." oninput="handleLearningTextInput()"></textarea>
-                                    <button onclick="saveLearningData()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-2 px-3.5 rounded-xl text-xs transition-all shadow-md flex items-center outline-none whitespace-nowrap border-2 border-indigo-800 h-[34px]">
-                                        <span id="ui-lib-btn-save">AI 분석/저장</span>
-                                    </button>
+                                <div class="space-y-2">
+                                    <textarea id="general-text-input" rows="5" class="w-full bg-white border-2 border-indigo-200 rounded-xl p-3 text-xs outline-none focus:border-indigo-500 font-bold text-slate-800 placeholder-indigo-300 transition-all hover:border-indigo-400 custom-scrollbar leading-relaxed shadow-sm" placeholder="제품에 대한 추가 정보, 마케팅 아이디어, 혹은 세부 전략을 줄바꿈하여 자유롭게 입력하세요. 입력된 대용량 텍스트 역시 AI가 정밀 분석하여 제품 학습 데이터에 고도화 연동합니다." oninput="handleLearningTextInput()"></textarea>
+                                    <div class="flex justify-end">
+                                        <button onclick="saveLearningData()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-2.5 px-6 rounded-xl text-xs transition-all shadow-md flex items-center justify-center space-x-1.5 outline-none border-2 border-indigo-800 h-10">
+                                            <i data-lucide="brain" class="w-4 h-4"></i>
+                                            <span id="ui-lib-btn-save">AI 분석/저장</span>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -652,29 +659,128 @@
             }, 3000);
         }
 
+        // --- SAFE ICON CREATION HELPER ---
+        function createIconsSafe() {
+            if (typeof lucide !== 'undefined' && lucide.createIcons) {
+                lucide.createIcons();
+            } else {
+                console.warn("Lucide library is not fully loaded yet. Retrying shortly...");
+                setTimeout(createIconsSafe, 100);
+            }
+        }
+
         // --- ERROR MODAL LOGIC ---
         function showErrorModal(title, reason, solution) {
             document.getElementById('error-modal-title').textContent = title;
             document.getElementById('error-modal-reason').textContent = reason;
             document.getElementById('error-modal-solution').textContent = solution;
             document.getElementById('error-modal').classList.remove('hidden');
-            lucide.createIcons();
+            createIconsSafe();
         }
 
-        function closeErrorModal() {
-            document.getElementById('error-modal').classList.add('hidden');
+        // --- ROBUST JSON EXTRACTION HELPER ---
+        function extractJSON(text) {
+            if (!text) return null;
+            const firstBrace = text.indexOf('{');
+            const firstBracket = text.indexOf('[');
+            let startIdx = -1;
+            let endIdx = -1;
+
+            if (firstBrace !== -1 && (firstBracket === -1 || firstBrace < firstBracket)) {
+                startIdx = firstBrace;
+                endIdx = text.lastIndexOf('}');
+            } else if (firstBracket !== -1) {
+                startIdx = firstBracket;
+                endIdx = text.lastIndexOf(']');
+            }
+
+            if (startIdx !== -1 && endIdx !== -1 && endIdx > startIdx) {
+                const jsonCandidate = text.substring(startIdx, endIdx + 1);
+                try {
+                    return JSON.parse(jsonCandidate);
+                } catch (e) {
+                    console.warn("Regex-based extraction failed to parse JSON, trying fallback.", e);
+                }
+            }
+            
+            try {
+                const cleaned = text.replace(/```json/g, '').replace(/```/g, '').trim();
+                return JSON.parse(cleaned);
+            } catch (e) {
+                console.error("All JSON parsing attempts failed.", e);
+                return null;
+            }
+        }
+
+        // --- SAFE CALL GEMINI HELPER WITH DETAILED ERROR INFO & MULTI-MODEL FALLBACK ---
+        async function safeCallGemini(prompt, systemInstruction = "") {
+            const models = ["gemini-2.5-flash-preview-09-2025", "gemini-1.5-flash", "gemini-1.5-pro"];
+            let lastError = null;
+
+            for (const model of models) {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+                const payload = {
+                    contents: [{ parts: [{ text: prompt }] }]
+                };
+                if (systemInstruction) {
+                    payload.systemInstruction = { parts: [{ text: systemInstruction }] };
+                }
+
+                let retries = 0;
+                const delays = [1000, 2000, 4000];
+
+                while (retries < 3) {
+                    try {
+                        const response = await fetch(url, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        const result = await response.json();
+
+                        if (!response.ok) {
+                            if (result.error) {
+                                if (result.error.code === 404 || response.status === 404) {
+                                    throw new Error(`MODEL_NOT_FOUND: ${result.error.message}`);
+                                }
+                                throw new Error(`[API Error ${result.error.code}]: ${result.error.message}`);
+                            }
+                            throw new Error(`HTTP Error: ${response.status}`);
+                        }
+
+                        if (result.candidates && result.candidates[0]?.content?.parts?.[0]?.text) {
+                            return result.candidates[0].content.parts[0].text;
+                        } else if (result.promptFeedback?.blockReason) {
+                            throw new Error(`콘텐츠 차단됨: ${result.promptFeedback.blockReason}`);
+                        } else {
+                            throw new Error("API 응답이 비어있거나 올바르지 않은 형식입니다.");
+                        }
+                    } catch (error) {
+                        lastError = error;
+                        if (error.message.startsWith("MODEL_NOT_FOUND") || error.message.includes("API_KEY_INVALID") || error.message.includes("차단됨")) {
+                            break; 
+                        }
+                        retries++;
+                        if (retries < 3) {
+                            await new Promise(r => setTimeout(r, delays[retries - 1]));
+                        }
+                    }
+                }
+            }
+            throw lastError;
         }
 
         const PRODUCT_KB = {
             "exoFit": {
                 name: "exoFit",
                 definition: { ko: "AI 운동 역량 평가 솔루션", en: "AI Exercise Capacity Evaluation Solution", zh: "AI运动能力评估解决方案", ja: "AI運動能力評価ソリューション" },
-                positioning: { ko: "EMG와 IMU 기반으로 운동 중 근육 반응과 움직임을 데이터로 확인하고, 트레이너 지도 지원", en: "A solution verifying muscle responses via EMG/IMU data to assist trainers.", zh: "基于EMG/IMU的肌动 analysis 支持教练의解决方案", ja: "EMGとIMUによる筋肉反応データでトレー너 지도 지원 솔루션" },
+                positioning: { ko: "EMG와 IMU 기반으로 운동 중 근육 반응과 움직임을 데이터로 확인하고, 트레이너 지도 지원", en: "A solution verifying muscle responses via EMG/IMU data to assist trainers.", zh: "基于EMG/IMU的肌동 analysis 支持教练의解决方案", ja: "EMGとIMUによる筋肉反応データでトレーナー指導를 지원하는 솔루션" },
                 targets: ["일반 회원", "트레이너", "피트니스 센터 대표", "메디컬 피트니스 센터", "병원", "국내 유통사", "해외 유통사", "물리치료사"],
                 allowed: { ko: ["운동 중 몸의 반응을 데이터로 확인합니다.", "트레이너의 상담을 지원합니다."], en: ["Verify body reactions.", "Reference data."], zh: ["通过数据确认身体反应。"], ja: ["体の反応を데이터로 확인합니다."] },
                 prohibited: { ko: ["치료됩니다.", "완치됩니다.", "진단합니다.", "재활 효과 보장"], en: ["Cures diseases.", "Diagnoses conditions."], zh: ["治愈疾病。", "诊断特定病症。"], ja: ["治療されます。", "診断します。"] },
-                rules: { ko: ["운동 보조 참고 데이터로만 언급", "트레이너 전문성 강조"], en: ["Mention as reference.", "Emphasize expertise."], zh: ["仅作为参考。"], ja: ["参考データとして言及。"] },
-                disclaimer: { ko: "본 결과는 운동 지도를 돕는 참고 데이터입니다. 의학적 판단 불가.", en: "Reference data to assist exercise guidance.", zh: "辅助运动指导的参考数据。", ja: "運動指導を助ける参考データです。" },
+                rules: { ko: ["운동 보조 참고 데이터로만 언급", "트레이너 전문성 강조"], en: ["Mention as reference.", "Emphasize expertise."], zh: ["仅作为参考。"], ja: ["参考データとして言게합니다."] },
+                disclaimer: { ko: "본 결과는 운동 지도를 돕는 참고 데이터입니다. 의학적 판단 불가.", en: "Reference data to assist exercise guidance.", zh: "辅助运动指导的参考数据。", ja: "運動指導를 돕는 참고 데이터입니다." },
                 isMedical: false
             },
             "exoPill-dEMG": {
@@ -696,7 +802,7 @@
                 allowed: { ko: ["식약처 허가 의료기기", "근육 활성 보조"], en: ["Approved device", "Assists muscle"], zh: ["许可器械"], ja: ["許可機器"] },
                 prohibited: { ko: ["치료 보장", "진단 보장"], en: ["Cure guarantee"], zh: ["保证治愈"], ja: ["治療保証"] },
                 rules: { ko: ["전문가 지도하 사용 강조"], en: ["Under expert guidance"], zh: ["专家指导下"], ja: ["専門家指導下"] },
-                disclaimer: { ko: "전문가 지도하에 보조적으로 활용되는 의료기기입니다.", en: "Auxiliary medical device.", zh: "辅助医疗器械。", ja: "補助的医療機器です。" },
+                disclaimer: { ko: "전문가 지도하에 보조적으로 활용되는 의료기기입니다.", en: "Auxiliary medical device.", zh: "辅助医疗器械。", ja: "補助적 의료기기입니다." },
                 isMedical: true
             },
             "EXOMED-DeepSARC": {
@@ -705,26 +811,26 @@
                 positioning: { ko: "신경근육계 반응 기반 근감소증 위험 평가 AI 솔루션", en: "AI solution evaluating sarcopenia risk.", zh: "评估肌少症风险的AI解决方案", ja: "サルコペニアリスクを評価するAIソリューション" },
                 targets: ["병원", "검진센터", "제약사", "연구기관"],
                 allowed: { ko: ["식약처 혁신의료기기 지정", "진단 보조 솔루션"], en: ["Innovative device", "Diagnosis support"], zh: ["创新器械"], ja: ["革新医療機器"] },
-                prohibited: { ko: ["단독 진단", "효과 확약"], en: ["Standalone diagnosis"], zh: ["单独诊断"], ja: ["単独診断"] },
-                rules: { ko: ["혁신의료기기 부각"], en: ["Highlight Innovative designation"], zh: ["突出创新指定"], ja: ["革新指定強調"] },
-                disclaimer: { ko: "의료진 판단을 보조하는 기기이며 최종 판단은 의사가 수행합니다.", en: "Assists clinician judgment.", zh: "辅助医生判断。", ja: "医師の判断を補助します。" },
+                prohibited: { ko: ["단독 진단", "효과 확약"], en: ["Standalone diagnosis"], zh: ["单独诊断"], ja: ["단독 진단"] },
+                rules: { ko: ["혁신의료기기 부각"], en: ["Highlight Innovative designation"], zh: ["突出创新指定"], ja: ["革신지정 강조"] },
+                disclaimer: { ko: "의료진 판단을 보조하는 기기이며 최종 판단은 의사가 수행합니다.", en: "Assists clinician judgment.", zh: "辅助医生判断。", ja: "医師의 판단을 보조합니다." },
                 isMedical: true
             },
             "exoPill-Lite": {
                 name: "exoPill-Lite",
                 definition: { ko: "웨어러블 전기자극 재활 솔루션", en: "Wearable Stimulation Solution", zh: "可穿戴电刺激解决方案", ja: "웨어러블刺激ソリューション" },
-                positioning: { ko: "웨어러블 기반 재활 근육 자극 관리", en: "Wearable muscle stimulation management.", zh: "基于可穿戴的肌肉刺激管理", ja: "웨어러블 筋肉刺激管理" },
+                positioning: { ko: "웨어러블 기반 재활 근육 자극 관리", en: "Wearable muscle stimulation management.", zh: "基于可穿戴的肌肉刺激 management.", ja: "웨어러블 筋肉刺激管理" },
                 targets: ["병원", "재활센터", "홈 재활 시장", "유통사", "물리치료사"],
                 allowed: { ko: ["보조 솔루션", "사용 편의성 극대화"], en: ["Auxiliary solution", "Convenience"], zh: ["辅助解决方案"], ja: ["補助ソリューション"] },
                 prohibited: { ko: ["질병 치료 보장", "의료기기 대체"], en: ["Guarantees cure"], zh: ["保证治愈"], ja: ["治療保証"] },
                 rules: { ko: ["휴대성과 편의성 핵심"], en: ["Portability focus"], zh: ["便携性核心"], ja: ["携帯性コア"] },
-                disclaimer: { ko: "사용 환경에 따라 보조적으로 활용 가능합니다.", en: "Used optionally depending on environment.", zh: "根据 environment 辅助使用。", ja: "環境により補助的活用可能。" },
+                disclaimer: { ko: "사용 환경에 따라 보조적으로 활용 가능합니다.", en: "Used optionally depending on environment.", zh: "根据 environment 辅助 사용.", ja: "環境により補助적 活用가능." },
                 isMedical: false
             },
             "exoRehab": {
                 name: "exoRehab",
                 definition: { ko: "미국 RTM 시장 대상 재활 관리 솔루션", en: "US RTM Rehab Solution", zh: "美国RTM康复解决方案", ja: "米国RTMリハビリソリューション" },
-                positioning: { ko: "원격 치료 모니터링 관리 지원", en: "Remote monitoring support.", zh: "远程监测支持", ja: "遠隔モニタリング支援" },
+                positioning: { ko: "원격 치료 모니터링 관리 지원", en: "Remote monitoring support.", zh: "远程监测支持", ja: "遠隔モニタ링 지원" },
                 targets: ["미국 재활 클리닉", "물리치료 기관", "RTM 사업 파트너", "물리치료사"],
                 allowed: { ko: ["원격 재활 관리 흐름 지원", "수행 데이터 관리"], en: ["Supports remote flow", "Data management"], zh: ["支持远程流程"], ja: ["遠隔フロー支援"] },
                 prohibited: { ko: ["보험 수가 100% 보장", "치료 완벽 보장"], en: ["Insurance guarantee"], zh: ["보험 보장"], ja: ["保険保証"] },
@@ -735,18 +841,18 @@
         };
 
         const STRATEGIC_AUDIENCE_INSIGHTS = {
-            "일반 회원": { ko: "개인 맞춤형 피드백 부재에 대한 불안감 해결, 즉각적이고 가시적인 성과 확인", en: "Resolving anxiety over lack of personalized feedback, instant visible progress.", zh: "解决对缺乏个性化反馈的焦虑，确认即时可见的成果", ja: "パーソナライズされたフィードバックの欠如に対する不安を解消し、即時的で目に見える成果を確認" },
+            "일반 회원": { ko: "개인 맞춤형 피드백 부재에 대한 불안감 해결, 즉각적이고 가시적인 성과 확인", en: "Resolving anxiety over lack of personalized feedback, instant visible progress.", zh: "解决对缺乏个性化反馈的焦虑，确认即时可见的成果", ja: "パーソナライズされたフィードバックの欠如に対する不安を解消し、即時적이고 눈에 보이는 성과를 확인" },
             "트레이너": { ko: "주관적 지도 방식의 한계 극복, 회원 재등록을 유도할 수 있는 데이터 기반의 전문성 확보(권위 상승)", en: "Overcoming subjective guidance, securing data-backed authority to drive client retention.", zh: "克服主观指导方式的局限，确保基于数据的专业性以引导会员续费（提升权威）", ja: "主観的な指導方法의 한계 극복, 회원 재등록을 유도할 수 있는 데이터 기반 전문성 확보" },
-            "피트니스 센터 대표": { ko: "인근 경쟁사 대비 압도적인 하이테크 프리미엄 구축, 객관적 지표를 통한 트레이너 역량 상향 평준화", en: "Building high-tech premium differentiation, standardizing trainer quality via objective metrics.", zh: "构建压倒竞争对手的高科技高端形象，通过客观指标实现教练能力的向上均衡", ja: "競合に対する圧倒的なハイテクプレミアムの構築、客観적 지표를 통한 트레이너 역량 상향 평준화" },
+            "피트니스 센터 대표": { ko: "인근 경쟁사 대비 압도적인 하이테크 프리미엄 구축, 객관적 지표를 통한 트레이너 역량 상향 평준화", en: "Building high-tech premium differentiation, standardizing trainer quality via objective metrics.", zh: "构建压倒竞争对手的高科技高端形象，通过客观指标实现教练能力向上均衡", ja: "競合に対する圧倒的なハイテクプレミアムの構築, 객관적 지표를 통한 트레이너 역량 상향 평준화" },
             "메디컬 피트니스 센터": { ko: "의학적 근거(EBM)와 피트니스의 완벽한 결합, VIP 고객 유치를 위한 임상 수준의 신뢰도 확보", en: "Fusing EBM with fitness, securing clinical-grade credibility for VIP acquisition.", zh: "医学证据(EBM)与健身的完美结合，确保 clinical 级别的可信度以吸引VIP客户", ja: "医学적 근거(EBM)와 피트니스의 완벽한 결합, VIP 고객 유치를 위한 임상 수준의 신뢰도 확보" },
-            "병원": { ko: "기존 인프라 변경 없이 진료/재활 워크플로우 효율화, 비급여 모델 연계를 통한 객관적 수익성(ROI) 증대", en: "Workflow efficiency without infrastructure overhaul, non-reimbursed ROI growth.", zh: "在不改变现有基础设施的情况下优化诊疗/康复流程，通过自费模式联动增加客观收益(ROI)", ja: "既存インフラ変更 없이 진료/재활 워크플로우 효율화, 비급여 모델 연계를 통한 객관적 수익성(ROI) 증대" },
-            "제약사": { ko: "예방적 스크리닝 생태계 구축, RWE(Real-World Evidence) 기반의 혁신적 디지털 바이오마커 선점", en: "Building preventive screening ecosystems, securing RWE digital biomarkers.", zh: "构建预防性筛查生态系统，抢占基于真实世界证据(RWE)的创新数字生物标志物", ja: "予防的スクリーニングエコシステムの構築、RWE(Real-World Evidence)に基づく革新的デジタルバイオマーカーの先占" },
-            "국내 유통사": { ko: "명확한 세일즈 포인트와 높은 마진율, 시장 진입 시 즉각적인 경쟁 우위(초격차) 확보 전략", en: "Clear USP, high margin structure, immediate competitive edge upon market entry.", zh: "明确的卖点和高利润率，在进入市场时立即确保竞争优势的战略", ja: "明確なセールスポイントと高いマージン率、市場参入時に即時的な競争優位性を確保하는 전략" },
-            "해외 유통사": { ko: "현지 규제 대응의 용이성, 언어장벽을 넘어서는 직관적 데이터 시각화, 장기적 파트너십 가치", en: "Regulatory adaptability, intuitive cross-border data visualization, long-term partnership.", zh: "易于应对当地法规，超越语言障碍的直观数据可视化，长期的合作伙伴价值", ja: "現地規制への対応の容易さ、言語の壁を越える直感的データ視覚化、長期的なパートナーシップの価値" },
-            "재활센터": { ko: "환자 치료 순응도(Compliance) 극대화, 치료사의 피로도 감소 및 체계적 예후 관리", en: "Maximizing patient compliance, reducing therapist fatigue with systematic tracking.", zh: "最大化患者治疗依从性，减少治疗师疲劳及系统化的预后管理", ja: "환자 치료 순응도(Compliance) 극대화, 치료사의 피로도 감소 및 체계적인 예후 관리" },
-            "연구기관": { ko: "임상 연구의 신뢰도를 보장하는 Raw Data의 정밀성, 논문 게재를 위한 과학적 근거 확보", en: "Precision of raw data for clinical trials, scientific basis for publications.", zh: "确保临床研究可信度的原始数据精确性，获取发表论文的科学依据", ja: "臨床研究の信頼性を保証するRaw Dataの精密さ, 論文掲載のための科学的根拠の確保" },
-            "검진센터": { ko: "시니어 헬스케어 검진 라인업의 프리미엄화, AI 판독을 통한 검진 회전율 및 정확도 동시 향상", en: "Premiumizing senior checkups, enhancing throughput and accuracy via AI.", zh: "老年健康体检项目的高端化，通过AI解读同时提升体检周转率和准确度", ja: "シニアヘルスケア検診ラインナップのプレミアム化, AI判読による検診回転率と正確度の同時向上" },
-            "물리치료사": { ko: "치료 효율성 증대 및 객관적 데이터 기반의 환자 예후 관리, 전문성 부각", en: "Increasing treatment efficiency, objective data-based patient prognosis management, highlighting expertise.", zh: "提高治疗效率，基于客观数据的患者预后管理，彰显专业性", ja: "치료 효율성 증대 및 객관적 데이터 기반의 환자 예후 관리, 전문성 부각" }
+            "병원": { ko: "기존 인프라 변경 없이 진료/재활 워크플로우 효율화, 비급여 모델 연계를 통한 객관적 수익성(ROI) 증대", en: "Workflow efficiency without infrastructure overhaul, non-reimbursed ROI growth.", zh: "在不改变现有基础设施的情况下优化诊疗/康复流程，通过自费模式联动增加客观收益(ROI)", ja: "既存인프라 변경 없이 진료/재활 워크플로우 효율화, 비급여 모델 연계를 통한 객관적 수익성(ROI) 증대" },
+            "제약사": { ko: "예방적 스크리닝 생태계 구축, RWE(Real-World Evidence) 기반의 혁신적 디지털 바이오마커 선점", en: "Building preventive screening ecosystems, securing RWE digital biomarkers.", zh: "构建预防性筛查生态系统，抢占基于真实世界证据(RWE)的创新数字生物标志物", ja: "予防적스크리닝 생태계 구축, RWE(Real-World Evidence) 기반의 혁신적 디지털 바이오마커 선점" },
+            "국내 유통사": { ko: "명확한 세일즈 포인트와 높은 마진율, 시장 진입 시 즉각적인 경쟁 우위(초격차) 확보 전략", en: "Clear USP, high margin structure, immediate competitive edge upon market entry.", zh: "明确的卖点和高利润率，在进入市场时立即确保竞争优势的战略", ja: "明確なセールスポイントと高いマージン率, 시장 진입 시 즉각적인 경쟁 우위 확보 전략" },
+            "해외 유통사": { ko: "현지 규제 대응의 용이성, 언어장벽을 넘어서는 직관적 데이터 시각화, 장기적 파트너십 가치", en: "Regulatory adaptability, intuitive cross-border data visualization, long-term partnership.", zh: "易于应对当地法规，超越语言障碍的直观数据可视化，长期的合作伙伴价值", ja: "現地規制への対応의 용이성, 언어장벽을 넘어서는 직관적데이터 시각화, 장기적인 파트너십 가치" },
+            "재활센터": { ko: "환자 치료 순응도(Compliance) 극대화, 치료사의 피로도 감소 및 체계적 예후 관리", en: "Maximizing patient compliance, reducing therapist fatigue with systematic tracking.", zh: "最大化患者治疗依从性，减少治疗师疲劳及系统化的预后管理", ja: "환자 치료 순응도(Compliance)의 극대화, 치료사의 피로도 감소 및 체계적인 예후 관리" },
+            "연구기관": { ko: "임상 연구의 신뢰도를 보장하는 Raw Data의 정밀성, 논문 게재를 위한 과학적 근거 확보", en: "Precision of raw data for clinical trials, scientific basis for publications.", zh: "确保临床研究可信度的原始数据精确性，获取发表论文的科学依据", ja: "臨床연구의 신뢰성을 보장하는 Raw Data의 정밀성, 논문 게재를 위한 과학적 근거 확보" },
+            "검진센터": { ko: "시니어 헬스케어 검진 라인업의 프리미엄화, AI 판독을 통한 검진 회전율 및 정확도 동시 향상", en: "Premiumizing senior checkups, enhancing throughput and accuracy via AI.", zh: "老年健康体检项目的高端化，通过AI解读同时提升体检周转率和准确度", ja: "시니어헤ルスケア 검진 라인업의 프리미엄화, AI 판독을 통한 검진 회전율 및 정확도 동시 향상" },
+            "물리치료사": { ko: "치료 효율성 증대 및 객관적 데이터 기반의 환자 예후 관리, 전문성 부각", en: "Increasing treatment efficiency, objective data-based patient prognosis management, highlighting expertise.", zh: "提高治疗效率，基于客观数据的患者预后 management, 彰显专业性", ja: "치료 효율성 증대 및 객관적 데이터 기반의 환자 예후 관리, 전문성 부각" }
         };
 
         const TARGET_NAMES = {
@@ -755,12 +861,12 @@
             "피트니스 센터 대표": { ko: "피트니스 센터 대표", en: "Fitness Center CEO", zh: "健身房老板", ja: "フィットネス代表" },
             "메디컬 피트니스 센터": { ko: "메디컬 피트니스 센터", en: "Medical Fitness Center", zh: "医疗健身中心", ja: "メディカルフィットネス" },
             "병원": { ko: "병원", en: "Hospital", zh: "医院", ja: "病院" },
-            "제약사": { ko: "제약사", en: "Pharmaceutical Co.", zh: "制药公司", ja: "製薬会社" },
+            "제약사": { ko: "제약사", en: "Pharmaceutical Co.", zh: "制药 company", ja: "製薬会社" },
             "국내 유통사": { ko: "국내 유통사", en: "Domestic Distributor", zh: "国内经销商", ja: "国内流通業者" },
             "해외 유통사": { ko: "해외 유통사", en: "Global Distributor", zh: "海外经销商", ja: "海外流通業者" },
             "재활센터": { ko: "재활센터", en: "Rehab Center", zh: "康复中心", ja: "リハビリセンター" },
             "연구기관": { ko: "연구기관", en: "Research Institute", zh: "研究机构", ja: "研究機関" },
-            "검진센터": { ko: "검진센터", en: "Health Screening Center", zh: "体检中心", ja: "検診センター" },
+            "검진센터": { ko: "검진센터", en: "Health Screening Center", zh: "体检中心", ja: "検診센터" },
             "물리치료사": { ko: "물리치료사", en: "Physical Therapist", zh: "理疗师", ja: "理学療法士" }
         };
 
@@ -784,13 +890,13 @@
 
         const PURPOSE_MAP = {
             "strategyplan": { ko: "중장기 세일즈 액션 플랜 및 시장 진입 전략 수립", en: "Establish mid-to-long term sales action plan and market entry strategy", zh: "建立中长期销售行动计划和市场进入战略", ja: "中長期セール스액션 플랜 및 시장 진입 전략 수립" },
-            "customquery": { ko: "AI와 제품 기반 마이크로 컨설팅 및 무제한 심층 자유 토론", en: "Product-based micro consulting and unlimited deep Q&A with AI", zh: "基于产品与AI进行微咨询及无限制深度探讨", ja: "製品に基づきAIと行うマイクロコンサルティングおよび無制限の深層自由討論" },
-            "imagegen": { ko: "마케팅 캠페인용 시각적 에셋 및 컨셉 도출", en: "Generate visual assets and concepts for marketing campaigns", zh: "为营销活动生成视觉资产和概念", ja: "マーケティングキャンペーン用の視覚的アセットとコンセプトの導出" },
+            "customquery": { ko: "AI와 제품 기반 마이크로 컨설팅 및 무제한 심층 자유 토론", en: "Product-based micro consulting and unlimited deep Q&A with AI", zh: "基于产品与AI进行微咨询及无限制深度探讨", ja: "製品に基づきAIと行うマイクロコンサルティングおよび無制限의 자유 토론" },
+            "imagegen": { ko: "마케팅 캠페인용 시각적 에셋 및 컨셉 도출", en: "Generate visual assets and concepts for marketing campaigns", zh: "为营销活动生成视觉资产 and concepts", ja: "마케팅 캠페인용 시각적 에셋 및 컨셉 도출" },
             "email": { ko: "타겟 대상의 즉각적인 데모 신청 및 잠재 고객(Lead) 확보", en: "Drive immediate demo requests and secure leads", zh: "推动即时演示申请并确保潜在客户", ja: "ターゲット의 즉시 데모 신청 및 잠재 고객(Lead) 확보" },
-            "cardnews": { ko: "SNS 채널 내 직관적인 정보 전달을 통한 브랜드 인지도(Awareness) 상승", en: "Boost brand awareness through intuitive info delivery on SNS", zh: "通过社交媒体上直观的信息传递提升品牌知名度", ja: "SNSチャネルでの直感的な情報伝達を通じたブランド認知度向上" },
-            "reels": { ko: "짧고 강렬한 훅(Hook)을 통한 신규 타겟의 시선 집중 및 트래픽 유도", en: "Capture attention and drive traffic via short, impactful hooks", zh: "通过 short 强烈的 hook 吸引新目标受众的注意力并引导流量", ja: "ショートフックによる新規ターゲットの視線集中とトラフィック誘導" },
-            "adcopy": { ko: "A/B 테스트를 통한 퍼포먼스 마케팅 효율 극대화 및 클릭률(CTR) 개선", en: "Maximize performance marketing efficiency and CTR via A/B testing", zh: "通过 A/B 测试最大化效果营销效率并提高点击率(CTR)", ja: "A/Bテストを通じたパフォーマンスマーケティング効率の最大化とCTR改善" },
-            "videoprompt": { ko: "고품질 생성형 AI 영상 에셋 확보를 위한 최적화된 프롬프트 제공", en: "Provide optimized prompts for securing high-quality generative AI video assets", zh: "提供优化的提示词以获取高质量的生成式 AI 视频资产", ja: "高品質な生成AI動画アセットを確保するための最適化されたプロンプト提供" }
+            "cardnews": { ko: "SNS 채널 내 직관적인 정보 전달을 통한 브랜드 인지도(Awareness) 상승", en: "Boost brand awareness through intuitive info delivery on SNS", zh: "通过社交媒体上直观的信息传递提升品牌知名度", ja: "SNSチャネルでの直感적인 정보 전달을 통한 브랜드 인지도 상승" },
+            "reels": { ko: "짧고 강렬한 훅(Hook)을 통한 신규 타겟의 시선 집중 및 트래픽 유도", en: "Capture attention and drive traffic via short, impactful hooks", zh: "通过 short 强烈的 hook 吸引新目标受众的注意力并引导流量", ja: "ショートフックによる新規ターゲット의 시선 집중 및 트래픽 유도" },
+            "adcopy": { ko: "A/B 테스트를 통한 퍼포먼스 마케팅 효율 극대화 및 클릭률(CTR) 개선", en: "Maximize performance marketing efficiency and CTR via A/B testing", zh: "通过 A/B 测试最大化效果营销效率并提高点击率(CTR)", ja: "A/B테스트를 통한 퍼포먼스 마케팅 효율 극대화와 CTR 개선" },
+            "videoprompt": { ko: "고품질 생성형 AI 영상 에셋 확보를 위한 최적화된 프롬프트 제공", en: "Provide optimized prompts for securing high-quality generative AI video assets", zh: "提供优化的提示词以获取高质量的生成式 AI 视频资产", ja: "高品質な生成AI動画アセット를 확보하기 위한 최적화된 프롬프트 제공" }
         };
 
         const TRANSLATIONS = {
@@ -1043,7 +1149,7 @@
                 labelKeywords: "必須キーワード",
                 labelImgUpload: "参考画像アップロード",
                 btnSelectImg: "画像選択",
-                imgHelpText: "*アップロードされた画像は、映像プロンプト生成의 문맥으로서 우선 활용됩니다.",
+                imgHelpText: "*アップロードされた画像는, 映像プロンプト生成의 문맥으로서 우선 활용됩니다.",
                 labelAddMemo: "追加戦略メモ (オプション)",
                 checkReflectMemo: "メモと학습 데이터 최우선",
                 btnGenerate: "生成",
@@ -1056,15 +1162,15 @@
                 monitorRules: "ルール",
                 tabGenerator: "生成結果",
                 tabLibrary: "ライブラリ",
-                emptyTitle: "コンテンツがありません",
+                emptyTitle: "コンテンツ가 없습니다",
                 emptyDesc: "設定して生成してください。",
                 btnCopyAll: "すべてコピー",
                 btnCopyHash: "タグコピー",
                 btnDlMd: "MDダウンロード",
-                btnSaveLib: "保存",
-                secStratDirection: "[戦略ブリーフ]",
+                btnSaveLib: "저장",
+                secStratDirection: "[戦略ブリー프]",
                 secGenContent: "詳細結果",
-                secGenImg: "AI マー케ティングコンセプト画像",
+                secGenImg: "AI  マーケティングコンセプト画像",
                 secGenImgReels: "AI リールキーフレーム (クリーン)",
                 secWarnings: "コンプライアンス警告",
                 optAllStatus: "すべてのステータス",
@@ -1082,21 +1188,21 @@
                 piTargetLbl: "主なターゲット:",
                 piWarnLbl: "注意表現:",
                 piJsonLbl: "AI学習データ連携중",
-                modalStatusLbl: "ステータス",
+                modalStatusLbl: "ステータ스",
                 modalStratLbl: "[ブリーフ]",
                 modalContentLbl: "本文",
                 modalHashLbl: "ハッシュタグ",
                 modalBtnDel: "削除",
                 modalBtnCopy: "コピー",
                 modalBtnClose: "閉じる",
-                noFile: "ファイルが選択されていません",
+                noFile: "ファイル가 선택되어 있지 않습니다",
                 medicalBadge: "医療機器",
                 wellnessBadge: "ウェルネス",
                 scopeLabel: "JAのみ",
                 libGenTitle: "学習データの更新 (ドキュメント/URL)",
                 libHistTitle: "更新履歴 (最近5件)",
                 libHistDesc: "*リストを削除しても適用された学習データは維持されます。",
-                libHistEmpty: "更新履歴がありません。",
+                libHistEmpty: "更新履歴가 없습니다.",
                 modalLrnTitle: "学習データ詳細",
                 modalLrnBtnDel: "記録を削除",
                 modalLrnBtnClose: "閉じる",
@@ -1107,7 +1213,7 @@
                 libBtnSave: "分析して保存",
                 libBtnViewAll: "すべて見る",
                 fullHistTitle: "全学習データ履歴",
-                fullHistDesc: "*リストを削除しても適用された学習データは維持されます。",
+                fullHistDesc: "*リストを削除しても適用된 학습 데이터는 유지됩니다.",
                 fullHistBtnClose: "閉じる"
             }
         };
@@ -1260,7 +1366,7 @@
             
             if (currentUploadedImages.length === 0) document.getElementById('img-upload-status').textContent = dict.noFile;
             if (!pendingGeneralSource) document.getElementById('general-file-status').textContent = dict.noFile;
-            lucide.createIcons();
+            createIconsSafe();
         }
 
         function populateTargetAudienceOptions() {
@@ -1401,7 +1507,7 @@
                 } else {
                     btnLabel.innerHTML = `<i data-lucide="zap" class="w-4 h-4 sm:w-5 sm:h-5"></i><span id="ui-btn-generate-text">${dict.btnGenerate || "전략 마케팅 콘텐츠 생성"}</span>`;
                 }
-                lucide.createIcons();
+                createIconsSafe();
             }
         }
 
@@ -1426,7 +1532,7 @@
             }
             
             document.getElementById('img-upload-status').textContent = `${currentUploadedImages.length} Files`;
-            lucide.createIcons();
+            createIconsSafe();
         }
 
         function removeUploadedImage(name, element) {
@@ -1502,7 +1608,7 @@
                 
                 btn.disabled = true;
                 btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 mr-1 animate-spin"></i> AI 분석 중...`;
-                lucide.createIcons();
+                createIconsSafe();
 
                 try {
                     let prompt = "";
@@ -1512,23 +1618,15 @@
                         prompt = `You are a top-tier marketing analyst. I want to analyze a competitor or market reference URL: ${url}. Based on your extensive knowledge about this website, company, or domain, extract 3 to 5 critical marketing insights, competitor weaknesses, or market trends that can be used to strategically differentiate and promote our product "${targetProduct}". Return ONLY a valid JSON object strictly matching this format without markdown blocks:\n{ "SOURCE": "${url}", "TYPE": "Competitor/Market Analysis", "INSIGHTS": ["insight 1", "insight 2", "insight 3"] }`;
                     }
                     
-                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-                    });
-                    const result = await response.json();
-                    let text = result.candidates[0].content.parts[0].text;
-                    text = text.replace(/```json/g, '').replace(/```/g, '').trim();
-                    
+                    const text = await safeCallGemini(prompt);
                     executeSaveLearningHistory('url', pendingGeneralName, targetProduct, text);
                 } catch (e) {
                     console.error(e);
-                    showErrorModal("학습 데이터 적용 미반영", "AI 분석 중 통신 오류가 발생했거나 데이터에 접근할 수 없습니다.", "네트워크 상태를 확인하거나 유효한 공개 URL인지 확인해주세요.");
+                    showErrorModal("학습 데이터 적용 미반영", "AI URL 분석 중 오류가 발생했습니다.", e.message || "네트워크 상태를 확인하거나 유효한 공개 URL인지 확인해주세요.");
                 } finally {
                     btn.disabled = false;
                     btn.innerHTML = origHtml;
-                    lucide.createIcons();
+                    createIconsSafe();
                 }
 
             } else if (pendingGeneralSource === 'file' || pendingGeneralSource === 'text') {
@@ -1539,10 +1637,10 @@
                 
                 btn.disabled = true;
                 btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 mr-1 animate-spin"></i> 대용량 분석 준비 중...`;
-                lucide.createIcons();
+                createIconsSafe();
 
                 try {
-                    // --- NEW: 지능형 대용량 자동 분할 분석 (Text Chunking / Map-Reduce) ---
+                    // --- 지능형 대용량 자동 분할 분석 (Text Chunking / Map-Reduce) ---
                     function chunkText(text, size = 15000, overlap = 1500) {
                         const chunks = [];
                         let index = 0;
@@ -1560,24 +1658,18 @@
                     if (chunks.length === 1) {
                         // 일반 크기 파일: 단일 전송 AI 딥 분석 진행
                         btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 mr-1 animate-spin"></i> AI 딥 분석 중...`;
-                        lucide.createIcons();
+                        createIconsSafe();
 
                         const prompt = `You are a top-tier marketing data analyst. Analyze the following data (text/document/JSON) regarding the market, product, or competitor for our product "${targetProduct}". Extract 3 to 5 crucial marketing insights, unfulfilled customer needs, strategic differentiation points, or competitive advantages. If it's a chat history or raw text input, extract the core strategies discussed. Return ONLY a valid JSON object strictly matching this format without markdown blocks:\n{ "SOURCE": "${pendingGeneralName}", "TYPE": "Data Analysis", "INSIGHTS": ["insight 1", "insight 2", "insight 3"] }\n\nRAW DATA:\n${chunks[0]}`;
                         
-                        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-                        });
-                        const result = await response.json();
-                        let text = result.candidates[0].content.parts[0].text;
-                        finalInsightsResult = text.replace(/```json/g, '').replace(/```/g, '').trim();
+                        const text = await safeCallGemini(prompt);
+                        finalInsightsResult = text;
                     } else {
                         // 초대용량 파일: 조각별 다중 맵리듀스(Map-Reduce) 분석 프로세스 진행
                         const intermediateInsights = [];
                         for (let i = 0; i < chunks.length; i++) {
                             btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 mr-1 animate-spin"></i> AI 파트 분석 중 (${i + 1}/${chunks.length})...`;
-                            lucide.createIcons();
+                            createIconsSafe();
 
                             const chunkPrompt = `You are a professional marketing data analyst. 
 Analyze the following portion (${i + 1}/${chunks.length}) of a massive document for our product "${targetProduct}". 
@@ -1588,17 +1680,12 @@ RAW PORTION:
 ${chunks[i]}`;
 
                             try {
-                                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({ contents: [{ parts: [{ text: chunkPrompt }] }] })
-                                });
-                                const result = await response.json();
-                                let rawChunkText = result.candidates[0].content.parts[0].text;
-                                rawChunkText = rawChunkText.replace(/```json/g, '').replace(/```/g, '').trim();
-                                const parsed = JSON.parse(rawChunkText);
+                                const rawChunkText = await safeCallGemini(chunkPrompt);
+                                const parsed = extractJSON(rawChunkText);
                                 if (Array.isArray(parsed)) {
                                     intermediateInsights.push(...parsed);
+                                } else if (parsed && parsed.INSIGHTS && Array.isArray(parsed.INSIGHTS)) {
+                                    intermediateInsights.push(...parsed.INSIGHTS);
                                 }
                             } catch (e) {
                                 console.warn(`Failed to parse chunk ${i+1}:`, e);
@@ -1606,12 +1693,12 @@ ${chunks[i]}`;
                         }
 
                         if (intermediateInsights.length === 0) {
-                            throw new Error("No intermediate insights could be extracted from chunks.");
+                            throw new Error("대용량 문서의 세부 파트 분석 중 유효한 마케팅 인사이트를 추출하지 못했습니다. 문서의 텍스트 형식을 확인해주세요.");
                         }
 
                         // 분석된 모든 조각 데이터 통합 요약 (Synthesis Pass)
                         btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 mr-1 animate-spin"></i> 대용량 요약 병합 중...`;
-                        lucide.createIcons();
+                        createIconsSafe();
 
                         const synthesisPrompt = `You are a master brand strategist. 
 We have extracted the following intermediate insights from a massive document about "${targetProduct}":
@@ -1621,24 +1708,18 @@ Your task is to merge, clean, and synthesize these insights into exactly 4 to 6 
 Return ONLY a valid JSON object strictly matching this format without markdown blocks:
 { "SOURCE": "${pendingGeneralName}", "TYPE": "Massive Data Analysis", "INSIGHTS": ["insight 1", "insight 2", "insight 3"] }`;
 
-                        const finalResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ contents: [{ parts: [{ text: synthesisPrompt }] }] })
-                        });
-                        const finalResult = await finalResponse.json();
-                        let finalTextResult = finalResult.candidates[0].content.parts[0].text;
-                        finalInsightsResult = finalTextResult.replace(/```json/g, '').replace(/```/g, '').trim();
+                        const finalTextResult = await safeCallGemini(synthesisPrompt);
+                        finalInsightsResult = finalTextResult;
                     }
 
                     executeSaveLearningHistory(pendingGeneralSource, pendingGeneralName, targetProduct, finalInsightsResult);
                 } catch (e) {
                     console.error(e);
-                    showErrorModal("학습 데이터 적용 미반영", "AI 대용량 문서 분석 중 오류가 발생했습니다.", "서버와의 연결 상태가 불안정하거나 문서 파일의 형식이 비정상적입니다. 작은 분량으로 쪼개서 업로드해 주세요.");
+                    showErrorModal("학습 데이터 적용 미반영", "AI 대용량 문서 분석 중 오류가 발생했습니다.", e.message || "서버와의 연결 상태가 불안정하거나 문서 파일의 형식이 비정상적입니다. 작은 분량으로 쪼개서 업로드해 주세요.");
                 } finally {
                     btn.disabled = false;
                     btn.innerHTML = origHtml;
-                    lucide.createIcons();
+                    createIconsSafe();
                 }
             } else {
                 showErrorModal("학습 데이터 적용 미반영", "입력된 데이터가 없습니다.", "학습할 파일, URL 또는 텍스트를 먼저 입력해주세요.");
@@ -1687,7 +1768,7 @@ Return ONLY a valid JSON object strictly matching this format without markdown b
             
             const statusEl = document.getElementById('general-file-status');
             statusEl.innerHTML = `<span class="text-emerald-600 font-bold flex items-center"><i data-lucide="check-circle" class="w-3.5 h-3.5 mr-1"></i>${currentLang === 'ko' ? '분석 및 적용 완료' : 'Analysis & Applied'}</span>`;
-            lucide.createIcons();
+            createIconsSafe();
             setTimeout(() => { statusEl.textContent = TRANSLATIONS[currentLang].noFile; }, 3000);
 
             renderLearningHistory();
@@ -1699,7 +1780,9 @@ Return ONLY a valid JSON object strictly matching this format without markdown b
         function extractLearningHighlights(dataString, limit = 3) {
             if (!dataString) return [];
             try {
-                const obj = JSON.parse(dataString);
+                const obj = typeof dataString === 'string' ? extractJSON(dataString) : dataString;
+                if (!obj) throw new Error("JSON 추출에 실패했습니다.");
+                
                 let highlights = [];
                 
                 if (obj.INSIGHTS && Array.isArray(obj.INSIGHTS)) {
@@ -1766,7 +1849,7 @@ Return ONLY a valid JSON object strictly matching this format without markdown b
                     generalList.appendChild(li);
                 });
             }
-            lucide.createIcons();
+            createIconsSafe();
         }
 
         function openFullHistoryModal() {
@@ -1815,7 +1898,7 @@ Return ONLY a valid JSON object strictly matching this format without markdown b
                     list.appendChild(li);
                 });
             }
-            lucide.createIcons();
+            createIconsSafe();
         }
 
         // --- 요약 정보 파싱 및 팝업 모달 상세 표시 로직 ---
@@ -1849,7 +1932,7 @@ Return ONLY a valid JSON object strictly matching this format without markdown b
             document.getElementById('ld-modal-delete-btn').onclick = () => deleteLearningHistory(item.id);
 
             document.getElementById('learning-detail-modal').classList.remove('hidden');
-            lucide.createIcons();
+            createIconsSafe();
         }
 
         function closeLearningDetailModal() {
@@ -1912,7 +1995,7 @@ Return ONLY a valid JSON object strictly matching this format without markdown b
             imgEl.classList.add('hidden');
             statusEl.classList.remove('hidden');
             statusEl.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span id="ui-img-loading-text">${currentLang === 'ko' ? 'AI 시각 에셋 생성 중...' : 'Generating AI Asset...'}</span>`;
-            lucide.createIcons();
+            createIconsSafe();
 
             try {
                 const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`;
@@ -2022,7 +2105,7 @@ Return ONLY a valid JSON object strictly matching this format without markdown b
                 ko: `"직관을 넘어 데이터로, ${localizedTarget}의 한계를 돌파하십시오."`,
                 en: `"Move beyond intuition. Break through the limits of ${localizedTarget} with data."`,
                 zh: `"超越直觉。用数据突破 ${localizedTarget} 的极限。"`,
-                ja: `"直感を超え、データで ${localizedTarget} の限界を突破してください. "`
+                ja: `"直感を超え、데이터로 ${localizedTarget}의 한계를 돌파하십시오. "`
             };
 
             let metaPrefix = "";
@@ -2031,7 +2114,7 @@ Return ONLY a valid JSON object strictly matching this format without markdown b
             } else if (currentLang === 'en') {
                 metaPrefix = `[📊 Content Strategy Meta Info]\n- 🎯 Content Purpose: ${PURPOSE_MAP[type]['en']}\n- 💡 Core Key Message: ${keyMsgDict['en']}\n- 🧠 Target Psychology (Pain Point): ${strategicInsight}\n- ⚡ Ready-to-Copy Keywords: ${keywords.map(k=>`#${k}`).join(' ')} #${product.replace(/-/g, '')}\n\n==================================================\n\n`;
             } else if (currentLang === 'zh') {
-                metaPrefix = `[📊 内容战略元信息]\n- 🎯 内容目的: ${PURPOSE_MAP[type]['zh']}\n- 💡 核心诉求信息: ${keyMsgDict['zh']}\n- 🧠 目标受众心理 (痛点): ${strategicInsight}\n- ⚡ 快捷复制关键词包: ${keywords.map(k=>`#${k}`).join(' ')} #${product.replace(/-/g, '')}\n\n==================================================\n\n`;
+                metaPrefix = `[📊 内容战略元信息]\n- 🎯 内容目的: ${PURPOSE_MAP[type]['zh']}\n- 💡 核心诉求信息: ${keyMsgDict['zh']}\n- 🧠 目标受중 심리 (痛点): ${strategicInsight}\n- ⚡ 快捷复制关键词包: ${keywords.map(k=>`#${k}`).join(' ')} #${product.replace(/-/g, '')}\n\n==================================================\n\n`;
             } else if (currentLang === 'ja') {
                 metaPrefix = `[📊 コンテンツ戦略メタ情報]\n- 🎯 コンテンツの目的: ${PURPOSE_MAP[type]['ja']}\n- 💡 核心訴求メッセージ: ${keyMsgDict['ja']}\n- 🧠 ターゲット顧客の心理 (ペインポイント): ${strategicInsight}\n- ⚡ コピー＆ペースト用キーワードパック: ${keywords.map(k=>`#${k}`).join(' ')} #${product.replace(/-/g, '')}\n\n==================================================\n\n`;
             }
@@ -2041,13 +2124,13 @@ Return ONLY a valid JSON object strictly matching this format without markdown b
             const loadingTexts = {
                 ko: "AI 심층 분석 및 콘텐츠 생성 중...",
                 en: "AI Analyzing & Generating...",
-                zh: "AI 深度分析与内容生成中...",
+                zh: "AI 深度 analysis 与内容生成中...",
                 ja: "AI 深層分析およびコンテンツ生成중..."
             };
             btn.disabled = true;
             btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 sm:w-5 sm:h-5 animate-spin"></i><span>${loadingTexts[currentLang]}</span>`;
             btn.classList.replace('bg-blue-600', 'bg-blue-400');
-            lucide.createIcons();
+            createIconsSafe();
 
             document.getElementById('generated-image-container').classList.add('hidden');
             document.getElementById('generated-image').src = "";
@@ -2117,61 +2200,23 @@ ONLY if Content Type ID is 'imagegen' or 'reels', you MUST include a short Engli
 DO NOT include any introductory or concluding remarks (e.g., "Here is the content..."). Just output the raw requested content directly formatted cleanly. 
 `;
 
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-                const payload = {
-                    contents: [{ parts: [{ text: userPrompt }] }],
-                    systemInstruction: { parts: [{ text: sysPrompt }] }
-                };
-
-                let retries = 0;
-                const delays = [1000, 2000, 4000, 8000, 16000];
-                let apiResultText = "";
-
-                while (retries < 5) {
-                    try {
-                        const response = await fetch(url, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(payload)
-                        });
-                        if (!response.ok) throw new Error(`API Error: ${response.status}`);
-                        const result = await response.json();
-                        apiResultText = result.candidates?.[0]?.content?.parts?.[0]?.text || "";
-                        break; 
-                    } catch (error) {
-                        if (retries === 4) throw error;
-                        await new Promise(r => setTimeout(r, delays[retries]));
-                        retries++;
-                    }
-                }
-
-                if (!apiResultText) {
-                    throw new Error("Empty response from Gemini API.");
-                }
-
-                // Parse Image Prompt
-                const imgMatch = apiResultText.match(/\[IMAGE_PROMPT:(.*?)\]/s);
-                if (imgMatch && imgMatch[1]) {
-                    imgPromptToGenerate = imgMatch[1].trim();
-                    apiResultText = apiResultText.replace(imgMatch[0], '').trim();
-                }
-
-                materialBody = apiResultText.trim();
+                const textResult = await safeCallGemini(userPrompt, sysPrompt);
+                materialBody = textResult;
 
             } catch (error) {
                 console.error("Gemini API Error:", error);
                 const errorMsgs = {
-                    ko: "API 호출 중 오류가 발생했습니다. 통신 상태를 확인하고 잠시 후 다시 시도해주세요.",
-                    en: "An error occurred during the API call. Please check your connection and try again.",
-                    zh: "API调用出错。请检查网络并稍后重试。",
-                    ja: "API呼び出し中にエラーが発生しました。通信状態を確認し、後でもう一度お試しください。"
+                    ko: `API 호출 중 오류가 발생했습니다: ${error.message || "통신 상태를 확인하고 잠시 후 다시 시도해주세요."}`,
+                    en: `An error occurred during the API call: ${error.message || "Please check your connection and try again."}`,
+                    zh: `API调用出错: ${error.message || "请检查网络并稍后重试。"}`,
+                    ja: `API呼び出し中にエラーが発生しました: ${error.message || "通信状態を確認し、後もう一度お試しください。"}`
                 };
                 materialBody = errorMsgs[currentLang] || errorMsgs['en'];
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = originalBtnHtml;
                 btn.classList.replace('bg-blue-400', 'bg-blue-600');
-                lucide.createIcons();
+                createIconsSafe();
             }
 
             materialBody = metaPrefix + materialBody;
@@ -2391,7 +2436,7 @@ DO NOT include any introductory or concluding remarks (e.g., "Here is the conten
             };
 
             document.getElementById('library-modal').classList.remove('hidden');
-            lucide.createIcons();
+            createIconsSafe();
         }
 
         function closeLibraryModal() {
@@ -2431,7 +2476,7 @@ DO NOT include any introductory or concluding remarks (e.g., "Here is the conten
             verifyAndInitializeLanguage();
             checkAdminAuthUI();
             updateLibraryCounterBadge();
-            lucide.createIcons();
+            createIconsSafe();
         });
     </script>
 </body>
