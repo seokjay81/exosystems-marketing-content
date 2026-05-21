@@ -302,7 +302,7 @@
                             <h4 class="font-bold text-slate-900 flex items-center space-x-1.5 text-xs sm:text-sm pb-1" id="ui-sec-gen-img-title">
                                 <!-- Dynamic icon & text based on type -->
                             </h4>
-                            <div id="image-generation-status" class="flex items-center justify-center space-x-2 text-blue-600 text-xs font-bold bg-blue-50 p-4 rounded-xl border-2 border-blue-100 hidden">
+                            <div id="image-generation-status" class="flex items-center justify-center space-x-2 text-blue-600 text-xs font-bold bg-blue-50/50 p-4 rounded-xl border-2 border-blue-100 hidden">
                                 <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span id="ui-img-loading-text">AI 에셋 생성 중...</span>
                             </div>
                             <img id="generated-image" class="w-full max-w-md rounded-xl shadow-md border-2 border-slate-200 hidden" alt="Generated AI Concept">
@@ -648,7 +648,9 @@
 
     <!-- SCRIPT LOGIC -->
     <script>
-        const apiKey = "AIzaSyC8vnwrROfOBxlFlmUhLin440lcxHLPTlk"; 
+        // 이 빌드 환경(Preview & Vercel Sandbox) 규정에 맞게 const apiKey = "" (공백 문자열)로 선언해야 
+        // 런타임 환경에서 주입되는 마스터 인증 키가 정상적으로 연동되어 작동합니다.
+        const apiKey = ""; 
 
         function showToast(message) {
             const toast = document.getElementById('toast-message');
@@ -676,6 +678,10 @@
             document.getElementById('error-modal-solution').textContent = solution;
             document.getElementById('error-modal').classList.remove('hidden');
             createIconsSafe();
+        }
+
+        function closeErrorModal() {
+            document.getElementById('error-modal').classList.add('hidden');
         }
 
         // --- ROBUST JSON EXTRACTION HELPER ---
@@ -714,7 +720,8 @@
 
         // --- SAFE CALL GEMINI HELPER WITH DETAILED ERROR INFO & MULTI-MODEL FALLBACK ---
         async function safeCallGemini(prompt, systemInstruction = "") {
-            const models = ["gemini-2.5-flash-preview-09-2025", "gemini-1.5-flash", "gemini-1.5-pro"];
+            // 이 환경에서 안정적인 마케팅/전략 분석 쿼리를 보장하기 위해 규격 모델인 gemini-2.5-flash-preview-09-2025를 최우선으로 지정합니다.
+            const models = ["gemini-2.5-flash-preview-09-2025", "gemini-1.5-flash"];
             let lastError = null;
 
             for (const model of models) {
@@ -775,7 +782,7 @@
             "exoFit": {
                 name: "exoFit",
                 definition: { ko: "AI 운동 역량 평가 솔루션", en: "AI Exercise Capacity Evaluation Solution", zh: "AI运动能力评估解决方案", ja: "AI運動能力評価ソリューション" },
-                positioning: { ko: "EMG와 IMU 기반으로 운동 중 근육 반응과 움직임을 데이터로 확인하고, 트레이너 지도 지원", en: "A solution verifying muscle responses via EMG/IMU data to assist trainers.", zh: "基于EMG/IMU的肌동 analysis 支持教练의解决方案", ja: "EMGとIMUによる筋肉反応データでトレーナー指導를 지원하는 솔루션" },
+                positioning: { ko: "EMG와 IMU 기반으로 운동 중 근육 반응과 움직임을 데이터로 확인하고, 트레이너 지도 지원", en: "A solution verifying muscle responses via EMG/IMU data to assist trainers.", zh: "基于EMG/IMU的肌동 analysis 支持教练의解决方案", ja: "EMGとIMUによる筋肉反応データでトレー너 지도 지원 솔루션" },
                 targets: ["일반 회원", "트레이너", "피트니스 센터 대표", "메디컬 피트니스 센터", "병원", "국내 유통사", "해외 유통사", "물리치료사"],
                 allowed: { ko: ["운동 중 몸의 반응을 데이터로 확인합니다.", "트레이너의 상담을 지원합니다."], en: ["Verify body reactions.", "Reference data."], zh: ["通过数据确认身体反应。"], ja: ["体の反応を데이터로 확인합니다."] },
                 prohibited: { ko: ["치료됩니다.", "완치됩니다.", "진단합니다.", "재활 효과 보장"], en: ["Cures diseases.", "Diagnoses conditions."], zh: ["治愈疾病。", "诊断特定病症。"], ja: ["治療されます。", "診断します。"] },
@@ -785,19 +792,19 @@
             },
             "exoPill-dEMG": {
                 name: "exoPill-dEMG",
-                definition: { ko: "동작분석 및 역동적 근전도 기반 근기능 평가 솔루션", en: "Motion Analysis & Dynamic EMG Muscle Evaluation", zh: "动作分析及动态肌电图肌功能评估", ja: "動作分析と力動적筋電図의 근기능 평가" },
-                positioning: { ko: "동작 중 근육 활성과 움직임을 함께 확인하여 병원 재활 평가 지원 의료기기", en: "Medical device checking muscle activation during motion for rehab evaluation.", zh: "确认动作中肌肉激活支持康复评估的医疗器械", ja: "動作中の筋肉活性を確認し리하빌리 평가 지원 의료기기" },
+                definition: { ko: "동작분석 및 역동적 근전도 기반 근기능 평가 솔루션", en: "Motion Analysis & Dynamic EMG Muscle Evaluation", zh: "动作分析及动态肌电图肌功能评估", ja: "動作分析と力동적근전도 기반의 근기능 평가" },
+                positioning: { ko: "동작 중 근육 활성과 움직임을 함께 확인하여 병원 재활 평가 지원 의료기기", en: "Medical device checking muscle activation during motion for rehab evaluation.", zh: "确认动作中肌肉激活支持康复评估의 医疗器械", ja: "動作中の筋肉活性を確認し리하빌리 평가 지원 의료기기" },
                 targets: ["병원", "재활의학과", "정형외과", "물리치료실", "국내 유통사", "해외 유통사", "물리치료사"],
                 allowed: { ko: ["근육 활성을 함께 확인합니다.", "재활 방향 설정 참고."], en: ["Verification of muscle activation.", "Rehab reference."], zh: ["确认肌肉激活。"], ja: ["筋肉活性の確認。"] },
                 prohibited: { ko: ["질환을 확정 진단합니다.", "효과를 100% 보장합니다."], en: ["Diagnoses independently.", "Guarantees cure."], zh: ["单独诊断。"], ja: ["確定診断します。"] },
                 rules: { ko: ["식약처 허가 의료기기 명시", "실시간 분석 연계 강조"], en: ["State MFDS approval.", "Emphasize real-time."], zh: ["明示许可。"], ja: ["許可明記。"] },
-                disclaimer: { ko: "전문가의 평가를 돕기 위한 참고 데이터이며, 최종 의학적 판단은 의료진이 수행합니다.", en: "Final medical judgment by clinicians.", zh: "最终判断由医生做出。", ja: "最終的医学的判断は医療従事者が行います。" },
+                disclaimer: { ko: "전문가의 평가를 돕기 위한 참고 데이터이며, 최종 의학적 판단은 의료진이 수행합니다.", en: "Final medical judgment by clinicians.", zh: "最终判断由医生做出。", ja: "最終的医学적 판단은 의료진이 수행합니다." },
                 isMedical: true
             },
             "exoPill-FES": {
                 name: "exoPill-FES",
                 definition: { ko: "기능적 전기 자극 재활 솔루션", en: "FES Rehab Solution", zh: "FES康复解决方案", ja: "FESリハビリソリューション" },
-                positioning: { ko: "FES를 활용하여 재활 과정에서 근육 활성 보조", en: "Utilizes FES to assist muscle activation in rehab.", zh: "利用FES辅助康复中的肌肉激活", ja: "FESを活用したリハビリ中の筋肉活性補助" },
+                positioning: { ko: "FES를 활용하여 재활 과정에서 근육 활성 보조", en: "Utilizes FES to assist muscle activation in rehab.", zh: "利用FES辅助康复中的肌肉激活", ja: "FESを活用した리하빌리중 근육 활성 보조" },
                 targets: ["병원", "재활의학과", "물리치료실", "재활병원", "국내 유통사", "물리치료사"],
                 allowed: { ko: ["식약처 허가 의료기기", "근육 활성 보조"], en: ["Approved device", "Assists muscle"], zh: ["许可器械"], ja: ["許可機器"] },
                 prohibited: { ko: ["치료 보장", "진단 보장"], en: ["Cure guarantee"], zh: ["保证治愈"], ja: ["治療保証"] },
@@ -811,7 +818,7 @@
                 positioning: { ko: "신경근육계 반응 기반 근감소증 위험 평가 AI 솔루션", en: "AI solution evaluating sarcopenia risk.", zh: "评估肌少症风险的AI解决方案", ja: "サルコペニアリスクを評価するAIソリューション" },
                 targets: ["병원", "검진센터", "제약사", "연구기관"],
                 allowed: { ko: ["식약처 혁신의료기기 지정", "진단 보조 솔루션"], en: ["Innovative device", "Diagnosis support"], zh: ["创新器械"], ja: ["革新医療機器"] },
-                prohibited: { ko: ["단독 진단", "효과 확약"], en: ["Standalone diagnosis"], zh: ["单独诊断"], ja: ["단독 진단"] },
+                prohibited: { ko: ["단독 진단", "효과 확약"], en: ["Standalone diagnosis"], zh: ["단독 진단"], ja: ["단독 진단"] },
                 rules: { ko: ["혁신의료기기 부각"], en: ["Highlight Innovative designation"], zh: ["突出创新指定"], ja: ["革신지정 강조"] },
                 disclaimer: { ko: "의료진 판단을 보조하는 기기이며 최종 판단은 의사가 수행합니다.", en: "Assists clinician judgment.", zh: "辅助医生判断。", ja: "医師의 판단을 보조합니다." },
                 isMedical: true
@@ -835,23 +842,23 @@
                 allowed: { ko: ["원격 재활 관리 흐름 지원", "수행 데이터 관리"], en: ["Supports remote flow", "Data management"], zh: ["支持远程流程"], ja: ["遠隔フロー支援"] },
                 prohibited: { ko: ["보험 수가 100% 보장", "치료 완벽 보장"], en: ["Insurance guarantee"], zh: ["보험 보장"], ja: ["保険保証"] },
                 rules: { ko: ["모니터링 효율성 위주 소통"], en: ["Focus on monitoring"], zh: ["监测为中心"], ja: ["モニタリング中心"] },
-                disclaimer: { ko: "활용 가능성은 규제에 따라 달라질 수 있습니다.", en: "Viability subject to regulation.", zh: "应用依从法规。", ja: "活用は規制によります。" },
+                disclaimer: { ko: "활용 가능성은 규제에 따라 달라질 수 있습니다.", en: "Viability subject to regulation.", zh: "应用依从法规。", ja: "活用은 규제에 따라 달라질 수 있습니다." },
                 isMedical: false
             }
         };
 
         const STRATEGIC_AUDIENCE_INSIGHTS = {
-            "일반 회원": { ko: "개인 맞춤형 피드백 부재에 대한 불안감 해결, 즉각적이고 가시적인 성과 확인", en: "Resolving anxiety over lack of personalized feedback, instant visible progress.", zh: "解决对缺乏个性化反馈的焦虑，确认即时可见的成果", ja: "パーソナライズされたフィードバックの欠如に対する不安を解消し、即時적이고 눈에 보이는 성과를 확인" },
-            "트레이너": { ko: "주관적 지도 방식의 한계 극복, 회원 재등록을 유도할 수 있는 데이터 기반의 전문성 확보(권위 상승)", en: "Overcoming subjective guidance, securing data-backed authority to drive client retention.", zh: "克服主观指导方式的局限，确保基于数据的专业性以引导会员续费（提升权威）", ja: "主観的な指導方法의 한계 극복, 회원 재등록을 유도할 수 있는 데이터 기반 전문성 확보" },
-            "피트니스 센터 대표": { ko: "인근 경쟁사 대비 압도적인 하이테크 프리미엄 구축, 객관적 지표를 통한 트레이너 역량 상향 평준화", en: "Building high-tech premium differentiation, standardizing trainer quality via objective metrics.", zh: "构建压倒竞争对手的高科技高端形象，通过客观指标实现教练能力向上均衡", ja: "競合に対する圧倒的なハイテクプレミアムの構築, 객관적 지표를 통한 트레이너 역량 상향 평준화" },
-            "메디컬 피트니스 센터": { ko: "의학적 근거(EBM)와 피트니스의 완벽한 결합, VIP 고객 유치를 위한 임상 수준의 신뢰도 확보", en: "Fusing EBM with fitness, securing clinical-grade credibility for VIP acquisition.", zh: "医学证据(EBM)与健身的完美结合，确保 clinical 级别的可信度以吸引VIP客户", ja: "医学적 근거(EBM)와 피트니스의 완벽한 결합, VIP 고객 유치를 위한 임상 수준의 신뢰도 확보" },
-            "병원": { ko: "기존 인프라 변경 없이 진료/재활 워크플로우 효율화, 비급여 모델 연계를 통한 객관적 수익성(ROI) 증대", en: "Workflow efficiency without infrastructure overhaul, non-reimbursed ROI growth.", zh: "在不改变现有基础设施的情况下优化诊疗/康复流程，通过自费模式联动增加客观收益(ROI)", ja: "既存인프라 변경 없이 진료/재활 워크플로우 효율화, 비급여 모델 연계를 통한 객관적 수익성(ROI) 증대" },
-            "제약사": { ko: "예방적 스크리닝 생태계 구축, RWE(Real-World Evidence) 기반의 혁신적 디지털 바이오마커 선점", en: "Building preventive screening ecosystems, securing RWE digital biomarkers.", zh: "构建预防性筛查生态系统，抢占基于真实世界证据(RWE)的创新数字生物标志物", ja: "予防적스크리닝 생태계 구축, RWE(Real-World Evidence) 기반의 혁신적 디지털 바이오마커 선점" },
-            "국내 유통사": { ko: "명확한 세일즈 포인트와 높은 마진율, 시장 진입 시 즉각적인 경쟁 우위(초격차) 확보 전략", en: "Clear USP, high margin structure, immediate competitive edge upon market entry.", zh: "明确的卖点和高利润率，在进入市场时立即确保竞争优势的战略", ja: "明確なセールスポイントと高いマージン率, 시장 진입 시 즉각적인 경쟁 우위 확보 전략" },
-            "해외 유통사": { ko: "현지 규제 대응의 용이성, 언어장벽을 넘어서는 직관적 데이터 시각화, 장기적 파트너십 가치", en: "Regulatory adaptability, intuitive cross-border data visualization, long-term partnership.", zh: "易于应对当地法规，超越语言障碍的直观数据可视化，长期的合作伙伴价值", ja: "現地規制への対応의 용이성, 언어장벽을 넘어서는 직관적데이터 시각화, 장기적인 파트너십 가치" },
+            "일반 회원": { ko: "개인 맞춤형 피드백 부재에 대한 불안감 해결, 즉각적이고 가시적인 성과 확인", en: "Resolving anxiety over lack of personalized feedback, instant visible progress.", zh: "解决对缺乏个性化反馈的焦虑，确认即时可见的成果", ja: "パーソナライズされたフィードバックの欠如に対する不安を解消し, 즉각적이고 눈에 보이는 성과를 확인" },
+            "트레이너": { ko: "주관적 지도 방식의 한계 극복, 회원 재등록을 유도할 수 있는 데이터 기반의 전문성 확보(권위 상승)", en: "Overcoming subjective guidance, securing data-backed authority to drive client retention.", zh: "克服主观指导方式的局限，确保基于数据的专业性以引导会员续费（提升权威）", ja: "주관적 지도 방식의 한계 극복, 회원 재등록을 유도할 수 있는 데이터 기반 전문성 확보" },
+            "피트니스 센터 대표": { ko: "인근 경쟁사 대비 압도적인 하이테크 프리미엄 구축, 객관적 지표를 통한 트레이너 역량 상향 평준화", en: "Building high-tech premium differentiation, standardizing trainer quality via objective metrics.", zh: "构建压倒竞争对手的高科技高端形象，通过客观指标实现教练能力向上均衡", ja: "경쟁사 대비 압도적인 하이테크 프리미엄 구축, 객관적 지표를 통한 트레이너 역량 상향 평준화" },
+            "메디컬 피트니스 센터": { ko: "의학적 근거(EBM)와 피트니스의 완벽한 결합, VIP 고객 유치를 위한 임상 수준의 신뢰도 확보", en: "Fusing EBM with fitness, securing clinical-grade credibility for VIP acquisition.", zh: "医学证据(EBM)与健身的完美结合，确保 clinical 级别的可信度以吸引VIP客户", ja: "의학적 근거(EBM)와 피트니스의 완벽한 결합, VIP 고객 유치를 위한 임상 수준의 신뢰도 확보" },
+            "병원": { ko: "기존 인프라 변경 없이 진료/재활 워크플로우 효율화, 비급여 모델 연계를 통한 객관적 수익성(ROI) 증대", en: "Workflow efficiency without infrastructure overhaul, non-reimbursed ROI growth.", zh: "在不改变现有基础设施的情况下优化诊疗/康复流程，通过自费模式联动增加客观收益(ROI)", ja: "진료/재활 워크플로우 효율화, 비급여 모델 연계를 통한 객관적 수익성(ROI) 증대" },
+            "제약사": { ko: "예방적 스크리닝 생태계 구축, RWE(Real-World Evidence) 기반의 혁신적 디지털 바이오마커 선점", en: "Building preventive screening ecosystems, securing RWE digital biomarkers.", zh: "构建预防性筛查生态系统，抢占基于真实世界证据(RWE)的创新数字生物标志物", ja: "예방적 스크리닝 생태계 구축, RWE 기반의 혁신적 디지털 바이오마커 선점" },
+            "국내 유통사": { ko: "명확한 세일즈 포인트와 높은 마진율, 시장 진입 시 즉각적인 경쟁 우위(초격차) 확보 전략", en: "Clear USP, high margin structure, immediate competitive edge upon market entry.", zh: "明确的卖点和高利润率，在进入市场时立即确保竞争优势的战略", ja: "명확한 세일즈 포인트와 높은 마진율, 시장 진입 시 즉각적인 경쟁 우위 확보 전략" },
+            "해외 유통사": { ko: "현지 규제 대응의 용이성, 언어장벽을 넘어서는 직관적 데이터 시각화, 장기적 파트너십 가치", en: "Regulatory adaptability, intuitive cross-border data visualization, long-term partnership.", zh: "易于应对当地法规，超越语言障碍的直观数据可视化，长期的合作伙伴价值", ja: "현지 규제 대응의 용이성, 언어장벽을 넘어서는 직관적데이터 시각화, 장기적인 파트너십 가치" },
             "재활센터": { ko: "환자 치료 순응도(Compliance) 극대화, 치료사의 피로도 감소 및 체계적 예후 관리", en: "Maximizing patient compliance, reducing therapist fatigue with systematic tracking.", zh: "最大化患者治疗依从性，减少治疗师疲劳及系统化的预后管理", ja: "환자 치료 순응도(Compliance)의 극대화, 치료사의 피로도 감소 및 체계적인 예후 관리" },
-            "연구기관": { ko: "임상 연구의 신뢰도를 보장하는 Raw Data의 정밀성, 논문 게재를 위한 과학적 근거 확보", en: "Precision of raw data for clinical trials, scientific basis for publications.", zh: "确保临床研究可信度的原始数据精确性，获取发表论文的科学依据", ja: "臨床연구의 신뢰성을 보장하는 Raw Data의 정밀성, 논문 게재를 위한 과학적 근거 확보" },
-            "검진센터": { ko: "시니어 헬스케어 검진 라인업의 프리미엄화, AI 판독을 통한 검진 회전율 및 정확도 동시 향상", en: "Premiumizing senior checkups, enhancing throughput and accuracy via AI.", zh: "老年健康体检项目的高端化，通过AI解读同时提升体检周转率和准确度", ja: "시니어헤ルスケア 검진 라인업의 프리미엄화, AI 판독을 통한 검진 회전율 및 정확도 동시 향상" },
+            "연구기관": { ko: "임상 연구의 신뢰도를 보장하는 Raw Data의 정밀성, 논문 게재를 위한 과학적 근거 확보", en: "Precision of raw data for clinical trials, scientific basis for publications.", zh: "确保临床研究可信度的原始数据精确性，获取发表论文 of scientific basis", ja: "임상 연구의 신뢰성을 보장하는 Raw Data의 정밀성, 논문 게재를 위한 과학적 근거 확보" },
+            "검진센터": { ko: "시니어 헬스케어 검진 라인업의 프리미엄화, AI 판독을 통한 검진 회전율 및 정확도 동시 향상", en: "Premiumizing senior checkups, enhancing throughput and accuracy via AI.", zh: "老年健康体检项目的高端化，通过AI解读同时提升体检周转率 and 准确度", ja: "시니어 헬스케어 검진 라인업의 프리미엄화, AI 판독을 통한 검진 회전율 및 정확도 동시 향상" },
             "물리치료사": { ko: "치료 효율성 증대 및 객관적 데이터 기반의 환자 예후 관리, 전문성 부각", en: "Increasing treatment efficiency, objective data-based patient prognosis management, highlighting expertise.", zh: "提高治疗效率，基于客观数据的患者预后 management, 彰显专业性", ja: "치료 효율성 증대 및 객관적 데이터 기반의 환자 예후 관리, 전문성 부각" }
         };
 
@@ -859,7 +866,7 @@
             "일반 회원": { ko: "일반 회원", en: "General Member", zh: "普通会员", ja: "一般会員" },
             "트레이너": { ko: "트레이너", en: "Trainer", zh: "教练", ja: "トレーナー" },
             "피트니스 센터 대표": { ko: "피트니스 센터 대표", en: "Fitness Center CEO", zh: "健身房老板", ja: "フィットネス代表" },
-            "메디컬 피트니스 센터": { ko: "메디컬 피트니스 센터", en: "Medical Fitness Center", zh: "医疗健身中心", ja: "メディカルフィットネス" },
+            "메디컬 피트니스 센터": { ko: "메디컬 피트니스 센터", en: "Medical Fitness Center", zh: "医疗健身中心", ja: "メ디컬フィットネス" },
             "병원": { ko: "병원", en: "Hospital", zh: "医院", ja: "病院" },
             "제약사": { ko: "제약사", en: "Pharmaceutical Co.", zh: "制药 company", ja: "製薬会社" },
             "국내 유통사": { ko: "국내 유통사", en: "Domestic Distributor", zh: "国内经销商", ja: "国内流通業者" },
@@ -889,12 +896,12 @@
         };
 
         const PURPOSE_MAP = {
-            "strategyplan": { ko: "중장기 세일즈 액션 플랜 및 시장 진입 전략 수립", en: "Establish mid-to-long term sales action plan and market entry strategy", zh: "建立中长期销售行动计划和市场进入战略", ja: "中長期セール스액션 플랜 및 시장 진입 전략 수립" },
-            "customquery": { ko: "AI와 제품 기반 마이크로 컨설팅 및 무제한 심층 자유 토론", en: "Product-based micro consulting and unlimited deep Q&A with AI", zh: "基于产品与AI进行微咨询及无限制深度探讨", ja: "製品に基づきAIと行うマイクロコンサルティングおよび無制限의 자유 토론" },
+            "strategyplan": { ko: "중장기 세일즈 액션 플랜 및 시장 진입 전략 수립", en: "Establish mid-to-long term sales action plan and market entry strategy", zh: "建立中长期销售行动计划和市场进入战略", ja: "중長期セール스액션 플랜 및 시장 진입 전략 수립" },
+            "customquery": { ko: "AI와 제품 기반 마이크로 컨설팅 및 무제한 심층 자유 토론", en: "Product-based micro consulting and unlimited deep Q&A with AI", zh: "基于产品与AI进行微咨询及无限制深度探讨", ja: "제품 기반 마이크로 컨설팅 및 무제한 자유 토론" },
             "imagegen": { ko: "마케팅 캠페인용 시각적 에셋 및 컨셉 도출", en: "Generate visual assets and concepts for marketing campaigns", zh: "为营销活动生成视觉资产 and concepts", ja: "마케팅 캠페인용 시각적 에셋 및 컨셉 도출" },
             "email": { ko: "타겟 대상의 즉각적인 데모 신청 및 잠재 고객(Lead) 확보", en: "Drive immediate demo requests and secure leads", zh: "推动即时演示申请并确保潜在客户", ja: "ターゲット의 즉시 데모 신청 및 잠재 고객(Lead) 확보" },
-            "cardnews": { ko: "SNS 채널 내 직관적인 정보 전달을 통한 브랜드 인지도(Awareness) 상승", en: "Boost brand awareness through intuitive info delivery on SNS", zh: "通过社交媒体上直观的信息传递提升品牌知名度", ja: "SNSチャネルでの直感적인 정보 전달을 통한 브랜드 인지도 상승" },
-            "reels": { ko: "짧고 강렬한 훅(Hook)을 통한 신규 타겟의 시선 집중 및 트래픽 유도", en: "Capture attention and drive traffic via short, impactful hooks", zh: "通过 short 强烈的 hook 吸引新目标受众的注意力并引导流量", ja: "ショートフックによる新規ターゲット의 시선 집중 및 트래픽 유도" },
+            "cardnews": { ko: "SNS 채널 내 직관적인 정보 전달을 통한 브랜드 인지도(Awareness) 상승", en: "Boost brand awareness through intuitive info delivery on SNS", zh: "通过社交媒体上直观的信息传递提升品牌知名度", ja: "SNS채널에서의 직관적인 정보 전달을 통한 브랜드 인지도 상승" },
+            "reels": { ko: "짧고 강렬한 훅(Hook)을 통한 신규 타겟의 시선 집중 및 트래픽 유도", en: "Capture attention and drive traffic via short, impactful hooks", zh: "通过 short 强烈的 hook 吸引新目标受众的注意力并引导流量", ja: "숏폼 비디오 연출을 위한 가시성 극대화 씬 묘사" },
             "adcopy": { ko: "A/B 테스트를 통한 퍼포먼스 마케팅 효율 극대화 및 클릭률(CTR) 개선", en: "Maximize performance marketing efficiency and CTR via A/B testing", zh: "通过 A/B 测试最大化效果营销效率并提高点击率(CTR)", ja: "A/B테스트를 통한 퍼포먼스 마케팅 효율 극대화와 CTR 개선" },
             "videoprompt": { ko: "고품질 생성형 AI 영상 에셋 확보를 위한 최적화된 프롬프트 제공", en: "Provide optimized prompts for securing high-quality generative AI video assets", zh: "提供优化的提示词以获取高质量的生成式 AI 视频资产", ja: "高品質な生成AI動画アセット를 확보하기 위한 최적화된 프롬프트 제공" }
         };
@@ -1145,7 +1152,7 @@
                 labelProduct: "製品",
                 labelTarget: "ターゲット",
                 labelContentType: "コンテンツタイプ",
-                videoLengthMsg: "ビデオモード有効。指定の時間枠にプロンプトがマッピングされます。",
+                videoLengthMsg: "ビデオモード有効。指定の時間枠にプロンプト가 매핑됩니다.",
                 labelKeywords: "必須キーワード",
                 labelImgUpload: "参考画像アップロード",
                 btnSelectImg: "画像選択",
@@ -1166,22 +1173,22 @@
                 emptyDesc: "設定して生成してください。",
                 btnCopyAll: "すべてコピー",
                 btnCopyHash: "タグコピー",
-                btnDlMd: "MDダウンロード",
+                btnDlMd: "MD다운로드",
                 btnSaveLib: "저장",
                 secStratDirection: "[戦略ブリー프]",
                 secGenContent: "詳細結果",
                 secGenImg: "AI  マーケティングコンセプト画像",
-                secGenImgReels: "AI リールキーフレーム (クリーン)",
+                secGenImgReels: "AI 리ールキーフレーム (クリーン)",
                 secWarnings: "コンプライアンス警告",
                 optAllStatus: "すべてのステータス",
                 optStatusDraft: "下書き (Draft)",
                 optStatusReviewed: "レビュー済 (Reviewed)",
                 optStatusUsed: "使用済 (Used)",
                 optStatusArchived: "保管済 (Archived)",
-                optTypeStrategy: "マーケティング戦略計画",
+                optTypeStrategy: "マーケ팅 전략 계획",
                 optTypeImagegen: "画像生成",
                 optTypeEmail: "Eメール",
-                optTypeCardnews: "カードニュース",
+                optTypeCardnews: "카드뉴스",
                 optTypeReels: "ショート/リール (クリーン)",
                 optTypeAdcopy: "広告コピー",
                 optTypeVideoprompt: "動画生成プロンプト",
@@ -1192,10 +1199,10 @@
                 modalStratLbl: "[ブリーフ]",
                 modalContentLbl: "本文",
                 modalHashLbl: "ハッシュタグ",
-                modalBtnDel: "削除",
-                modalBtnCopy: "コピー",
-                modalBtnClose: "閉じる",
-                noFile: "ファイル가 선택되어 있지 않습니다",
+                modalBtnDel: "삭제",
+                modalBtnCopy: "복사",
+                modalBtnClose: "닫기",
+                noFile: "파일가 선택되어 있지 않습니다",
                 medicalBadge: "医療機器",
                 wellnessBadge: "ウェルネス",
                 scopeLabel: "JAのみ",
@@ -1212,9 +1219,9 @@
                 libBtnSelect: "ドキュメント選択",
                 libBtnSave: "分析して保存",
                 libBtnViewAll: "すべて見る",
-                fullHistTitle: "全学習データ履歴",
-                fullHistDesc: "*リストを削除しても適用된 학습 데이터는 유지됩니다.",
-                fullHistBtnClose: "閉じる"
+                fullHistTitle: "全학습 데이터 이력",
+                fullHistDesc: "*리스트에서 삭제하더라도 실제 적용된 시스템 학습 데이터는 유지됩니다.",
+                fullHistBtnClose: "닫기"
             }
         };
 
@@ -2071,7 +2078,7 @@ Return ONLY a valid JSON object strictly matching this format without markdown b
                 ko: { target: "🎯 포지셔닝 타겟", pain: "🧠 심층 페인포인트 분석", key: "🔑 차별화 키워드", json: "📊 AI 학습 DB 융합", memo: "📝 추가 전략 메모" },
                 en: { target: "🎯 Target Matrix", pain: "🧠 Deep Pain Point", key: "🔑 Core Pillars", json: "📊 AI Data Applied", memo: "📝 Memo Reflected" },
                 zh: { target: "🎯 定位目标", pain: "🧠 深度痛点分析", key: "🔑 差异化关键词", json: "📊 AI学习数据融合", memo: "📝 附加战略摘要" },
-                ja: { target: "🎯 ターゲットマトリックス", pain: "🧠 深層ペ인포인트 분석", key: "🔑 差別化キーワード", json: "📊 AI学習データ適用", memo: "📝 추가 전략 메모" }
+                ja: { target: "🎯 ターゲットマトリックス", pain: "🧠 深層ペ인포인트 분석", key: "🔑 差別화 키워드", json: "📊 AI学習데이터 적용", memo: "📝 추가 전략 메모" }
             };
             const L = labels[currentLang] || labels['en'];
 
@@ -2105,7 +2112,7 @@ Return ONLY a valid JSON object strictly matching this format without markdown b
                 ko: `"직관을 넘어 데이터로, ${localizedTarget}의 한계를 돌파하십시오."`,
                 en: `"Move beyond intuition. Break through the limits of ${localizedTarget} with data."`,
                 zh: `"超越直觉。用数据突破 ${localizedTarget} 的极限。"`,
-                ja: `"直感を超え、데이터로 ${localizedTarget}의 한계를 돌파하십시오. "`
+                ja: `"직관을 넘어 데이터로, ${localizedTarget}의 한계를 돌파하십시오. "`
             };
 
             let metaPrefix = "";
@@ -2125,7 +2132,7 @@ Return ONLY a valid JSON object strictly matching this format without markdown b
                 ko: "AI 심층 분석 및 콘텐츠 생성 중...",
                 en: "AI Analyzing & Generating...",
                 zh: "AI 深度 analysis 与内容生成中...",
-                ja: "AI 深層分析およびコンテンツ生成중..."
+                ja: "AI 심층 분석 및 콘텐츠 생성 중..."
             };
             btn.disabled = true;
             btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 sm:w-5 sm:h-5 animate-spin"></i><span>${loadingTexts[currentLang]}</span>`;
