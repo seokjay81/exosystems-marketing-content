@@ -69,9 +69,28 @@
             
             <!-- CONFIGURATION CARD -->
             <div class="bg-white rounded-2xl border-2 border-slate-200 p-5 sm:p-6 shadow-md space-y-5">
-                <div class="flex items-center space-x-2 pb-3 border-b-2 border-slate-100">
-                    <i data-lucide="sliders" class="w-5 h-5 text-blue-600"></i>
-                    <h2 class="text-base sm:text-lg font-bold text-slate-900" id="ui-section-config">콘텐츠 설정</h2>
+                <div class="flex items-center justify-between pb-3 border-b-2 border-slate-100">
+                    <div class="flex items-center space-x-2">
+                        <i data-lucide="sliders" class="w-5 h-5 text-blue-600"></i>
+                        <h2 class="text-base sm:text-lg font-bold text-slate-900" id="ui-section-config">콘텐츠 설정</h2>
+                    </div>
+                </div>
+
+                <!-- NEW: API Key Input for Vercel Deployment -->
+                <div class="space-y-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                    <div class="flex justify-between items-center">
+                        <label class="text-xs font-bold text-slate-700 flex items-center">
+                            <i data-lucide="key" class="w-3.5 h-3.5 mr-1 text-blue-600"></i>
+                            Gemini API Key
+                        </label>
+                        <span class="text-[9px] text-slate-400 font-medium">*Vercel 배포 시 입력 필수</span>
+                    </div>
+                    <div class="relative">
+                        <input type="password" id="user-api-key-input" oninput="saveUserApiKey()" class="w-full bg-white border-2 border-slate-300 rounded-xl pl-3 pr-10 py-2 text-slate-900 font-medium placeholder-slate-400 focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none text-xs hover:border-blue-400" placeholder="AIzaSy... (브라우저 로컬 저장)">
+                        <button onclick="toggleApiKeyVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 outline-none">
+                            <i data-lucide="eye" id="api-key-eye-icon" class="w-4 h-4"></i>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Product Selection -->
@@ -135,13 +154,13 @@
                     </div>
                 </div>
 
-                <!-- NEW: 자유 질문 입력창 (customquery 선택 시 노출) -->
+                <!-- NEW: 자유 질문 입력창 -->
                 <div id="custom-query-box" class="hidden space-y-2">
                     <label class="text-xs sm:text-sm font-bold text-slate-700 block" id="ui-label-custom-query">제품 특화 자유 질문 및 논의 내용</label>
                     <textarea id="custom-query-input" rows="4" class="w-full bg-slate-50 border-2 border-slate-300 rounded-xl p-3 text-xs text-slate-900 outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder-slate-400 font-medium hover:border-blue-400 custom-scrollbar" placeholder="선택하신 제품과 관련하여 AI와 논의하고 싶은 상세 질문을 입력하세요.&#10;예: exoFit 솔루션을 정형외과 도수치료실에 효과적으로 제안하기 위한 임상적 및 비즈니스적 이점을 논리적으로 작성해줘."></textarea>
                 </div>
 
-                <!-- Video Duration Context Tooltip (Dynamic) -->
+                <!-- Video Duration Context Tooltip -->
                 <div id="video-duration-box" class="hidden p-3 bg-blue-50 border-2 border-blue-200 rounded-xl text-xs text-blue-800 flex items-start space-x-2 font-medium">
                     <i data-lucide="info" class="w-4 h-4 mt-0.5 flex-shrink-0"></i>
                     <span id="ui-video-length-msg">영상 길이 조건이 활성화되었습니다. 연출 프롬프트에 자동으로 시간 분량이 매핑됩니다.</span>
@@ -302,7 +321,7 @@
                             <h4 class="font-bold text-slate-900 flex items-center space-x-1.5 text-xs sm:text-sm pb-1" id="ui-sec-gen-img-title">
                                 <!-- Dynamic icon & text based on type -->
                             </h4>
-                            <div id="image-generation-status" class="flex items-center justify-center space-x-2 text-blue-600 text-xs font-bold bg-blue-50/50 p-4 rounded-xl border-2 border-blue-100 hidden">
+                            <div id="image-generation-status" class="flex items-center justify-center space-x-2 text-blue-600 text-xs font-bold bg-blue-50 p-4 rounded-xl border-2 border-blue-100 hidden">
                                 <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span id="ui-img-loading-text">AI 에셋 생성 중...</span>
                             </div>
                             <img id="generated-image" class="w-full max-w-md rounded-xl shadow-md border-2 border-slate-200 hidden" alt="Generated AI Concept">
@@ -393,7 +412,7 @@
                                     <div class="flex justify-end">
                                         <button onclick="saveLearningData()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-2.5 px-6 rounded-xl text-xs transition-all shadow-md flex items-center justify-center space-x-1.5 outline-none border-2 border-indigo-800 h-10">
                                             <i data-lucide="brain" class="w-4 h-4"></i>
-                                            <span id="ui-lib-btn-save">AI 분석/저장</span>
+                                            <span id="ui-btn-save">AI 분석/저장</span>
                                         </button>
                                     </div>
                                 </div>
@@ -652,13 +671,50 @@
         // 런타임 환경에서 주입되는 마스터 인증 키가 정상적으로 연동되어 작동합니다.
         const apiKey = ""; 
 
+        // 토스트 알림 메시지 출력 함수
         function showToast(message) {
             const toast = document.getElementById('toast-message');
-            document.getElementById('toast-text').textContent = message;
-            toast.classList.remove('translate-y-24', 'opacity-0');
-            setTimeout(() => {
-                toast.classList.add('translate-y-24', 'opacity-0');
-            }, 3000);
+            if (toast) {
+                const toastText = document.getElementById('toast-text');
+                if (toastText) {
+                    toastText.textContent = message;
+                }
+                toast.classList.remove('translate-y-24', 'opacity-0');
+                setTimeout(() => {
+                    toast.classList.add('translate-y-24', 'opacity-0');
+                }, 3000);
+            }
+        }
+
+        // 동적으로 활성화된 API Key를 가져오는 함수 (시스템 키가 없을 시 localStorage에서 사용자 키를 로드)
+        function getActiveApiKey() {
+            return apiKey || localStorage.getItem('exosystems_user_api_key') || "";
+        }
+
+        // 사용자 API 키를 localStorage에 실시간 백업하는 기능 (Vercel 유지보수용)
+        function saveUserApiKey() {
+            const val = document.getElementById('user-api-key-input').value.trim();
+            localStorage.setItem('exosystems_user_api_key', val);
+        }
+
+        // 브라우저 캐시에서 API 키를 다시 인풋 창으로 불러오는 기능
+        function loadUserApiKey() {
+            const saved = localStorage.getItem('exosystems_user_api_key') || "";
+            document.getElementById('user-api-key-input').value = saved;
+        }
+
+        // 비밀번호 마스킹 해제/설정 인터랙션 토글
+        function toggleApiKeyVisibility() {
+            const input = document.getElementById('user-api-key-input');
+            const icon = document.getElementById('api-key-eye-icon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.setAttribute('data-lucide', 'eye-off');
+            } else {
+                input.type = 'password';
+                icon.setAttribute('data-lucide', 'eye');
+            }
+            createIconsSafe();
         }
 
         // --- SAFE ICON CREATION HELPER ---
@@ -720,12 +776,15 @@
 
         // --- SAFE CALL GEMINI HELPER WITH DETAILED ERROR INFO & MULTI-MODEL FALLBACK ---
         async function safeCallGemini(prompt, systemInstruction = "") {
-            // 이 환경에서 안정적인 마케팅/전략 분석 쿼리를 보장하기 위해 규격 모델인 gemini-2.5-flash-preview-09-2025를 최우선으로 지정합니다.
+            const activeKey = getActiveApiKey();
+            
+            // 프리뷰 환경 규격을 준수하기 위해 gemini-2.5-flash-preview-09-2025와 gemini-1.5-flash를 타겟 모델로 설정합니다.
+            // 개발자 환경 가이드에 따라 하드코딩된 에러 제동 대신 즉각적인 fetch를 시도하여 프리뷰 가상 인터셉터가 키를 주입하게 만듭니다.
             const models = ["gemini-2.5-flash-preview-09-2025", "gemini-1.5-flash"];
             let lastError = null;
 
             for (const model of models) {
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${activeKey}`;
                 const payload = {
                     contents: [{ parts: [{ text: prompt }] }]
                 };
@@ -782,9 +841,9 @@
             "exoFit": {
                 name: "exoFit",
                 definition: { ko: "AI 운동 역량 평가 솔루션", en: "AI Exercise Capacity Evaluation Solution", zh: "AI运动能力评估解决方案", ja: "AI運動能力評価ソリューション" },
-                positioning: { ko: "EMG와 IMU 기반으로 운동 중 근육 반응과 움직임을 데이터로 확인하고, 트레이너 지도 지원", en: "A solution verifying muscle responses via EMG/IMU data to assist trainers.", zh: "基于EMG/IMU的肌동 analysis 支持教练의解决方案", ja: "EMGとIMUによる筋肉反応データでトレー너 지도 지원 솔루션" },
+                positioning: { ko: "EMG와 IMU 기반으로 운동 중 근육 반응과 움직임을 데이터로 확인하고, 트레이너 지도 지원", en: "A solution verifying muscle responses via EMG/IMU data to assist trainers.", zh: "基于EMG/IMU的肌동 analysis 支持教练의解决方案", ja: "EMGとIMUによる筋肉反応データでトレーナー指導를 지원하는 솔루션" },
                 targets: ["일반 회원", "트레이너", "피트니스 센터 대표", "메디컬 피트니스 센터", "병원", "국내 유통사", "해외 유통사", "물리치료사"],
-                allowed: { ko: ["운동 중 몸의 반응을 데이터로 확인합니다.", "트레이너의 상담을 지원합니다."], en: ["Verify body reactions.", "Reference data."], zh: ["通过数据确认身体反应。"], ja: ["体の反応を데이터로 확인합니다."] },
+                allowed: { ko: ["운동 중 몸의 반응을 데이터로 확인합니다.", "트레이너의 상담을 지원합니다."], en: ["Verify body reactions.", "Reference data."], zh: ["通过数据确认身体反应。"], ja: ["体の反応를 데이터로 확인합니다."] },
                 prohibited: { ko: ["치료됩니다.", "완치됩니다.", "진단합니다.", "재활 효과 보장"], en: ["Cures diseases.", "Diagnoses conditions."], zh: ["治愈疾病。", "诊断特定病症。"], ja: ["治療されます。", "診断します。"] },
                 rules: { ko: ["운동 보조 참고 데이터로만 언급", "트레이너 전문성 강조"], en: ["Mention as reference.", "Emphasize expertise."], zh: ["仅作为参考。"], ja: ["参考データとして言게합니다."] },
                 disclaimer: { ko: "본 결과는 운동 지도를 돕는 참고 데이터입니다. 의학적 판단 불가.", en: "Reference data to assist exercise guidance.", zh: "辅助运动指导的参考数据。", ja: "運動指導를 돕는 참고 데이터입니다." },
@@ -804,7 +863,7 @@
             "exoPill-FES": {
                 name: "exoPill-FES",
                 definition: { ko: "기능적 전기 자극 재활 솔루션", en: "FES Rehab Solution", zh: "FES康复解决方案", ja: "FESリハビリソリューション" },
-                positioning: { ko: "FES를 활용하여 재활 과정에서 근육 활성 보조", en: "Utilizes FES to assist muscle activation in rehab.", zh: "利用FES辅助康复中的肌肉激活", ja: "FESを活用した리하빌리중 근육 활성 보조" },
+                positioning: { ko: "FES를 활용하여 재활 과정에서 근육 활성 보조", en: "Utilizes FES to assist muscle activation in rehab.", zh: "利用FES辅助康复中的肌肉激活", ja: "FES를 활용한 리하빌리중 근육 활성 보조" },
                 targets: ["병원", "재활의학과", "물리치료실", "재활병원", "국내 유통사", "물리치료사"],
                 allowed: { ko: ["식약처 허가 의료기기", "근육 활성 보조"], en: ["Approved device", "Assists muscle"], zh: ["许可器械"], ja: ["許可機器"] },
                 prohibited: { ko: ["치료 보장", "진단 보장"], en: ["Cure guarantee"], zh: ["保证治愈"], ja: ["治療保証"] },
@@ -815,7 +874,7 @@
             "EXOMED-DeepSARC": {
                 name: "EXOMED-DeepSARC",
                 definition: { ko: "AI 기반 근감소증 진단 보조 솔루션", en: "AI Sarcopenia Diagnosis Support", zh: "AI肌少症诊断辅助", ja: "AIサルコペニア診断補助" },
-                positioning: { ko: "신경근육계 반응 기반 근감소증 위험 평가 AI 솔루션", en: "AI solution evaluating sarcopenia risk.", zh: "评估肌少症风险的AI解决方案", ja: "サルコペニアリスクを評価するAIソリューション" },
+                positioning: { ko: "신경근육계 반응 기반 근감소증 위험 평가 AI 솔루션", en: "AI solution evaluating sarcopenia risk.", zh: "评估肌少症风险的AI解决方案", ja: "サルコペニアリスクを評価하는 AI 솔루션" },
                 targets: ["병원", "검진센터", "제약사", "연구기관"],
                 allowed: { ko: ["식약처 혁신의료기기 지정", "진단 보조 솔루션"], en: ["Innovative device", "Diagnosis support"], zh: ["创新器械"], ja: ["革新医療機器"] },
                 prohibited: { ko: ["단독 진단", "효과 확약"], en: ["Standalone diagnosis"], zh: ["단독 진단"], ja: ["단독 진단"] },
@@ -848,7 +907,7 @@
         };
 
         const STRATEGIC_AUDIENCE_INSIGHTS = {
-            "일반 회원": { ko: "개인 맞춤형 피드백 부재에 대한 불안감 해결, 즉각적이고 가시적인 성과 확인", en: "Resolving anxiety over lack of personalized feedback, instant visible progress.", zh: "解决对缺乏个性化反馈的焦虑，确认即时可见的成果", ja: "パーソナライズされたフィードバックの欠如に対する不安を解消し, 즉각적이고 눈에 보이는 성과를 확인" },
+            "일반 회원": { ko: "개인 맞춤형 피드백 부재에 대한 불안감 해결, 즉각적이고 가시적인 성과 확인", en: "Resolving anxiety over lack of personalized feedback, instant visible progress.", zh: "解决对缺乏个性化反馈的焦虑，确认即时可见的成果", ja: "パーソナライズされたフィードバック의 결여에 대한 불안을 해소하고, 즉각적이고 눈에 보이는 성과를 확인" },
             "트레이너": { ko: "주관적 지도 방식의 한계 극복, 회원 재등록을 유도할 수 있는 데이터 기반의 전문성 확보(권위 상승)", en: "Overcoming subjective guidance, securing data-backed authority to drive client retention.", zh: "克服主观指导方式的局限，确保基于数据的专业性以引导会员续费（提升权威）", ja: "주관적 지도 방식의 한계 극복, 회원 재등록을 유도할 수 있는 데이터 기반 전문성 확보" },
             "피트니스 센터 대표": { ko: "인근 경쟁사 대비 압도적인 하이테크 프리미엄 구축, 객관적 지표를 통한 트레이너 역량 상향 평준화", en: "Building high-tech premium differentiation, standardizing trainer quality via objective metrics.", zh: "构建压倒竞争对手的高科技高端形象，通过客观指标实现教练能力向上均衡", ja: "경쟁사 대비 압도적인 하이테크 프리미엄 구축, 객관적 지표를 통한 트레이너 역량 상향 평준화" },
             "메디컬 피트니스 센터": { ko: "의학적 근거(EBM)와 피트니스의 완벽한 결합, VIP 고객 유치를 위한 임상 수준의 신뢰도 확보", en: "Fusing EBM with fitness, securing clinical-grade credibility for VIP acquisition.", zh: "医学证据(EBM)与健身的完美结合，确保 clinical 级别的可信度以吸引VIP客户", ja: "의학적 근거(EBM)와 피트니스의 완벽한 결합, VIP 고객 유치를 위한 임상 수준의 신뢰도 확보" },
@@ -859,14 +918,14 @@
             "재활센터": { ko: "환자 치료 순응도(Compliance) 극대화, 치료사의 피로도 감소 및 체계적 예후 관리", en: "Maximizing patient compliance, reducing therapist fatigue with systematic tracking.", zh: "最大化患者治疗依从性，减少治疗师疲劳及系统化的预后管理", ja: "환자 치료 순응도(Compliance)의 극대화, 치료사의 피로도 감소 및 체계적인 예후 관리" },
             "연구기관": { ko: "임상 연구의 신뢰도를 보장하는 Raw Data의 정밀성, 논문 게재를 위한 과학적 근거 확보", en: "Precision of raw data for clinical trials, scientific basis for publications.", zh: "确保临床研究可信度的原始数据精确性，获取发表论文 of scientific basis", ja: "임상 연구의 신뢰성을 보장하는 Raw Data의 정밀성, 논문 게재를 위한 과학적 근거 확보" },
             "검진센터": { ko: "시니어 헬스케어 검진 라인업의 프리미엄화, AI 판독을 통한 검진 회전율 및 정확도 동시 향상", en: "Premiumizing senior checkups, enhancing throughput and accuracy via AI.", zh: "老年健康体检项目的高端化，通过AI解读同时提升体检周转率 and 准确度", ja: "시니어 헬스케어 검진 라인업의 프리미엄화, AI 판독을 통한 검진 회전율 및 정확도 동시 향상" },
-            "물리치료사": { ko: "치료 효율성 증대 및 객관적 데이터 기반의 환자 예후 관리, 전문성 부각", en: "Increasing treatment efficiency, objective data-based patient prognosis management, highlighting expertise.", zh: "提高治疗效率，基于客观数据的患者预后 management, 彰显专业性", ja: "치료 효율성 증대 및 객관적 데이터 기반의 환자 예후 관리, 전문성 부각" }
+            "물리치료사": { ko: "치료 효율성 증대 및 객관적 데이터 기반의 환자 예후 관리, 전문성 부각", en: "Increasing treatment efficiency, objective data-backed patient prognosis management, highlighting expertise.", zh: "提高治疗效率，基于客观数据的患者预后 management, 彰显专业性", ja: "치료 효율성 증대 및 객관적 데이터 기반의 환자 예후 관리, 전문성 부각" }
         };
 
         const TARGET_NAMES = {
             "일반 회원": { ko: "일반 회원", en: "General Member", zh: "普通会员", ja: "一般会員" },
             "트레이너": { ko: "트레이너", en: "Trainer", zh: "教练", ja: "トレーナー" },
-            "피트니스 센터 대표": { ko: "피트니스 센터 대표", en: "Fitness Center CEO", zh: "健身房老板", ja: "フィットネス代表" },
-            "메디컬 피트니스 센터": { ko: "메디컬 피트니스 센터", en: "Medical Fitness Center", zh: "医疗健身中心", ja: "メ디컬フィットネス" },
+            "피트니스 센터 대표": { ko: "피트니스 센터 대표", en: "Fitness Center CEO", zh: "健身房老板", ja: "フィットネス대표" },
+            "메디컬 피트니스 센터": { ko: "메디컬 피트니스 센터", en: "Medical Fitness Center", zh: "医疗健身中心", ja: "메디컬フィットネス" },
             "병원": { ko: "병원", en: "Hospital", zh: "医院", ja: "病院" },
             "제약사": { ko: "제약사", en: "Pharmaceutical Co.", zh: "制药 company", ja: "製薬会社" },
             "국내 유통사": { ko: "국내 유통사", en: "Domestic Distributor", zh: "国内经销商", ja: "国内流通業者" },
@@ -881,7 +940,7 @@
             "strategyplan": { ko: "마케팅 전략 계획", en: "Marketing Strategy Plan", zh: "营销战略计划", ja: "マーケティング戦略計画" },
             "customquery": { ko: "자유 질문 및 심층 논의", en: "Free Q&A & Discussion", zh: "自由提问与深度探讨", ja: "自由質問および深層디스커션" },
             "imagegen": { ko: "이미지 생성", en: "Image Generation", zh: "图像生成", ja: "画像生成" },
-            "email": { ko: "이메일", en: "Email", zh: "电子邮件", ja: "Eメール" },
+            "email": { ko: "이메일", en: "Email", zh: "电子邮件", ja: "E메일" },
             "cardnews": { ko: "카드뉴스", en: "Card News", zh: "图文卡片", ja: "カードニュース" },
             "reels": { ko: "숏폼/릴스 (클린)", en: "Shorts/Reels (Clean)", zh: "短视频/Reels (Clean)", ja: "ショート/リール (クリーン)" },
             "adcopy": { ko: "광고 카피", en: "Ad Copy", zh: "广告文案", ja: "広告コピー" },
@@ -1152,7 +1211,7 @@
                 labelProduct: "製品",
                 labelTarget: "ターゲット",
                 labelContentType: "コンテンツタイプ",
-                videoLengthMsg: "ビデオモード有効。指定の時間枠にプロンプト가 매핑됩니다.",
+                videoLengthMsg: "ビデオモード有効。指定の時間枠에 프로ンプト가 매핑됩니다.",
                 labelKeywords: "必須キーワード",
                 labelImgUpload: "参考画像アップロード",
                 btnSelectImg: "画像選択",
@@ -1173,19 +1232,19 @@
                 emptyDesc: "設定して生成してください。",
                 btnCopyAll: "すべてコピー",
                 btnCopyHash: "タグコピー",
-                btnDlMd: "MD다운로드",
+                btnDlMd: "MDダウンロード",
                 btnSaveLib: "저장",
                 secStratDirection: "[戦略ブリー프]",
                 secGenContent: "詳細結果",
                 secGenImg: "AI  マーケティングコンセプト画像",
                 secGenImgReels: "AI 리ールキーフレーム (クリーン)",
-                secWarnings: "コンプライアンス警告",
+                secWarnings: "공시 규제 준수 경고",
                 optAllStatus: "すべてのステータス",
                 optStatusDraft: "下書き (Draft)",
                 optStatusReviewed: "レビュー済 (Reviewed)",
                 optStatusUsed: "使用済 (Used)",
                 optStatusArchived: "保管済 (Archived)",
-                optTypeStrategy: "マーケ팅 전략 계획",
+                optTypeStrategy: "마케팅 전략 계획",
                 optTypeImagegen: "画像生成",
                 optTypeEmail: "Eメール",
                 optTypeCardnews: "카드뉴스",
@@ -1208,7 +1267,7 @@
                 scopeLabel: "JAのみ",
                 libGenTitle: "学習データの更新 (ドキュメント/URL)",
                 libHistTitle: "更新履歴 (最近5件)",
-                libHistDesc: "*リストを削除しても適用された学習データは維持されます。",
+                libHistDesc: "*リストを削除しても適用された학습 데이터는 유지됩니다.",
                 libHistEmpty: "更新履歴가 없습니다.",
                 modalLrnTitle: "学習データ詳細",
                 modalLrnBtnDel: "記録を削除",
@@ -2005,7 +2064,8 @@ Return ONLY a valid JSON object strictly matching this format without markdown b
             createIconsSafe();
 
             try {
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`;
+                const activeKey = getActiveApiKey();
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${activeKey}`;
                 const payload = {
                     instances: { prompt: promptText },
                     parameters: { sampleCount: 1 }
@@ -2077,7 +2137,7 @@ Return ONLY a valid JSON object strictly matching this format without markdown b
             const labels = {
                 ko: { target: "🎯 포지셔닝 타겟", pain: "🧠 심층 페인포인트 분석", key: "🔑 차별화 키워드", json: "📊 AI 학습 DB 융합", memo: "📝 추가 전략 메모" },
                 en: { target: "🎯 Target Matrix", pain: "🧠 Deep Pain Point", key: "🔑 Core Pillars", json: "📊 AI Data Applied", memo: "📝 Memo Reflected" },
-                zh: { target: "🎯 定位目标", pain: "🧠 深度痛点分析", key: "🔑 差异化关键词", json: "📊 AI学习数据融合", memo: "📝 附加战略摘要" },
+                zh: { target: "🎯 定位目标", pain: "🧠 深度痛点 분석", key: "🔑 差别화 키워드", json: "📊 AI학습데이터 적용", memo: "📝 추가 전략 메모" },
                 ja: { target: "🎯 ターゲットマトリックス", pain: "🧠 深層ペ인포인트 분석", key: "🔑 差別화 키워드", json: "📊 AI学習데이터 적용", memo: "📝 추가 전략 메모" }
             };
             const L = labels[currentLang] || labels['en'];
@@ -2123,7 +2183,7 @@ Return ONLY a valid JSON object strictly matching this format without markdown b
             } else if (currentLang === 'zh') {
                 metaPrefix = `[📊 内容战略元信息]\n- 🎯 内容目的: ${PURPOSE_MAP[type]['zh']}\n- 💡 核心诉求信息: ${keyMsgDict['zh']}\n- 🧠 目标受중 심리 (痛点): ${strategicInsight}\n- ⚡ 快捷复制关键词包: ${keywords.map(k=>`#${k}`).join(' ')} #${product.replace(/-/g, '')}\n\n==================================================\n\n`;
             } else if (currentLang === 'ja') {
-                metaPrefix = `[📊 コンテンツ戦略メタ情報]\n- 🎯 コンテンツの目的: ${PURPOSE_MAP[type]['ja']}\n- 💡 核心訴求メッセージ: ${keyMsgDict['ja']}\n- 🧠 ターゲット顧客の心理 (ペインポイント): ${strategicInsight}\n- ⚡ コピー＆ペースト用キーワードパック: ${keywords.map(k=>`#${k}`).join(' ')} #${product.replace(/-/g, '')}\n\n==================================================\n\n`;
+                metaPrefix = `[📊 コン텐츠戦略メタ情報]\n- 🎯 コン텐츠の目的: ${PURPOSE_MAP[type]['ja']}\n- 💡 核心訴求メッセージ: ${keyMsgDict['ja']}\n- 🧠 ターゲット顧客の心理 (ペインポイント): ${strategicInsight}\n- ⚡ コピー＆ペースト用キーワードパック: ${keywords.map(k=>`#${k}`).join(' ')} #${product.replace(/-/g, '')}\n\n==================================================\n\n`;
             }
 
             const btn = document.querySelector('button[onclick="generateContent()"]');
@@ -2131,7 +2191,7 @@ Return ONLY a valid JSON object strictly matching this format without markdown b
             const loadingTexts = {
                 ko: "AI 심층 분석 및 콘텐츠 생성 중...",
                 en: "AI Analyzing & Generating...",
-                zh: "AI 深度 analysis 与内容生成中...",
+                zh: "AI 深度 analysis 与内容生成중...",
                 ja: "AI 심층 분석 및 콘텐츠 생성 중..."
             };
             btn.disabled = true;
@@ -2483,6 +2543,7 @@ DO NOT include any introductory or concluding remarks (e.g., "Here is the conten
             verifyAndInitializeLanguage();
             checkAdminAuthUI();
             updateLibraryCounterBadge();
+            loadUserApiKey(); // 브라우저 로컬 캐시에서 사용자가 배포 시 등록한 API Key 불러오기
             createIconsSafe();
         });
     </script>
