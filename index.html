@@ -768,7 +768,13 @@
                             body: JSON.stringify(payload)
                         });
 
-                        const result = await response.json();
+                        const resultText = await response.text();
+                        let result;
+                        try {
+                            result = JSON.parse(resultText);
+                        } catch (parseError) {
+                            throw new Error(`서버가 JSON이 아닌 응답을 반환했습니다: ${resultText.substring(0, 180)}`);
+                        }
 
                         if (!response.ok) {
                             if (result.error) {
@@ -1794,8 +1800,17 @@ Return ONLY a valid JSON object strictly matching this format without markdown b
                     body: JSON.stringify(payload)
                 });
 
-                if (!res.ok) throw new Error("Image API Failed");
-                const data = await res.json();
+                const text = await res.text();
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (parseError) {
+                    throw new Error(`이미지 API가 JSON이 아닌 응답을 반환했습니다: ${text.substring(0, 180)}`);
+                }
+
+                if (!res.ok) {
+                    throw new Error(`Image API Failed: ${data.error?.message || JSON.stringify(data)}`);
+                }
 
                 if (data.predictions && data.predictions[0] && data.predictions[0].bytesBase64Encoded) {
                     const imageUrl = `data:image/png;base64,${data.predictions[0].bytesBase64Encoded}`;
