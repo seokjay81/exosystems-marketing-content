@@ -762,8 +762,9 @@
 
         // --- SAFE CALL GEMINI HELPER WITH DETAILED ERROR INFO & MULTI-MODEL FALLBACK ---
         async function safeCallGemini(prompt, systemInstruction = "") {
-            // 이 환경에서 안정적인 마케팅/전략 분석 쿼리를 보장하기 위해 규격 모델인 gemini-2.5-flash-preview-09-2025를 최우선으로 지정합니다.
-            const models = ["gemini-2.5-flash-preview-09-2025", "gemini-1.5-flash"];
+            // 지원되는 최신 모델을 우선 사용하도록 모델 우선순위를 갱신합니다.
+            // 로컬 테스트에서 동작 확인된 모델을 맨 앞에 두었습니다.
+            const models = ["gemini-2.5-flash", "gemini-flash-latest", "gemini-2.5-flash-lite", "gemini-1.5-flash"];
             let lastError = null;
 
             for (const model of models) {
