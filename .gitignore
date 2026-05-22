@@ -1,0 +1,7 @@
+# Local config (do not commit API keys)
+config.local.js
+
+# Common ignores
+node_modules/
+.env
+.DS_Store

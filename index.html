@@ -50,16 +50,29 @@
                 </div>
             </div>
             
-            <!-- LANGUAGE SELECTOR -->
-            <div class="flex items-center space-x-1 sm:space-x-2 bg-slate-100 p-1 sm:p-1.5 rounded-xl border-2 border-slate-200">
-                <span class="text-[10px] sm:text-xs font-semibold text-slate-500 px-1 sm:px-2 hidden md:block" id="ui-lang-label">언어</span>
-                <button onclick="setLanguage('ko')" id="lang-btn-ko" class="px-2 py-1 sm:px-2.5 rounded-lg text-sm transition-all font-medium focus:outline-none">🇰🇷</button>
-                <button onclick="setLanguage('en')" id="lang-btn-en" class="px-2 py-1 sm:px-2.5 rounded-lg text-sm transition-all font-medium focus:outline-none">🇺🇸</button>
-                <button onclick="setLanguage('zh')" id="lang-btn-zh" class="px-2 py-1 sm:px-2.5 rounded-lg text-sm transition-all font-medium focus:outline-none">🇨🇳</button>
-                <button onclick="setLanguage('ja')" id="lang-btn-ja" class="px-2 py-1 sm:px-2.5 rounded-lg text-sm transition-all font-medium focus:outline-none">🇯🇵</button>
+            <div class="flex items-center space-x-2 bg-slate-100 p-1 sm:p-1.5 rounded-xl border-2 border-slate-200">
+                <button onclick="openApiKeyModal()" id="api-key-btn" class="px-2 py-1 sm:px-2.5 rounded-lg text-sm transition-all font-medium text-slate-600 hover:bg-slate-200" title="Gemini API 키 설정">🔑</button>
             </div>
         </div>
     </header>
+
+    <!-- API KEY MODAL -->
+    <div id="api-key-modal" class="hidden fixed inset-0 z-[85] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3">
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 p-4">
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm font-extrabold">Gemini API Key (local)</h3>
+                <button onclick="closeApiKeyModal()" class="text-slate-400 hover:text-slate-600 bg-white border-2 border-slate-200 p-1 rounded-xl transition-all outline-none shadow-sm">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+            <p class="text-xs text-slate-600 mb-2">Paste your Gemini API key here. Stored locally in your browser (localStorage).</p>
+            <input id="api-key-input" type="password" class="w-full bg-slate-50 border-2 border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-blue-500" placeholder="Enter Gemini API key">
+            <div class="flex justify-end space-x-2 mt-3">
+                <button onclick="clearApiKey()" class="bg-white border-2 border-slate-300 text-slate-700 px-3 py-2 rounded-xl text-xs font-bold">Clear</button>
+                <button onclick="saveApiKey()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-xl text-xs font-extrabold">Save</button>
+            </div>
+        </div>
+    </div>
 
     <!-- MAIN CONTAINER -->
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
@@ -646,11 +659,40 @@
         </div>
     </div>
 
+    <!-- Load local config (optional) -->
+    <script src="config.local.js"></script>
+
     <!-- SCRIPT LOGIC -->
     <script>
-        // 이 빌드 환경(Preview & Vercel Sandbox) 규정에 맞게 const apiKey = "" (공백 문자열)로 선언해야 
-        // 런타임 환경에서 주입되는 마스터 인증 키가 정상적으로 연동되어 작동합니다.
-        const apiKey = ""; 
+        // Gemini API key management: prefer local config file, fallback to localStorage.
+        // For production, inject the key via a secure server-side proxy instead of storing in the client.
+        let apiKey = (window.EXO_GEMINI_API_KEY || localStorage.getItem('exosystems_api_key') || "");
+
+        function openApiKeyModal() {
+            document.getElementById('api-key-modal').classList.remove('hidden');
+            document.getElementById('api-key-input').value = apiKey || "";
+            createIconsSafe();
+        }
+
+        function closeApiKeyModal() {
+            document.getElementById('api-key-modal').classList.add('hidden');
+        }
+
+        function saveApiKey() {
+            const v = document.getElementById('api-key-input').value.trim();
+            apiKey = v;
+            if (v) localStorage.setItem('exosystems_api_key', v);
+            else localStorage.removeItem('exosystems_api_key');
+            closeApiKeyModal();
+            showToast(currentLang === 'ko' ? 'API 키가 저장되었습니다 (로컬).' : 'API key saved (local).');
+        }
+
+        function clearApiKey() {
+            apiKey = "";
+            localStorage.removeItem('exosystems_api_key');
+            document.getElementById('api-key-input').value = "";
+            showToast(currentLang === 'ko' ? 'API 키가 삭제되었습니다.' : 'API key cleared.');
+        }
 
         function showToast(message) {
             const toast = document.getElementById('toast-message');
@@ -986,243 +1028,6 @@
                 fullHistDesc: "*리스트에서 삭제하더라도 실제 적용된 시스템 학습 데이터는 유지됩니다.",
                 fullHistBtnClose: "닫기"
             },
-            en: {
-                appTitle: "EXOSYSTEMS Marketing Content Agent",
-                appSubtitle: "Strategic Marketing Engine for EXOSYSTEMS",
-                langLabel: "Lang",
-                sectionConfig: "Content Setup",
-                labelProduct: "Product Family",
-                labelTarget: "Target Audience",
-                labelContentType: "Content Type",
-                videoLengthMsg: "Video mode active. Prompt calibrated to exact length.",
-                labelKeywords: "Keywords (Mandatory)",
-                labelImgUpload: "Reference Images Upload",
-                btnSelectImg: "Select Images",
-                imgHelpText: "*Uploaded images are prioritized as context for visual cue/prompt generation.",
-                labelAddMemo: "Additional Strategy Memo",
-                checkReflectMemo: "Prioritize memo & learned data",
-                btnGenerate: "Generate Content",
-                btnGenerateImage: "Generate Image",
-                titleKbMonitor: "Active KB Monitor",
-                monitorDef: "Definition",
-                monitorPos: "Positioning",
-                monitorTargets: "Targets",
-                monitorProhibited: "Banned Claims",
-                monitorRules: "Rules",
-                tabGenerator: "Generator Output",
-                tabLibrary: "Library",
-                emptyTitle: "No Content Generated",
-                emptyDesc: "Configure settings and click generate.",
-                btnCopyAll: "Copy All",
-                btnCopyHash: "Copy Tags",
-                btnDlMd: "Download MD",
-                btnSaveLib: "Save",
-                secStratDirection: "[Strategic Brief]",
-                secGenContent: "Generated Details",
-                secGenImg: "AI Concept Image",
-                secGenImgReels: "AI Reels Keyframe (Clean)",
-                secWarnings: "Compliance Warnings",
-                optAllStatus: "All Status",
-                optStatusDraft: "Draft",
-                optStatusReviewed: "Reviewed",
-                optStatusUsed: "Used",
-                optStatusArchived: "Archived",
-                optTypeStrategy: "Marketing Strategy Plan",
-                optTypeImagegen: "Image Generation",
-                optTypeEmail: "Email",
-                optTypeCardnews: "Card News",
-                optTypeReels: "Shorts/Reels (Clean)",
-                optTypeAdcopy: "Ad Copy",
-                optTypeVideoprompt: "Video Prompt",
-                piTargetLbl: "Primary Targets:",
-                piWarnLbl: "Warnings:",
-                piJsonLbl: "AI Learned Data Active",
-                modalStatusLbl: "Status Flow",
-                modalStratLbl: "[Brief]",
-                modalContentLbl: "Content Body",
-                modalHashLbl: "Hashtags",
-                modalBtnDel: "Delete",
-                modalBtnCopy: "Copy Text",
-                modalBtnClose: "Close",
-                noFile: "No file selected",
-                medicalBadge: "Medical",
-                wellnessBadge: "Wellness",
-                scopeLabel: "EN Only",
-                libGenTitle: "Update Learning Data (Docs/URL)",
-                libHistTitle: "Update History (Recent 5)",
-                libHistDesc: "*Deleting from list keeps actual learned data active.",
-                libHistEmpty: "No update history found.",
-                modalLrnTitle: "Learning Data Details",
-                modalLrnBtnDel: "Delete Record",
-                modalLrnBtnClose: "Close",
-                libUpdateProd: "Target Product",
-                libUpdateFile: "Upload Document/JSON",
-                libUpdateUrl: "Or Website URL to Scrape",
-                libBtnSelect: "Select Doc",
-                libBtnSave: "Analyze/Save",
-                libBtnViewAll: "View All",
-                fullHistTitle: "Full Learning Data History",
-                fullHistDesc: "*Deleting from list keeps actual learned data active.",
-                fullHistBtnClose: "Close"
-            },
-            zh: {
-                appTitle: "EXOSYSTEMS Marketing Content Agent",
-                appSubtitle: "战略营销内容生成引擎",
-                langLabel: "语言",
-                sectionConfig: "配置",
-                labelProduct: "产品",
-                labelTarget: "目标受众",
-                labelContentType: "内容类型",
-                videoLengthMsg: "视频模式激活。将自动映射对应时长的提示词。",
-                labelKeywords: "强制关键词",
-                labelImgUpload: "参考图片上传",
-                btnSelectImg: "选择图片",
-                imgHelpText: "*上传的图片将优先作为视觉提示词生成的上下文参考。",
-                labelAddMemo: "附加营销策略备注",
-                checkReflectMemo: "优先应用备注与学习数据",
-                btnGenerate: "生成内容",
-                btnGenerateImage: "生成图像",
-                titleKbMonitor: "知识库监控",
-                monitorDef: "定义",
-                monitorPos: "定位",
-                monitorTargets: "受众",
-                monitorProhibited: "违禁词",
-                monitorRules: "规则",
-                tabGenerator: "结果",
-                tabLibrary: "库",
-                emptyTitle: "暂无内容",
-                emptyDesc: "请设置并生成。",
-                btnCopyAll: "复制全部",
-                btnCopyHash: "复制标签",
-                btnDlMd: "下载MD",
-                btnSaveLib: "保存",
-                secStratDirection: "[战略方向]",
-                secGenContent: "详细结果",
-                secGenImg: "AI 营销概念图像",
-                secGenImgReels: "AI 短视频关键帧 (无字幕)",
-                secWarnings: "合规警告",
-                optAllStatus: "所有状态",
-                optStatusDraft: "草稿 (Draft)",
-                optStatusReviewed: "已审阅 (Reviewed)",
-                optStatusUsed: "已使用 (Used)",
-                optStatusArchived: "已归档 (Archived)",
-                optTypeStrategy: "营销战略计划",
-                optTypeImagegen: "图像生成",
-                optTypeEmail: "电子邮件",
-                optTypeCardnews: "图文卡片",
-                optTypeReels: "短视频/Reels (Clean)",
-                optTypeAdcopy: "广告文案",
-                optTypeVideoprompt: "视频生成提示词",
-                piTargetLbl: "主要受众:",
-                piWarnLbl: "警告:",
-                piJsonLbl: "AI分析学习数据已应用",
-                modalStatusLbl: "状态管理",
-                modalStratLbl: "[方向]",
-                modalContentLbl: "正文",
-                modalHashLbl: "话题标签",
-                modalBtnDel: "删除",
-                modalBtnCopy: "复制正文",
-                modalBtnClose: "关闭",
-                noFile: "未选择文件",
-                medicalBadge: "医疗器械",
-                wellnessBadge: "健康",
-                scopeLabel: "仅中文",
-                libGenTitle: "更新学习数据 (文档/URL)",
-                libHistTitle: "更新记录 (最近5条)",
-                libHistDesc: "*删除记录不会影响已应用的内部学习数据。",
-                libHistEmpty: "没有更新记录。",
-                modalLrnTitle: "学习数据详情",
-                modalLrnBtnDel: "删除记录",
-                modalLrnBtnClose: "关闭",
-                libUpdateProd: "目标产品",
-                libUpdateFile: "上传文档/JSON",
-                libUpdateUrl: "或输入网页URL抓取",
-                libBtnSelect: "选择文档",
-                libBtnSave: "AI分析并保存",
-                libBtnViewAll: "查看全部",
-                fullHistTitle: "全部学习数据记录",
-                fullHistDesc: "*删除记录不会影响已应用的内部学习数据。",
-                fullHistBtnClose: "关闭"
-            },
-            ja: {
-                appTitle: "EXOSYSTEMS Marketing Content Agent",
-                appSubtitle: "戦略的マーケティングエンジン",
-                langLabel: "言語",
-                sectionConfig: "構成",
-                labelProduct: "製品",
-                labelTarget: "ターゲット",
-                labelContentType: "コンテンツタイプ",
-                videoLengthMsg: "ビデオモード有効。指定の時間枠にプロンプト가 매핑됩니다.",
-                labelKeywords: "必須キーワード",
-                labelImgUpload: "参考画像アップロード",
-                btnSelectImg: "画像選択",
-                imgHelpText: "*アップロードされた画像는, 映像プロンプト生成의 문맥으로서 우선 활용됩니다.",
-                labelAddMemo: "追加戦略メモ (オプション)",
-                checkReflectMemo: "メモと학습 데이터 최우선",
-                btnGenerate: "生成",
-                btnGenerateImage: "画像生成",
-                titleKbMonitor: "ナレッジベース",
-                monitorDef: "定義",
-                monitorPos: "ポジショニング",
-                monitorTargets: "ターゲット",
-                monitorProhibited: "禁止表現",
-                monitorRules: "ルール",
-                tabGenerator: "生成結果",
-                tabLibrary: "ライブラリ",
-                emptyTitle: "コンテンツ가 없습니다",
-                emptyDesc: "設定して生成してください。",
-                btnCopyAll: "すべてコピー",
-                btnCopyHash: "タグコピー",
-                btnDlMd: "MD다운로드",
-                btnSaveLib: "저장",
-                secStratDirection: "[戦略ブリー프]",
-                secGenContent: "詳細結果",
-                secGenImg: "AI  マーケティングコンセプト画像",
-                secGenImgReels: "AI 리ールキーフレーム (クリーン)",
-                secWarnings: "コンプライアンス警告",
-                optAllStatus: "すべてのステータス",
-                optStatusDraft: "下書き (Draft)",
-                optStatusReviewed: "レビュー済 (Reviewed)",
-                optStatusUsed: "使用済 (Used)",
-                optStatusArchived: "保管済 (Archived)",
-                optTypeStrategy: "マーケ팅 전략 계획",
-                optTypeImagegen: "画像生成",
-                optTypeEmail: "Eメール",
-                optTypeCardnews: "카드뉴스",
-                optTypeReels: "ショート/リール (クリーン)",
-                optTypeAdcopy: "広告コピー",
-                optTypeVideoprompt: "動画生成プロンプト",
-                piTargetLbl: "主なターゲット:",
-                piWarnLbl: "注意表現:",
-                piJsonLbl: "AI学習データ連携중",
-                modalStatusLbl: "ステータ스",
-                modalStratLbl: "[ブリーフ]",
-                modalContentLbl: "本文",
-                modalHashLbl: "ハッシュタグ",
-                modalBtnDel: "삭제",
-                modalBtnCopy: "복사",
-                modalBtnClose: "닫기",
-                noFile: "파일가 선택되어 있지 않습니다",
-                medicalBadge: "医療機器",
-                wellnessBadge: "ウェルネス",
-                scopeLabel: "JAのみ",
-                libGenTitle: "学習データの更新 (ドキュメント/URL)",
-                libHistTitle: "更新履歴 (最近5件)",
-                libHistDesc: "*リストを削除しても適用された学習データは維持されます。",
-                libHistEmpty: "更新履歴가 없습니다.",
-                modalLrnTitle: "学習データ詳細",
-                modalLrnBtnDel: "記録を削除",
-                modalLrnBtnClose: "閉じる",
-                libUpdateProd: "対象製品",
-                libUpdateFile: "すべてのドキュメント/JSON",
-                libUpdateUrl: "またはウェブサイトURL",
-                libBtnSelect: "ドキュメント選択",
-                libBtnSave: "分析して保存",
-                libBtnViewAll: "すべて見る",
-                fullHistTitle: "全학습 데이터 이력",
-                fullHistDesc: "*리스트에서 삭제하더라도 실제 적용된 시스템 학습 데이터는 유지됩니다.",
-                fullHistBtnClose: "닫기"
-            }
         };
 
         let currentLang = 'ko';
@@ -1244,24 +1049,13 @@
         const MOCK_APPROVAL_CODE = "EXO2026"; 
 
         function verifyAndInitializeLanguage() {
-            let saved = localStorage.getItem('selectedLanguage');
-            if (saved) { currentLang = saved; } 
-            else { currentLang = 'ko'; }
-            setLanguage(currentLang);
+            currentLang = 'ko';
+            setLanguage('ko');
         }
 
         function setLanguage(lang) {
-            currentLang = lang;
-            localStorage.setItem('selectedLanguage', lang);
-            
-            ['ko', 'en', 'zh', 'ja'].forEach(l => {
-                const btn = document.getElementById(`lang-btn-${l}`);
-                if (l === lang) {
-                    btn.className = "px-2 py-1 sm:px-2.5 rounded-lg text-sm transition-all font-bold bg-blue-600 text-white shadow-sm scale-105";
-                } else {
-                    btn.className = "px-2 py-1 sm:px-2.5 rounded-lg text-sm transition-all font-medium text-slate-600 hover:bg-slate-200";
-                }
-            });
+            currentLang = 'ko';
+            localStorage.setItem('selectedLanguage', 'ko');
 
             updateStaticUITexts();
             populateTargetAudienceOptions();
@@ -1275,7 +1069,7 @@
             }
 
             if (generatedCache && activeView === 'generator' && !document.getElementById('generator-result-panel').classList.contains('hidden')) {
-                generateContent(true); 
+                generateContent(true);
             }
         }
 
