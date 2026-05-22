@@ -51,28 +51,10 @@
             </div>
             
             <div class="flex items-center space-x-2 bg-slate-100 p-1 sm:p-1.5 rounded-xl border-2 border-slate-200">
-                <button onclick="openApiKeyModal()" id="api-key-btn" class="px-2 py-1 sm:px-2.5 rounded-lg text-sm transition-all font-medium text-slate-600 hover:bg-slate-200" title="Gemini API 키 설정">🔑</button>
+                <span class="text-[10px] sm:text-xs font-semibold text-slate-500 px-1 sm:px-2 hidden md:block">회사 안전 연결</span>
             </div>
         </div>
     </header>
-
-    <!-- API KEY MODAL -->
-    <div id="api-key-modal" class="hidden fixed inset-0 z-[85] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3">
-        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 p-4">
-            <div class="flex items-center justify-between mb-3">
-                <h3 class="text-sm font-extrabold">Gemini API Key (local)</h3>
-                <button onclick="closeApiKeyModal()" class="text-slate-400 hover:text-slate-600 bg-white border-2 border-slate-200 p-1 rounded-xl transition-all outline-none shadow-sm">
-                    <i data-lucide="x" class="w-4 h-4"></i>
-                </button>
-            </div>
-            <p class="text-xs text-slate-600 mb-2">Paste your Gemini API key here. Stored locally in your browser (localStorage).</p>
-            <input id="api-key-input" type="password" class="w-full bg-slate-50 border-2 border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-blue-500" placeholder="Enter Gemini API key">
-            <div class="flex justify-end space-x-2 mt-3">
-                <button onclick="clearApiKey()" class="bg-white border-2 border-slate-300 text-slate-700 px-3 py-2 rounded-xl text-xs font-bold">Clear</button>
-                <button onclick="saveApiKey()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-xl text-xs font-extrabold">Save</button>
-            </div>
-        </div>
-    </div>
 
     <!-- MAIN CONTAINER -->
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
@@ -659,14 +641,11 @@
         </div>
     </div>
 
-    <!-- Load local config (optional) -->
-    <script src="config.local.js"></script>
-
     <!-- SCRIPT LOGIC -->
     <script>
-        // Gemini API key management: prefer local config file, fallback to localStorage.
-        // For production, inject the key via a secure server-side proxy instead of storing in the client.
-        let apiKey = (window.EXO_GEMINI_API_KEY || localStorage.getItem('exosystems_api_key') || "");
+        // Gemini proxy mode: the client calls our server endpoint, and the server authenticates to Gemini.
+        // This avoids storing the API key in the browser or exposing it to end users.
+        let apiKey = "";
 
         function openApiKeyModal() {
             document.getElementById('api-key-modal').classList.remove('hidden');
@@ -762,15 +741,17 @@
 
         // --- SAFE CALL GEMINI HELPER WITH DETAILED ERROR INFO & MULTI-MODEL FALLBACK ---
         async function safeCallGemini(prompt, systemInstruction = "") {
-            // 지원되는 최신 모델을 우선 사용하도록 모델 우선순위를 갱신합니다.
-            // 로컬 테스트에서 동작 확인된 모델을 맨 앞에 두었습니다.
+            // 서버 프록시를 통해 호출합니다. 실제 Gemini 인증은 서버에서 처리됩니다.
             const models = ["gemini-2.5-flash", "gemini-flash-latest", "gemini-2.5-flash-lite", "gemini-1.5-flash"];
             let lastError = null;
 
             for (const model of models) {
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+                const url = `/api/generate`;
                 const payload = {
-                    contents: [{ parts: [{ text: prompt }] }]
+                    model,
+                    payload: {
+                        contents: [{ parts: [{ text: prompt }] }]
+                    }
                 };
                 if (systemInstruction) {
                     payload.systemInstruction = { parts: [{ text: systemInstruction }] };
@@ -1800,10 +1781,11 @@ Return ONLY a valid JSON object strictly matching this format without markdown b
             createIconsSafe();
 
             try {
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`;
+                const url = `/api/image`;
                 const payload = {
-                    instances: { prompt: promptText },
-                    parameters: { sampleCount: 1 }
+                    model: 'imagen-4.0-generate-001',
+                    prompt: promptText,
+                    sampleCount: 1
                 };
 
                 const res = await fetch(url, {
