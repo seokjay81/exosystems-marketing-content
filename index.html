@@ -1681,6 +1681,11 @@
                 .replace(/\*\*(.*?)\*\*/g, "$1")
                 .replace(/__(.*?)__/g, "$1")
                 .replace(/^#{1,6}\s*/gm, "")
+                .replace(/\[Learned Data Applied\]|\[Compliance Check\]|\[Local Summary Mode\]/gi, "")
+                .replace(/Website Context Analysis/gi, "")
+                .replace(/API Error[^\n]*/gi, "")
+                .replace(/Quota exceeded[^\n]*/gi, "")
+                .replace(/Retry-After[^\n]*/gi, "")
                 .replace(/^\s*[-*]\s+/gm, "- ")
                 .replace(/\n{3,}/g, "\n\n")
                 .trim();
@@ -1701,6 +1706,67 @@
                 KEYWORDS: keywords,
                 NOTICE: "Local learning data generated when AI analysis or document parsing was limited. Use as supporting context for content generation."
             }, null, 2);
+        }
+
+        async function fetchWebsiteContextViaProxy(url) {
+            const response = await fetch("/api/fetch-url-content", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ url })
+            });
+            if (!response.ok) {
+                const text = await response.text();
+                throw new Error(`URL 본문 수집 실패: ${response.status} ${text.slice(0, 200)}`);
+            }
+            return await response.json();
+        }
+
+        function buildWebsiteLearningRawText(siteData, userMemo = "") {
+            if (!siteData) return userMemo || "";
+            const linksText = Array.isArray(siteData.links) ? siteData.links.slice(0, 10).map(link => `${link.text || ""} ${link.href || ""}`.trim()).join("\n") : "";
+            return [`URL: ${siteData.url || ""}`, `페이지 제목: ${siteData.pageTitle || ""}`, `Meta Description: ${siteData.metaDescription || ""}`, `OG Title: ${siteData.ogTitle || ""}`, `OG Description: ${siteData.ogDescription || ""}`, userMemo ? `사용자 메모: ${userMemo}` : "", "\n[주요 제목]", Array.isArray(siteData.headings) ? siteData.headings.join("\n") : "", "\n[본문 텍스트]", siteData.mainText || "", "\n[이미지 Alt 텍스트]", Array.isArray(siteData.imageAlts) ? siteData.imageAlts.join("\n") : "", "\n[이미지 소스]", Array.isArray(siteData.imageSources) ? siteData.imageSources.join("\n") : "", "\n[영상/iframe 관련 정보]", Array.isArray(siteData.videoTexts) ? siteData.videoTexts.join("\n") : "", "\n[주요 링크]", linksText].filter(Boolean).join("\n");
+        }
+
+        function buildFallbackWebsiteLearningJSON(url, product, rawText, reason) {
+            const preview = String(rawText || "").replace(/\s+/g, " ").trim().slice(0, 1500);
+            const keywords = extractLocalKeywords(preview, 12);
+            return JSON.stringify({
+                SOURCE: url,
+                TYPE: "Website Context Analysis",
+                SUMMARY: preview ? preview.slice(0, 700) : `${url} 사이트의 본문 수집이 제한되어 URL과 사용자 입력 정보를 기준으로 학습 데이터에 반영했습니다.`,
+                INSIGHTS: [preview ? `사이트에서 확인된 핵심 맥락 일부: ${preview.slice(0, 220)}...` : "사이트 본문 수집이 제한되어 URL 기반으로 우선 반영되었습니다.", `적용 제품: ${product}`, `분석 상태: ${reason || "사이트 fallback 분석"}`],
+                KEYWORDS: keywords,
+                MARKETING_POINTS: ["사이트의 메시지, 이미지 설명, 영상 정보를 참고하여 콘텐츠 방향성에 반영합니다.", "타겟 고객의 관심사와 제품 포지셔닝을 연결하는 보조 데이터로 활용합니다."],
+                CAUTIONS: ["사이트 본문 수집이 제한된 경우, 실제 원문 전체가 아닌 일부 맥락만 반영될 수 있습니다."],
+                RAW_TEXT_PREVIEW: preview
+            }, null, 2);
+        }
+
+        function escapeHTML(value) {
+            return String(value || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+        }
+
+        function normalizeLearningData(dataString, fallbackName = "", fallbackType = "", fallbackProduct = "") {
+            const obj = typeof dataString === 'string' ? (extractJSON(dataString) || {}) : (dataString || {});
+            const arr = value => Array.isArray(value) ? value.filter(Boolean).map(String) : (value ? [String(value)] : []);
+            const summary = obj.SUMMARY || obj.EXECUTIVE_SUMMARY || obj.summary || obj.executiveSummary || "";
+            const keywords = arr(obj.KEYWORDS || obj.keywords).slice(0, 10);
+            const insights = arr(obj.INSIGHTS || obj.insights).slice(0, 5);
+            const marketingPoints = arr(obj.MARKETING_POINTS || obj.marketingPoints || obj.marketing_points).slice(0, 5);
+            const cautions = arr(obj.CAUTIONS || obj.cautions || obj.NOTICE || obj.notice).slice(0, 3);
+            const rawTextPreview = String(obj.RAW_TEXT_PREVIEW || obj.rawTextPreview || summary || dataString || "").slice(0, 1500);
+            return { source: obj.SOURCE || obj.source || fallbackName, type: obj.TYPE || obj.type || fallbackType, product: obj.PRODUCT || obj.product || fallbackProduct, summary, keywords, insights, marketingPoints, cautions, rawTextPreview };
+        }
+
+        function buildLearningPromptContext(historyItem) {
+            const data = normalizeLearningData(historyItem.content, historyItem.name, historyItem.type, historyItem.product);
+            const parts = [];
+            if (data.summary) parts.push(`요약: ${data.summary}`);
+            if (data.keywords.length) parts.push(`키워드: ${data.keywords.join(", ")}`);
+            if (data.insights.length) parts.push(`인사이트: ${data.insights.join(" / ")}`);
+            if (data.marketingPoints.length) parts.push(`마케팅 포인트: ${data.marketingPoints.join(" / ")}`);
+            if (data.cautions.length) parts.push(`주의사항: ${data.cautions.join(" / ")}`);
+            return parts.join("\n").slice(0, 1800);
         }
 
         function buildLocalLearningSummary(sourceType, sourceName, targetProduct, rawText, memo = "") {
@@ -1754,12 +1820,59 @@
                 if (sourceType === 'url') {
                     const url = pendingGeneralName;
                     if (!url || !url.startsWith('http')) {
-                        showErrorModal("Learning data not saved", "Invalid URL format.", "Please enter a valid URL beginning with http:// or https://.");
+                        showErrorModal("학습 데이터 적용 미반영", "유효하지 않은 URL 형식입니다.", "올바른 웹사이트 주소를 입력해주세요.");
                         return;
                     }
-                    rawText = "URL: " + url + "\nUser memo: " + (memo || "None") + "\nExternal page extraction may be limited in this browser-only app, so URL and memo context are saved.";
-                    const fallbackJSON = buildFallbackLearningJSON(sourceName, targetProduct, rawText, "URL reference saved locally");
-                    executeSaveLearningHistory(sourceType, sourceName, targetProduct, fallbackJSON);
+                    if (btn) btn.innerHTML = '<i data-lucide="loader-2" class="w-3.5 h-3.5 mr-1 animate-spin"></i> 사이트 맥락 수집 중...';
+                    createIconsSafe();
+                    try {
+                        const siteData = await fetchWebsiteContextViaProxy(url);
+                        rawText = buildWebsiteLearningRawText(siteData, memo);
+                    } catch (fetchError) {
+                        console.warn("사이트 본문 수집 실패:", fetchError);
+                        rawText = [`URL: ${url}`, memo ? `사용자 메모: ${memo}` : "", `사이트 본문 수집 실패: ${fetchError.message}`, "사이트 제목, 본문, 이미지, 영상 정보 수집이 제한되어 fallback 학습으로 처리합니다."].filter(Boolean).join("\n\n");
+                    }
+                    const sampleText = buildLearningSampleText(rawText, 30000);
+                    if (btn) btn.innerHTML = '<i data-lucide="loader-2" class="w-3.5 h-3.5 mr-1 animate-spin"></i> 사이트 핵심 맥락 분석 중...';
+                    createIconsSafe();
+                    const prompt = `당신은 EXOSYSTEMS Marketing Content Agent의 전문 마케팅 데이터 분석가입니다.
+
+아래 사이트에서 수집된 텍스트, 이미지 alt, 영상/iframe 정보, 링크 맥락을 분석하여 제품별 마케팅 콘텐츠 생성에 활용 가능한 학습 데이터로 변환하세요.
+
+중요 원칙:
+1. 원문 전체를 그대로 복사하지 마세요.
+2. 사이트에서 확인 가능한 텍스트, 이미지 설명, 영상 맥락, 링크 정보를 종합하세요.
+3. 추정하지 마세요.
+4. 반드시 한국어로 작성하세요.
+5. 반드시 JSON 객체만 반환하세요.
+6. markdown 코드블록은 사용하지 마세요.
+7. 학습 속도를 위해 핵심 맥락 중심으로 요약하세요.
+
+출력 JSON 형식:
+{
+  "SOURCE": "${url}",
+  "TYPE": "Website Context Analysis",
+  "SUMMARY": "사이트 핵심 맥락 요약 500~900자",
+  "INSIGHTS": ["핵심 학습 내용 5개 이내"],
+  "KEYWORDS": ["주요 키워드 10개 이내"],
+  "MARKETING_POINTS": ["콘텐츠 생성에 활용할 마케팅 포인트 5개 이내"],
+  "CAUTIONS": ["주의 표현 또는 규제 관련 메모 3개 이내"],
+  "RAW_TEXT_PREVIEW": "원문 미리보기 1500자 이내"
+}
+
+적용 제품: ${targetProduct}
+
+사이트 수집 데이터:
+${sampleText}`;
+                    try {
+                        const text = await safeCallGemini(prompt, "", ["gemini-2.5-flash-lite", "gemini-2.5-flash", "gemini-flash-latest"]);
+                        executeSaveLearningHistory("url", url, targetProduct, text);
+                    } catch (aiError) {
+                        console.warn("사이트 AI 분석 실패, fallback 저장:", aiError);
+                        if (isQuotaExceededError(aiError)) showToast(getQuotaFallbackMessage(aiError));
+                        const fallbackJSON = buildFallbackWebsiteLearningJSON(url, targetProduct, sampleText, aiError.message);
+                        executeSaveLearningHistory("url", url, targetProduct, fallbackJSON);
+                    }
                     return;
                 }
                 if (sourceType === 'file') {
@@ -1830,12 +1943,21 @@ ${sampleText}`;
                 testExtract = extractLearningHighlights(dataString);
             }
 
+            const parsedLearningData = normalizeLearningData(dataString, name, type, product);
             const newHistory = {
                 id: `lrn_${Date.now()}`,
                 name: name,
                 type: type,
                 product: product,
                 date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                sourceType: type,
+                sourceName: name,
+                summary: parsedLearningData.summary,
+                keywords: parsedLearningData.keywords,
+                insights: parsedLearningData.insights,
+                marketingPoints: parsedLearningData.marketingPoints,
+                cautions: parsedLearningData.cautions,
+                rawTextPreview: parsedLearningData.rawTextPreview,
                 content: dataString
             };
 
@@ -1882,6 +2004,9 @@ ${sampleText}`;
 
                 if (obj.INSIGHTS && Array.isArray(obj.INSIGHTS)) {
                     return obj.INSIGHTS.slice(0, limit);
+                }
+                if (obj.SUMMARY) {
+                    return [obj.SUMMARY].concat(Array.isArray(obj.MARKETING_POINTS) ? obj.MARKETING_POINTS : []).slice(0, limit);
                 }
 
                 function deepExtractStrings(item) {
@@ -2001,10 +2126,12 @@ ${sampleText}`;
             const item = learningHistory.find(i => i.id === id);
             if (!item) return;
 
+            const normalizedLearning = normalizeLearningData(item.content, item.name, item.type, item.product);
+            const listHtml = values => values && values.length ? `<ul class="list-disc list-inside space-y-1">${values.map(value => `<li>${escapeHTML(value)}</li>`).join("")}</ul>` : `<p class="text-slate-400">-</p>`;
             document.getElementById('ld-modal-name').textContent = item.name;
-            document.getElementById('ld-modal-meta').textContent = `${item.date} | Source: ${item.type.toUpperCase()}`;
+            document.getElementById('ld-modal-meta').textContent = `${item.date} | Source: ${String(normalizedLearning.type || item.type).toUpperCase()}`;
             document.getElementById('ld-modal-product').textContent = item.product;
-            document.getElementById('ld-modal-content').textContent = item.content;
+            document.getElementById('ld-modal-content').innerHTML = `<div class="space-y-3 font-sans text-[12px] leading-6"><div class="bg-white border border-slate-200 rounded-lg p-3"><p class="font-extrabold text-slate-900 mb-1">핵심 요약</p><p>${escapeHTML(normalizedLearning.summary || "요약 정보가 없습니다.")}</p></div><div class="bg-white border border-slate-200 rounded-lg p-3"><p class="font-extrabold text-slate-900 mb-1">주요 키워드</p><p>${normalizedLearning.keywords.length ? normalizedLearning.keywords.map(kw => `<span class="inline-block bg-blue-50 text-blue-700 border border-blue-100 rounded px-2 py-0.5 mr-1 mb-1">${escapeHTML(kw)}</span>`).join("") : "-"}</p></div><div class="bg-white border border-slate-200 rounded-lg p-3"><p class="font-extrabold text-slate-900 mb-1">핵심 학습 내용</p>${listHtml(normalizedLearning.insights)}</div><div class="bg-white border border-slate-200 rounded-lg p-3"><p class="font-extrabold text-slate-900 mb-1">마케팅 활용 포인트</p>${listHtml(normalizedLearning.marketingPoints)}</div><div class="bg-white border border-amber-200 rounded-lg p-3"><p class="font-extrabold text-amber-900 mb-1">주의 표현 및 규제 메모</p>${listHtml(normalizedLearning.cautions)}</div><div class="bg-slate-50 border border-slate-200 rounded-lg p-3"><p class="font-extrabold text-slate-900 mb-1">원문 미리보기</p><p class="whitespace-pre-wrap break-words">${escapeHTML(normalizedLearning.rawTextPreview || "-")}</p></div></div>`;
 
             // 핵심 인사이트 요약 정보 렌더링
             const summarySection = document.getElementById('ld-modal-summary-section');
@@ -2189,15 +2316,15 @@ ${sampleText}`;
             const docReflectActive = document.getElementById('doc-reflect-check').checked;
             const fileMemoText = document.getElementById('doc-memo').value;
 
-            // 해당 제품의 모든 학습 이력 가져오기
-            const productHistory = learningHistory.filter(h => h.product === product);
+            // 해당 제품의 최신 학습 이력 중 핵심 구조화 정보만 내부 프롬프트에 반영
+            const productHistory = learningHistory.filter(h => h.product === product).slice(0, 5);
             const isExtendedKBActive = docReflectActive && productHistory.length > 0;
             let learningInsights = [];
 
             if (isExtendedKBActive) {
                 productHistory.forEach(h => {
-                    const extracted = extractLearningHighlights(h.content, 3);
-                    extracted.forEach(txt => learningInsights.push(`[${h.name}] ${txt}`));
+                    const contextText = buildLearningPromptContext(h);
+                    if (contextText) learningInsights.push(contextText);
                 });
             }
 
@@ -2325,7 +2452,10 @@ The entire narrative and strategic angle MUST revolve heavily around these Keywo
 
 [CRITICAL INSTRUCTION: Combine Data & Real-time AI Insight]
 You must NOT just rely on generic templates. You MUST synthesize your own up-to-date industry knowledge and real-time market intelligence regarding "${product}" and "${localizedTarget}" WITH the specific learned data below (which includes market analysis, JSON exports, or competitor insights). Provide fresh, persuasive angles that emphasize differentiation.
-${isExtendedKBActive && learningInsights.length > 0 ? `\n[Learned AI Data & Competitor Insights Integration]\nIntegrate these empirical facts and competitor analyses organically and strategically into the copy to emphasize differentiation and competitive advantage:\n- ${learningInsights.join('\n- ')}` : ''}
+${isExtendedKBActive && learningInsights.length > 0 ? `
+[Internal Learned Context]
+Use the following structured summaries only as internal context. Do not expose source names, URLs, JSON, labels, logs, or the phrase Website Context Analysis in the final output:
+- ${learningInsights.join('\n- ')}` : ''}
 ${docReflectActive && fileMemoText ? `\n[Additional Strategy Memo]\nPrioritize this memo context heavily: ${fileMemoText}` : ''}
 
 [REFERENCE IMAGES]
