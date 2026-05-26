@@ -443,7 +443,7 @@
                         <span id="library-scope-label" class="hidden sm:inline-block text-[10px] bg-slate-100 border border-slate-200 px-2.5 py-1.5 rounded-lg text-slate-500 font-extrabold"></span>
                         <button onclick="clearAllLibraryItems()" class="bg-white hover:bg-red-50 text-red-600 border-2 border-red-200 hover:border-red-400 px-3 py-2.5 rounded-xl text-xs font-extrabold flex items-center justify-center space-x-1 transition-all outline-none whitespace-nowrap">
                             <i data-lucide="trash-2" class="w-4 h-4"></i>
-                            <span>라이브러리 전체 삭제</span>
+                            <span>콘텐츠 라이브러리 전체 삭제</span>
                         </button>
                     </div>
                 </div>
@@ -1187,6 +1187,8 @@
                 isAdminUnlocked = true;
                 document.getElementById('admin-pwd-input').value = "";
                 checkAdminAuthUI();
+                if (typeof renderLibrary === "function") renderLibrary();
+                if (typeof updateLibraryCounterBadge === "function") updateLibraryCounterBadge();
                 showToast("관리자 권한이 활성화되었습니다.");
             } else {
                 showToast("비밀번호가 일치하지 않습니다.");
@@ -2593,6 +2595,13 @@ DO NOT include any introductory or concluding remarks (e.g., "Here is the conten
             document.body.removeChild(a);
         }
 
+        // 현재 구조는 localStorage 기반이므로 관리자 전체 확인은 현재 브라우저에 저장된 콘텐츠 전체 확인을 의미합니다.
+        // 여러 사용자 전체 콘텐츠를 중앙에서 확인하려면 서버 DB 저장 구조가 필요합니다.
+        function getVisibleLibraryItems() {
+            if (!Array.isArray(libraryItems)) libraryItems = [];
+            return isAdminUnlocked ? libraryItems : libraryItems.slice(0, 5);
+        }
+
         function saveCurrentToLibrary(isSilent = false) {
             if (!generatedCache) return;
 
@@ -2605,39 +2614,58 @@ DO NOT include any introductory or concluding remarks (e.g., "Here is the conten
             };
 
             libraryItems.unshift(newItem);
+
+            // localStorage 기반 현재 구조에서는 일반 사용자 콘텐츠 라이브러리를 최근 5개만 유지합니다.
+            // 관리자는 현재 브라우저 localStorage에 남아 있는 전체 콘텐츠를 확인할 수 있습니다.
+            if (libraryItems.length > 5) {
+                libraryItems = libraryItems.slice(0, 5);
+            }
+
             localStorage.setItem('exosystems_library', JSON.stringify(libraryItems));
 
-            updateLibraryCounterBadge();
+            if (typeof updateLibraryCounterBadge === "function") updateLibraryCounterBadge();
+            if (typeof renderLibrary === "function") renderLibrary();
 
             if (!isSilent) {
-                showToast(currentLang === 'ko' ? "라이브러리에 보관되었습니다." : "Saved to Library.");
+                showToast(currentLang === 'ko' ? "콘텐츠가 라이브러리에 저장되었습니다." : "Saved to Library.");
             }
         }
 
         function updateLibraryCounterBadge() {
-            const count = libraryItems.filter(item => currentLang === 'ko' ? true : item.language === currentLang).length;
-            document.getElementById('library-count-badge').textContent = count;
+            const visibleItems = typeof getVisibleLibraryItems === "function" ? getVisibleLibraryItems() : libraryItems;
+            const badge = document.getElementById('library-count-badge');
+            if (badge) badge.textContent = visibleItems.length;
         }
 
         function renderLibrary() {
             const container = document.getElementById('library-items-list');
+            if (!container) return;
             container.innerHTML = '';
 
             const searchTerm = document.getElementById('library-search').value.toLowerCase();
             const filterStatus = document.getElementById('library-filter-status').value;
+            const scopeLabel = document.getElementById('library-scope-label');
+            if (scopeLabel) {
+                scopeLabel.textContent = isAdminUnlocked ? "관리자 모드: 전체 콘텐츠 라이브러리를 확인 중입니다." : "최근 5개 콘텐츠만 표시됩니다.";
+            }
 
-            const scopeFilteredItems = libraryItems.filter(item => currentLang === 'ko' ? true : item.language === currentLang);
+            const visibleLibraryItems = getVisibleLibraryItems();
+            const scopeFilteredItems = visibleLibraryItems.filter(item => currentLang === 'ko' ? true : item.language === currentLang);
 
             const finalRenderedPool = scopeFilteredItems.filter(item => {
-                const matchesSearch = item.productName.toLowerCase().includes(searchTerm) ||
-                                      item.targetAudience.toLowerCase().includes(searchTerm) ||
-                                      item.keywords.some(k => k.toLowerCase().includes(searchTerm));
+                const productName = String(item.productName || '').toLowerCase();
+                const targetAudience = String(item.targetAudience || '').toLowerCase();
+                const itemKeywords = Array.isArray(item.keywords) ? item.keywords : [];
+                const matchesSearch = productName.includes(searchTerm) ||
+                                      targetAudience.includes(searchTerm) ||
+                                      itemKeywords.some(k => String(k).toLowerCase().includes(searchTerm));
                 const matchesStatus = filterStatus === 'ALL' || item.status === filterStatus;
                 return matchesSearch && matchesStatus;
             });
 
             if (finalRenderedPool.length === 0) {
-                container.innerHTML = `<div class="bg-white rounded-xl border-2 border-slate-200 p-8 text-center text-slate-400 text-xs italic font-bold">No matching archives found.</div>`;
+                const emptyMessage = isAdminUnlocked ? "저장된 콘텐츠 라이브러리가 없습니다." : "저장된 콘텐츠가 없습니다. 콘텐츠를 생성하면 최근 5개까지 자동 저장됩니다.";
+                container.innerHTML = `<div class="bg-white rounded-xl border-2 border-slate-200 p-8 text-center text-slate-400 text-xs italic font-bold">${emptyMessage}</div>`;
                 return;
             }
 
@@ -2654,6 +2682,7 @@ DO NOT include any introductory or concluding remarks (e.g., "Here is the conten
                 const translatedTarget = TARGET_NAMES[item.targetAudience]?.[currentLang] || item.targetAudience;
                 const translatedType = CONTENT_TYPE_NAMES[item.contentType]?.[currentLang] || item.contentType;
                 const translatedStatus = STATUS_NAMES[item.status]?.[currentLang] || item.status;
+                const cardKeywords = Array.isArray(item.keywords) ? item.keywords : [];
 
                 card.innerHTML = `
                     <div class="flex items-start justify-between border-b border-slate-100 pb-2">
@@ -2663,15 +2692,21 @@ DO NOT include any introductory or concluding remarks (e.g., "Here is the conten
                         </div>
                         <span class="text-[9px] sm:text-[10px] uppercase px-2 py-0.5 rounded-md font-bold ${statusClass}">${translatedStatus}</span>
                     </div>
-                    <div class="flex items-center justify-between pt-1">
+                    <div class="flex items-center justify-between gap-2 pt-1">
                         <div class="flex flex-wrap gap-1">
-                            ${item.keywords.map(k => `<span class="bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded text-[10px] font-bold border border-slate-200">#${k}</span>`).join('')}
+                            ${cardKeywords.map(k => `<span class="bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded text-[10px] font-bold border border-slate-200">#${k}</span>`).join('')}
                         </div>
-                        <span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-lg border border-slate-200">Lang: ${item.language.toUpperCase()}</span>
+                        <div class="flex items-center gap-1 shrink-0">
+                            <span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-lg border border-slate-200">Lang: ${String(item.language || currentLang).toUpperCase()}</span>
+                            <button onclick="event.stopPropagation(); deleteLibraryItem('${item.id}')" class="bg-white hover:bg-red-50 text-red-600 border border-red-200 hover:border-red-400 rounded-lg p-1.5 transition-all" title="삭제">
+                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                            </button>
+                        </div>
                     </div>
                 `;
                 container.appendChild(card);
             });
+            createIconsSafe();
         }
 
         function ensureAdminForLibraryAction() {
@@ -2746,38 +2781,29 @@ DO NOT include any introductory or concluding remarks (e.g., "Here is the conten
         }
 
         function deleteLibraryItem(id) {
-            if (!ensureAdminForLibraryAction()) return;
-            libraryItems = libraryItems.filter(i => i.id !== id);
-            localStorage.setItem('exosystems_library', JSON.stringify(libraryItems));
-            closeLibraryModal();
-            renderLibrary();
-            updateLibraryCounterBadge();
-            showToast(currentLang === 'ko' ? "항목이 삭제되었습니다." : "Item deleted.");
+            const ok = confirm("이 콘텐츠를 라이브러리에서 삭제하시겠습니까?");
+            if (!ok) return;
+
+            libraryItems = libraryItems.filter(item => item.id !== id);
+            localStorage.setItem("exosystems_library", JSON.stringify(libraryItems));
+
+            if (typeof closeLibraryModal === "function") closeLibraryModal();
+            if (typeof renderLibrary === "function") renderLibrary();
+            if (typeof updateLibraryCounterBadge === "function") updateLibraryCounterBadge();
+            if (typeof showToast === "function") showToast("선택한 콘텐츠가 라이브러리에서 삭제되었습니다.");
         }
 
         function clearAllLibraryItems() {
-            if (!ensureAdminForLibraryAction()) return;
-            const ok = confirm("라이브러리 저장 콘텐츠를 모두 삭제하시겠습니까?\n\n학습 데이터 이력은 삭제되지 않고 유지됩니다.");
+            const ok = confirm("콘텐츠 생성 결과 라이브러리를 모두 삭제하시겠습니까?\n\n학습 데이터 이력은 삭제되지 않고 유지됩니다.");
             if (!ok) return;
 
             libraryItems = [];
             localStorage.setItem("exosystems_library", JSON.stringify(libraryItems));
 
-            if (typeof closeLibraryModal === "function") {
-                closeLibraryModal();
-            }
-
-            if (typeof renderLibrary === "function") {
-                renderLibrary();
-            }
-
-            if (typeof updateLibraryCounterBadge === "function") {
-                updateLibraryCounterBadge();
-            }
-
-            if (typeof showToast === "function") {
-                showToast("라이브러리 콘텐츠가 모두 삭제되었습니다. 학습 데이터는 유지됩니다.");
-            }
+            if (typeof closeLibraryModal === "function") closeLibraryModal();
+            if (typeof renderLibrary === "function") renderLibrary();
+            if (typeof updateLibraryCounterBadge === "function") updateLibraryCounterBadge();
+            if (typeof showToast === "function") showToast("콘텐츠 라이브러리가 모두 삭제되었습니다. 학습 데이터는 유지됩니다.");
         }
 
         Object.assign(window, {
@@ -2793,7 +2819,9 @@ DO NOT include any introductory or concluding remarks (e.g., "Here is the conten
             handleLearningTextInput,
             saveLearningData,
             renderLibrary,
+            getVisibleLibraryItems,
             clearAllLibraryItems,
+            deleteLibraryItem,
             copyOutputText,
             downloadMarkdown,
             unlockAdmin,
