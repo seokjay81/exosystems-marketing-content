@@ -290,7 +290,7 @@
                                 <i data-lucide="file-text" class="w-4 h-4 text-blue-600"></i>
                                 <span id="ui-sec-gen-content">상세 결과물</span>
                             </h4>
-                            <div id="output-generated-body" class="bg-slate-50/50 border-2 border-slate-200 rounded-xl p-4 sm:p-5 whitespace-pre-wrap font-mono text-[11px] sm:text-xs text-slate-800"></div>
+                            <div id="output-generated-body" class="bg-white border-2 border-slate-200 rounded-xl p-5 sm:p-6 whitespace-pre-wrap font-sans text-[13px] sm:text-sm leading-7 text-slate-800"></div>
                         </div>
 
                         <!-- SECTION 3: GENERATED IMAGE -->
@@ -496,7 +496,7 @@
 
                 <div class="space-y-2">
                     <h4 class="font-bold text-slate-900 border-b-2 border-slate-100 pb-1.5 text-[11px] sm:text-xs" id="ui-modal-content-lbl">문서 본문</h4>
-                    <div id="modal-generated-body" class="bg-slate-50 border-2 border-slate-200 rounded-xl p-4 font-mono text-[10px] sm:text-xs text-slate-800 whitespace-pre-wrap"></div>
+                    <div id="modal-generated-body" class="bg-white border-2 border-slate-200 rounded-xl p-5 font-sans text-[13px] sm:text-sm leading-7 text-slate-800 whitespace-pre-wrap"></div>
                 </div>
 
                 <!-- GENERATED IMAGE IN MODAL -->
@@ -1406,7 +1406,7 @@
             });
         }
 
-        async function extractTextFromPDF(file, maxPages = 12) {
+        async function extractTextFromPDF(file, maxPages = 20) {
             if (!window.pdfjsLib) throw new Error("PDF parser is not loaded.");
             const buffer = await readFileAsArrayBuffer(file);
             const pdf = await window.pdfjsLib.getDocument({ data: buffer }).promise;
@@ -1416,7 +1416,7 @@
                 const page = await pdf.getPage(pageNum);
                 const content = await page.getTextContent();
                 const text = content.items.map(item => item.str || "").join(" ");
-                if (text.trim()) pages.push("[PDF " + pageNum + "]\n" + text);
+                pages.push("[PDF " + pageNum + " page]\n" + text);
             }
             return pages.join("\n\n");
         }
@@ -1432,7 +1432,7 @@
             if (!window.XLSX) throw new Error("XLSX parser is not loaded.");
             const buffer = await readFileAsArrayBuffer(file);
             const workbook = window.XLSX.read(buffer, { type: "array" });
-            return workbook.SheetNames.slice(0, 8).map(sheetName => {
+            return workbook.SheetNames.slice(0, 10).map(sheetName => {
                 const csv = window.XLSX.utils.sheet_to_csv(workbook.Sheets[sheetName]);
                 return "[Sheet: " + sheetName + "]\n" + csv;
             }).join("\n\n");
@@ -1442,12 +1442,18 @@
             if (!window.JSZip) throw new Error("PPTX parser is not loaded.");
             const buffer = await readFileAsArrayBuffer(file);
             const zip = await window.JSZip.loadAsync(buffer);
-            const slideFiles = Object.keys(zip.files).filter(name => /^ppt\/slides\/slide\d+\.xml$/.test(name)).sort().slice(0, 20);
+            const slideFiles = Object.keys(zip.files).filter(name => /^ppt\/slides\/slide\d+\.xml$/.test(name)).sort().slice(0, 30);
             const slideTexts = [];
             for (const slideFile of slideFiles) {
                 const xml = await zip.files[slideFile].async("text");
                 const matches = [...xml.matchAll(/<a:t>(.*?)<\/a:t>/g)];
-                const text = matches.map(match => match[1]).map(str => str.replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")).join(" ");
+                const text = matches.map(match => match[1]).map(str => str
+                    .replace(/&amp;/g, "&")
+                    .replace(/&lt;/g, "<")
+                    .replace(/&gt;/g, ">")
+                    .replace(/&quot;/g, '"')
+                    .replace(/&apos;/g, "'"))
+                    .join(" ");
                 if (text.trim()) slideTexts.push("[" + slideFile + "]\n" + text);
             }
             return slideTexts.join("\n\n");
@@ -1456,7 +1462,7 @@
         async function extractTextFromUploadedFile(file) {
             const ext = getFileExtension(file.name);
             if (["txt", "md", "json", "csv", "html", "htm", "xml", "log"].includes(ext)) return await readFileAsText(file);
-            if (ext === "pdf") return await extractTextFromPDF(file, 12);
+            if (ext === "pdf") return await extractTextFromPDF(file, 20);
             if (ext === "docx") return await extractTextFromDOCX(file);
             if (["xlsx", "xls"].includes(ext)) return await extractTextFromXLSX(file);
             if (ext === "pptx") return await extractTextFromPPTX(file);
@@ -1466,27 +1472,24 @@
         async function handleLearningFileSelect(event) {
             const file = event?.target?.files?.[0];
             if (!file) return;
-
             const statusEl = document.getElementById("general-file-status");
-            if (statusEl) statusEl.textContent = file.name + " / extracting text...";
-            document.getElementById("general-url-input").value = "";
-            document.getElementById("general-text-input").value = "";
+            const urlInput = document.getElementById("general-url-input");
+            const textInput = document.getElementById("general-text-input");
+            if (statusEl) statusEl.textContent = "Extracting document text...";
+            if (urlInput) urlInput.value = "";
+            if (textInput) textInput.value = "";
             pendingGeneralSource = "file";
             pendingGeneralName = file.name;
             pendingGeneralData = "";
-
             try {
                 const extractedText = await extractTextFromUploadedFile(file);
-                if (!extractedText || extractedText.trim().length < 30) {
-                    throw new Error("Not enough analyzable text was extracted from the file.");
-                }
+                if (!extractedText || extractedText.trim().length < 20) throw new Error("Not enough analyzable text was extracted from the file.");
                 pendingGeneralData = extractedText;
-                if (statusEl) statusEl.textContent = file.name + " / extracted " + extractedText.length.toLocaleString() + " chars";
+                if (statusEl) statusEl.textContent = file.name + " / text extracted (" + extractedText.length.toLocaleString() + " chars)";
             } catch (error) {
                 console.warn("File extraction limited:", error);
-                pendingGeneralData = "[File: " + file.name + "]\nDirect text extraction was limited.\nReason: " + error.message + "\nIf needed, add the key content in the direct text field.";
+                pendingGeneralData = "[File name: " + file.name + "]\nDocument text extraction was limited.\nReason: " + error.message + "\n\nThis file will be saved as learning data using the file name, extracted context, and user memo.";
                 if (statusEl) statusEl.textContent = file.name + " / extraction limited, memo fallback ready";
-                showToast(currentLang === "ko" ? "\uD30C\uC77C \uBCF8\uBB38 \uCD94\uCD9C\uC774 \uC81C\uD55C\uB418\uC5C8\uC2B5\uB2C8\uB2E4. \uD544\uC694\uD55C \uACBD\uC6B0 \uD575\uC2EC \uB0B4\uC6A9\uC744 \uC9C1\uC811 \uC785\uB825\uB780\uC5D0 \uCD94\uAC00\uD574 \uC8FC\uC138\uC694." : "File extraction was limited. Add key content in the text field if needed.");
             }
         }
         function handleLearningTextInput() {
@@ -1576,6 +1579,51 @@
             return [...counts.entries()].sort((a, b) => b[1] - a[1]).map(([word]) => word).slice(0, max);
         }
 
+
+
+        function buildLearningSampleText(rawText, maxChars = 30000) {
+            if (!rawText) return "";
+            const text = String(rawText).replace(/\s+/g, " ").trim();
+            if (text.length <= maxChars) return text;
+            const headSize = Math.floor(maxChars * 0.45);
+            const middleSize = Math.floor(maxChars * 0.25);
+            const tailSize = Math.floor(maxChars * 0.30);
+            const head = text.slice(0, headSize);
+            const middleStart = Math.max(0, Math.floor(text.length / 2) - Math.floor(middleSize / 2));
+            const middle = text.slice(middleStart, middleStart + middleSize);
+            const tail = text.slice(text.length - tailSize);
+            return ["[Document beginning]", head, "\n[Document middle]", middle, "\n[Document end]", tail].join("\n\n");
+        }
+
+        function cleanGeneratedTextForCopy(text) {
+            if (!text) return "";
+            return String(text)
+                .replace(/`{3}[\s\S]*?`{3}/g, match => match.replace(/`{3}[a-zA-Z]*\n?/g, "").replace(/`{3}/g, ""))
+                .replace(/\*\*(.*?)\*\*/g, "$1")
+                .replace(/__(.*?)__/g, "$1")
+                .replace(/^#{1,6}\s*/gm, "")
+                .replace(/^\s*[-*]\s+/gm, "- ")
+                .replace(/\n{3,}/g, "\n\n")
+                .trim();
+        }
+
+        function buildFallbackLearningJSON(sourceName, product, rawText, reason) {
+            const preview = String(rawText || "").slice(0, 1500);
+            const keywords = extractLocalKeywords(preview, 12);
+            return JSON.stringify({
+                SOURCE: sourceName,
+                TYPE: "Local File Analysis",
+                SUMMARY: preview ? preview.slice(0, 500) : sourceName + " could not be parsed deeply, so the file name and user memo were stored as learning context.",
+                INSIGHTS: [
+                    preview ? "Extracted document preview: " + preview.slice(0, 180) + "..." : "Text extraction was limited; file-name based context was saved.",
+                    "Applied product: " + product,
+                    "Analysis status: " + (reason || "local fallback analysis")
+                ],
+                KEYWORDS: keywords,
+                NOTICE: "Local learning data generated when AI analysis or document parsing was limited. Use as supporting context for content generation."
+            }, null, 2);
+        }
+
         function buildLocalLearningSummary(sourceType, sourceName, targetProduct, rawText, memo = "") {
             const normalized = String(rawText || "").replace(/\s+/g, " ").trim();
             const sentences = normalized
@@ -1611,49 +1659,82 @@
             const origHtml = btn ? btn.innerHTML : "";
             const targetProduct = document.getElementById('general-product-select').value;
             const memo = document.getElementById('general-text-input')?.value?.trim() || "";
-
             if (!pendingGeneralSource && !memo) {
                 showErrorModal("Learning data not saved", "No learning data was entered.", "Please add a file, URL, or direct text first.");
                 return;
             }
-
             if (btn) {
                 btn.disabled = true;
-                btn.innerHTML = '<i data-lucide="loader-2" class="w-3.5 h-3.5 mr-1 animate-spin"></i> Saving local summary...';
+                btn.innerHTML = '<i data-lucide="loader-2" class="w-3.5 h-3.5 mr-1 animate-spin"></i> Analyzing and saving...';
             }
             createIconsSafe();
-
             try {
                 let sourceType = pendingGeneralSource || 'text';
                 let sourceName = pendingGeneralName || "Direct text input";
                 let rawText = "";
-
                 if (sourceType === 'url') {
                     const url = pendingGeneralName;
                     if (!url || !url.startsWith('http')) {
                         showErrorModal("Learning data not saved", "Invalid URL format.", "Please enter a valid URL beginning with http:// or https://.");
                         return;
                     }
-                    rawText = "URL: " + url + "\nUser memo: " + (memo || "None") + "\nSaved as a local URL reference to reduce Gemini API usage.";
-                } else if (sourceType === 'file') {
+                    rawText = "URL: " + url + "\nUser memo: " + (memo || "None") + "\nExternal page extraction may be limited in this browser-only app, so URL and memo context are saved.";
+                    const fallbackJSON = buildFallbackLearningJSON(sourceName, targetProduct, rawText, "URL reference saved locally");
+                    executeSaveLearningHistory(sourceType, sourceName, targetProduct, fallbackJSON);
+                    return;
+                }
+                if (sourceType === 'file') {
                     rawText = ["File name: " + pendingGeneralName, memo ? "User memo: " + memo : "", "[Extracted file text]", pendingGeneralData || ""].filter(Boolean).join("\n\n");
                 } else {
                     sourceType = 'text';
-                    sourceName = "Direct text input";
+                    sourceName = pendingGeneralName || "Direct text input";
                     rawText = memo || pendingGeneralData || "";
                 }
-
                 if (!rawText || rawText.trim().length < 10) {
-                    showErrorModal("Learning data not saved", "There is not enough text to summarize.", "Please add key content to the file or direct text field.");
+                    showErrorModal("Learning data not saved", "There is not enough text to analyze.", "Please add key content to the file or direct text field.");
                     return;
                 }
+                const sampleText = buildLearningSampleText(rawText, 30000);
+                const prompt = `You are a professional marketing data analyst for EXOSYSTEMS Marketing Content Agent.
 
-                const localSummary = buildLocalLearningSummary(sourceType, sourceName, targetProduct, rawText, memo);
-                executeSaveLearningHistory(sourceType, sourceName, targetProduct, localSummary);
-                showToast("Saved as local learning data without a Gemini API call.");
+Analyze the document/text below and convert it into learning data that can be used for product-specific marketing content generation.
+
+Important rules:
+1. Do not copy the whole source text verbatim.
+2. Analyze only what can be confirmed from the provided text.
+3. Do not speculate.
+4. Write the JSON values in Korean.
+5. Return only a JSON object.
+6. Do not use markdown code blocks.
+
+Output JSON format:
+{
+  "SOURCE": "${sourceName}",
+  "TYPE": "File/Text Analysis",
+  "SUMMARY": "500 to 900 character Korean summary of the source",
+  "INSIGHTS": ["up to 5 core learning insights in Korean"],
+  "KEYWORDS": ["up to 10 important keywords"],
+  "MARKETING_POINTS": ["up to 5 marketing points for content generation"],
+  "CAUTIONS": ["up to 3 compliance or expression cautions"]
+}
+
+Applied product: ${targetProduct}
+
+Text to analyze:
+${sampleText}`;
+                try {
+                    const text = await safeCallGemini(prompt, "", ["gemini-2.5-flash-lite", "gemini-2.5-flash", "gemini-flash-latest"]);
+                    executeSaveLearningHistory(sourceType, sourceName, targetProduct, text);
+                } catch (e) {
+                    console.warn("AI analysis failed; saving local fallback learning data:", e);
+                    if (isQuotaExceededError(e)) showToast(getQuotaFallbackMessage(e));
+                    const fallbackJSON = buildFallbackLearningJSON(sourceName, targetProduct, sampleText, e.message);
+                    executeSaveLearningHistory(sourceType, sourceName, targetProduct, fallbackJSON);
+                }
             } catch (e) {
                 console.error(e);
-                showErrorModal("Learning data not saved", "Local summary failed.", e.message || "Please check the input and try again.");
+                const fallbackJSON = buildFallbackLearningJSON(pendingGeneralName || "Learning data", targetProduct, pendingGeneralData || memo || "", e.message);
+                executeSaveLearningHistory(pendingGeneralSource || "text", pendingGeneralName || "Direct text input", targetProduct, fallbackJSON);
             } finally {
                 if (btn) {
                     btn.disabled = false;
@@ -1664,12 +1745,10 @@
         }
 
         function executeSaveLearningHistory(type, name, product, dataString) {
-            const testExtract = extractLearningHighlights(dataString);
+            let testExtract = extractLearningHighlights(dataString);
             if (testExtract.length === 0) {
-                showErrorModal("학습 데이터 적용 미반영", "제공된 데이터에서 유의미한 마케팅/전략 인사이트를 추출하지 못했습니다.", "텍스트 내용이 너무 짧거나 제품과 관련이 없을 수 있습니다. 관련된 정보가 충분히 포함된 데이터를 제공해주세요.");
-                pendingGeneralData = null; 
-                pendingGeneralSource = null;
-                return;
+                dataString = buildFallbackLearningJSON(name, product, dataString, "No meaningful INSIGHTS extracted");
+                testExtract = extractLearningHighlights(dataString);
             }
 
             const newHistory = {
@@ -2115,7 +2194,8 @@ CRITICAL: You MUST actively combine and synthesize the provided [Learned AI Data
 Always strictly follow the requested structure.
 NEVER use the prohibited words provided in the prompt.
 Write the final output exclusively in the target language requested by the user. If 'videoprompt' is requested, write the prompt itself in English.
-Maintain a highly professional, trustworthy, persuasive, and data-driven tone.`;
+Maintain a highly professional, trustworthy, persuasive, and data-driven tone.
+Do not use Markdown syntax in the final output. Do not use **bold**, ### headings, or code blocks. Write plain text that can be pasted directly into an email or document. Use ordinary numbered lines and line breaks only when needed.`;
 
                 const prohibitedWords = kb.prohibited[currentLang] || kb.prohibited['ko'] || [];
                 const rules = kb.rules[currentLang] || kb.rules['ko'] || [];
@@ -2162,7 +2242,7 @@ DO NOT include any introductory or concluding remarks (e.g., "Here is the conten
 `;
 
                 const textResult = await safeCallGemini(userPrompt, sysPrompt, ["gemini-2.5-flash-lite"]);
-                materialBody = textResult;
+                materialBody = cleanGeneratedTextForCopy(textResult);
 
             } catch (error) {
                 console.error("Gemini API Error:", error);
@@ -2192,7 +2272,7 @@ DO NOT include any introductory or concluding remarks (e.g., "Here is the conten
                 createIconsSafe();
             }
 
-            materialBody = metaPrefix + materialBody;
+            materialBody = cleanGeneratedTextForCopy(metaPrefix + materialBody);
 
             document.getElementById('output-generated-body').textContent = materialBody;
 
