@@ -15,8 +15,27 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+        html {
+            font-size: 14px;
+        }
         body {
             font-family: 'Inter', 'Noto Sans KR', sans-serif;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        #output-generated-body,
+        #modal-generated-body,
+        #ld-modal-content {
+            font-size: 0.92rem;
+        }
+        .compact-card {
+            padding: 1.1rem;
+        }
+        .compact-text {
+            font-size: 0.88rem;
+        }
+        .small-label {
+            font-size: 0.78rem;
         }
         .custom-scrollbar::-webkit-scrollbar {
             width: 6px;
@@ -1688,7 +1707,8 @@
                 .replace(/API Error[^\n]*/gi, "")
                 .replace(/Quota exceeded[^\n]*/gi, "")
                 .replace(/Retry-After[^\n]*/gi, "")
-                .replace(/^\s*[-*]\s+/gm, "- ")
+                .replace(/^\s*(SUMMARY|EXECUTIVE_SUMMARY|RAW_TEXT_PREVIEW|NOTICE)\s*[:=].*$/gmi, "")
+                .replace(/\b(SUMMARY|EXECUTIVE_SUMMARY|RAW_TEXT_PREVIEW|NOTICE)\b/gi, "")
                 .replace(/\n{3,}/g, "\n\n")
                 .trim();
         }
@@ -2128,12 +2148,19 @@ ${sampleText}`;
             const item = learningHistory.find(i => i.id === id);
             if (!item) return;
 
-            const normalizedLearning = normalizeLearningData(item.content, item.name, item.type, item.product);
-            const listHtml = values => values && values.length ? `<ul class="list-disc list-inside space-y-1">${values.map(value => `<li>${escapeHTML(value)}</li>`).join("")}</ul>` : `<p class="text-slate-400">-</p>`;
             document.getElementById('ld-modal-name').textContent = item.name;
-            document.getElementById('ld-modal-meta').textContent = `${item.date} | Source: ${String(normalizedLearning.type || item.type).toUpperCase()}`;
+            document.getElementById('ld-modal-meta').textContent = `${item.date} | Source: ${String(item.type || '').toUpperCase()}`;
             document.getElementById('ld-modal-product').textContent = item.product;
-            document.getElementById('ld-modal-content').innerHTML = `<div class="space-y-3 font-sans text-[12px] leading-6"><div class="bg-white border border-slate-200 rounded-lg p-3"><p class="font-extrabold text-slate-900 mb-1">핵심 요약</p><p>${escapeHTML(normalizedLearning.summary || "요약 정보가 없습니다.")}</p></div><div class="bg-white border border-slate-200 rounded-lg p-3"><p class="font-extrabold text-slate-900 mb-1">주요 키워드</p><p>${normalizedLearning.keywords.length ? normalizedLearning.keywords.map(kw => `<span class="inline-block bg-blue-50 text-blue-700 border border-blue-100 rounded px-2 py-0.5 mr-1 mb-1">${escapeHTML(kw)}</span>`).join("") : "-"}</p></div><div class="bg-white border border-slate-200 rounded-lg p-3"><p class="font-extrabold text-slate-900 mb-1">핵심 학습 내용</p>${listHtml(normalizedLearning.insights)}</div><div class="bg-white border border-slate-200 rounded-lg p-3"><p class="font-extrabold text-slate-900 mb-1">마케팅 활용 포인트</p>${listHtml(normalizedLearning.marketingPoints)}</div><div class="bg-white border border-amber-200 rounded-lg p-3"><p class="font-extrabold text-amber-900 mb-1">주의 표현 및 규제 메모</p>${listHtml(normalizedLearning.cautions)}</div><div class="bg-slate-50 border border-slate-200 rounded-lg p-3"><p class="font-extrabold text-slate-900 mb-1">원문 미리보기</p><p class="whitespace-pre-wrap break-words">${escapeHTML(normalizedLearning.rawTextPreview || "-")}</p></div></div>`;
+            document.getElementById('ld-modal-content').innerHTML = `<div class="space-y-4 font-sans text-[12px] leading-6">
+                <div class="bg-white border border-slate-200 rounded-lg p-4">
+                    <p class="font-extrabold text-slate-900 mb-2">학습 데이터 정보</p>
+                    <p class="text-slate-700">이 항목은 내부 학습 데이터로 저장된 기록입니다. 학습 원본 및 세부 내용은 공개되지 않으며, 마케팅 콘텐츠 생성 시 AI 모델과 안전하게 결합되어 활용됩니다.</p>
+                </div>
+                <div class="bg-slate-50 border border-slate-200 rounded-lg p-4 text-slate-600 text-[11px]">
+                    <p class="font-bold text-slate-900 mb-1">보안 안내</p>
+                    <p>원본 학습 데이터는 이 UI에서 표시되지 않습니다. 이 모달은 메타 기록 확인용입니다.</p>
+                </div>
+            </div>`;
 
             // 핵심 인사이트 요약 정보 렌더링
             const summarySection = document.getElementById('ld-modal-summary-section');
