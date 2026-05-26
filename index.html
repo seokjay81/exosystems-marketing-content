@@ -115,7 +115,7 @@
                         <select id="type-select" onchange="handleContentTypeChange()" class="flex-1 bg-slate-50 border-2 border-slate-300 rounded-xl px-4 py-2.5 sm:py-3 text-slate-900 font-bold focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none text-sm hover:border-blue-400">
                             <option value="strategyplan" id="ui-opt-type-strategy">마케팅 전략 계획</option>
                             <option value="customquery" id="ui-opt-type-customquery">자유 질문 및 심층 논의</option>
-                            <option value="imagegen" id="ui-opt-type-imagegen">이미지 생성</option>
+                            <option value="imagegen" id="ui-opt-type-imagegen">이미지 생성 프롬프트</option>
                             <option value="email" id="ui-opt-type-email">이메일</option>
                             <option value="cardnews" id="ui-opt-type-cardnews">카드뉴스</option>
                             <option value="reels" id="ui-opt-type-reels">숏폼/릴스 (클린)</option>
@@ -161,6 +161,10 @@
                     </div>
                     <p class="text-[10px] text-slate-400 font-medium" id="ui-img-help-text">*업로드된 이미지는 이미지 생성 및 영상 기획의 컨텍스트로 우선 활용됩니다.</p>
                     <div id="image-previews" class="grid grid-cols-3 sm:grid-cols-4 gap-2 pt-1"></div>
+                    <button onclick="analyzeImagesAsLearning()" id="ui-btn-analyze-images" class="mt-3 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-2.5 px-4 rounded-xl text-xs transition-all shadow-md flex items-center justify-center space-x-1.5 outline-none border-2 border-indigo-800">
+                        <i data-lucide="brain" class="w-4 h-4"></i>
+                        <span>이미지를 마케팅 학습 데이터로 분석 및 저장</span>
+                    </button>
                 </div>
 
                 <!-- ADDITIONAL STRATEGY MEMO -->
@@ -740,12 +744,14 @@
         }
 
         // --- SAFE CALL GEMINI HELPER WITH DETAILED ERROR INFO & MULTI-MODEL FALLBACK ---
-        async function safeCallGemini(prompt, systemInstruction = "") {
+        async function safeCallGemini(prompt, systemInstruction = "", models = null) {
             // 서버 프록시를 통해 호출합니다. 실제 Gemini 인증은 서버에서 처리됩니다.
-            const models = ["gemini-2.5-flash", "gemini-flash-latest", "gemini-2.5-flash-lite", "gemini-1.5-flash"];
+            const modelsToTry = Array.isArray(models) && models.length
+                ? models
+                : ["gemini-2.5-flash", "gemini-flash-latest", "gemini-2.5-flash-lite", "gemini-1.5-flash"];
             let lastError = null;
 
-            for (const model of models) {
+            for (const model of modelsToTry) {
                 const url = `/api/generate`;
                 const payload = {
                     model,
@@ -796,7 +802,7 @@
                     } catch (error) {
                         lastError = error;
                         if (error.message.startsWith("MODEL_NOT_FOUND") || error.message.includes("API_KEY_INVALID") || error.message.includes("차단됨")) {
-                            break; 
+                            break;
                         }
                         retries++;
                         if (retries < 3) {
@@ -1304,31 +1310,46 @@
             const files = event.target.files;
             const previewContainer = document.getElementById('image-previews');
             
-            for(let i=0; i<files.length; i++) {
+            for(let i = 0; i < files.length; i++) {
                 const file = files[i];
-                currentUploadedImages.push(file.name);
+                const reader = new FileReader();
                 
-                const div = document.createElement('div');
-                div.className = "relative group bg-slate-50 border-2 border-slate-200 rounded-xl p-2 flex flex-col items-center justify-center text-[10px] text-slate-500 text-center truncate h-14 sm:h-16";
-                div.innerHTML = `
-                    <i data-lucide="image" class="w-4 h-4 text-slate-400 mb-0.5"></i>
-                    <span class="w-full truncate px-1 font-medium">${file.name}</span>
-                    <button onclick="removeUploadedImage('${file.name}', this)" class="absolute -top-1.5 -right-1.5 bg-red-600 text-white rounded-full p-0.5 shadow-sm hover:bg-red-700 transition-all outline-none">
-                        <i data-lucide="x" class="w-3.5 h-3.5"></i>
-                    </button>
-                `;
-                previewContainer.appendChild(div);
+                reader.onload = function(e) {
+                    const base64Data = e.target.result;
+                    const imageObj = {
+                        name: file.name,
+                        base64: base64Data,
+                        type: file.type,
+                        size: file.size
+                    };
+                    currentUploadedImages.push(imageObj);
+                    
+                    const div = document.createElement('div');
+                    div.className = "relative group bg-slate-50 border-2 border-slate-200 rounded-xl p-2 flex flex-col items-center justify-center text-[10px] text-slate-500 text-center truncate h-14 sm:h-16 overflow-hidden";
+                    div.setAttribute('data-img-name', file.name);
+                    div.innerHTML = `
+                        <img src="${base64Data}" class="w-full h-full object-cover rounded-lg" alt="${file.name}">
+                        <button onclick="removeUploadedImageByName('${file.name}')" class="absolute -top-1.5 -right-1.5 bg-red-600 text-white rounded-full p-0.5 shadow-sm hover:bg-red-700 transition-all outline-none">
+                            <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                        </button>
+                    `;
+                    previewContainer.appendChild(div);
+                    createIconsSafe();
+                };
+                
+                reader.readAsDataURL(file);
             }
             
-            document.getElementById('img-upload-status').textContent = `${currentUploadedImages.length} Files`;
-            createIconsSafe();
+            document.getElementById('img-upload-status').textContent = `${currentUploadedImages.length} 개 이미지`;
         }
 
-        function removeUploadedImage(name, element) {
-            currentUploadedImages = currentUploadedImages.filter(img => img !== name);
-            element.parentElement.remove();
+        function removeUploadedImageByName(name) {
+            currentUploadedImages = currentUploadedImages.filter(img => img.name !== name);
+            const elem = document.querySelector(`[data-img-name="${name}"]`);
+            if (elem) elem.remove();
+            
             const dict = TRANSLATIONS[currentLang];
-            document.getElementById('img-upload-status').textContent = currentUploadedImages.length > 0 ? `${currentUploadedImages.length} Files` : dict.noFile;
+            document.getElementById('img-upload-status').textContent = currentUploadedImages.length > 0 ? `${currentUploadedImages.length} 개 이미지` : dict.noFile;
         }
 
         // ==========================================
@@ -1383,6 +1404,21 @@
             }
         }
 
+        function normalizeLearningText(text) {
+            const trimmed = String(text || "").trim();
+            const maxLength = 120000;
+            if (trimmed.length <= maxLength) return trimmed;
+            return `${trimmed.slice(0, maxLength)}\n\n[...truncated for faster analysis]`;
+        }
+
+        function limitInsightCandidates(items, max = 8) {
+            return Array.from(new Set(
+                items
+                    .map(i => String(i || "").trim())
+                    .filter(Boolean)
+            )).slice(0, max);
+        }
+
         async function saveLearningData() {
             const btn = document.querySelector('button[onclick="saveLearningData()"]');
             const origHtml = btn.innerHTML;
@@ -1407,7 +1443,7 @@
                         prompt = `You are a top-tier marketing analyst. I want to analyze a competitor or market reference URL: ${url}. Based on your extensive knowledge about this website, company, or domain, extract 3 to 5 critical marketing insights, competitor weaknesses, or market trends that can be used to strategically differentiate and promote our product "${targetProduct}". Return ONLY a valid JSON object strictly matching this format without markdown blocks:\n{ "SOURCE": "${url}", "TYPE": "Competitor/Market Analysis", "INSIGHTS": ["insight 1", "insight 2", "insight 3"] }`;
                     }
                     
-                    const text = await safeCallGemini(prompt);
+                    const text = await safeCallGemini(prompt, "", ["gemini-2.5-flash-lite", "gemini-1.5-flash"]);
                     executeSaveLearningHistory('url', pendingGeneralName, targetProduct, text);
                 } catch (e) {
                     console.error(e);
@@ -1441,7 +1477,12 @@
                         return chunks;
                     }
 
-                    const chunks = chunkText(pendingGeneralData, 15000, 1500);
+                    const normalizedText = normalizeLearningText(pendingGeneralData);
+                    const chunks = chunkText(normalizedText, 9000, 900);
+                    const maxChunks = 5;
+                    if (chunks.length > maxChunks) {
+                        chunks.length = maxChunks;
+                    }
                     let finalInsightsResult = "";
 
                     if (chunks.length === 1) {
@@ -1451,7 +1492,7 @@
 
                         const prompt = `You are a top-tier marketing data analyst. Analyze the following data (text/document/JSON) regarding the market, product, or competitor for our product "${targetProduct}". Extract 3 to 5 crucial marketing insights, unfulfilled customer needs, strategic differentiation points, or competitive advantages. If it's a chat history or raw text input, extract the core strategies discussed. Return ONLY a valid JSON object strictly matching this format without markdown blocks:\n{ "SOURCE": "${pendingGeneralName}", "TYPE": "Data Analysis", "INSIGHTS": ["insight 1", "insight 2", "insight 3"] }\n\nRAW DATA:\n${chunks[0]}`;
                         
-                        const text = await safeCallGemini(prompt);
+                        const text = await safeCallGemini(prompt, "", ["gemini-2.5-flash-lite", "gemini-1.5-flash"]);
                         finalInsightsResult = text;
                     } else {
                         // 초대용량 파일: 조각별 다중 맵리듀스(Map-Reduce) 분석 프로세스 진행
@@ -1469,7 +1510,7 @@ RAW PORTION:
 ${chunks[i]}`;
 
                             try {
-                                const rawChunkText = await safeCallGemini(chunkPrompt);
+                                const rawChunkText = await safeCallGemini(chunkPrompt, "", ["gemini-2.5-flash-lite", "gemini-1.5-flash"]);
                                 const parsed = extractJSON(rawChunkText);
                                 if (Array.isArray(parsed)) {
                                     intermediateInsights.push(...parsed);
@@ -1481,7 +1522,8 @@ ${chunks[i]}`;
                             }
                         }
 
-                        if (intermediateInsights.length === 0) {
+                        const dedupedInsights = limitInsightCandidates(intermediateInsights, 8);
+                        if (dedupedInsights.length === 0) {
                             throw new Error("대용량 문서의 세부 파트 분석 중 유효한 마케팅 인사이트를 추출하지 못했습니다. 문서의 텍스트 형식을 확인해주세요.");
                         }
 
@@ -1491,13 +1533,13 @@ ${chunks[i]}`;
 
                         const synthesisPrompt = `You are a master brand strategist. 
 We have extracted the following intermediate insights from a massive document about "${targetProduct}":
-${JSON.stringify(intermediateInsights)}
+${JSON.stringify(dedupedInsights)}
 
-Your task is to merge, clean, and synthesize these insights into exactly 4 to 6 highly polished, high-impact strategic market insights or competitor weaknesses. 
+Your task is to merge, clean, and synthesize these insights into 3 to 5 highly polished, high-impact strategic market insights or competitor weaknesses. 
 Return ONLY a valid JSON object strictly matching this format without markdown blocks:
 { "SOURCE": "${pendingGeneralName}", "TYPE": "Massive Data Analysis", "INSIGHTS": ["insight 1", "insight 2", "insight 3"] }`;
 
-                        const finalTextResult = await safeCallGemini(synthesisPrompt);
+                        const finalTextResult = await safeCallGemini(synthesisPrompt, "", ["gemini-2.5-flash-lite", "gemini-1.5-flash"]);
                         finalInsightsResult = finalTextResult;
                     }
 
