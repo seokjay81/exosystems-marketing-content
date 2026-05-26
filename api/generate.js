@@ -5,7 +5,7 @@ export default async function handler(req, res) {
   }
 
   const body = req.body || {};
-  const model = body.model || 'gemini-2.5-flash';
+  const model = body.model || 'gemini-2.5-flash-lite';
   const payload = body.payload || body;
 
   if (!payload || typeof payload !== 'object') {
@@ -42,7 +42,8 @@ export default async function handler(req, res) {
     }
 
     if (!response.ok) {
-      return res.status(response.status).json({ error: data.error || data });
+      const retryAfter = response.headers.get('retry-after') || data?.error?.details?.find?.(detail => detail?.['@type']?.includes('RetryInfo'))?.retryDelay || null;
+      return res.status(response.status).json({ error: data.error || data, retryAfter, model });
     }
 
     return res.status(200).json(data);

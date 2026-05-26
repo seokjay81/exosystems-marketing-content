@@ -673,7 +673,7 @@
             if (v) localStorage.setItem('exosystems_api_key', v);
             else localStorage.removeItem('exosystems_api_key');
             closeApiKeyModal();
-            showToast(currentLang === 'ko' ? 'API 키가 저장되었습니다 (로컬).' : 'API key saved (local).');
+            showToast('API key saved locally.');
         }
 
         function clearApiKey() {
@@ -681,7 +681,7 @@
             localStorage.removeItem('exosystems_api_key');
             const input = document.getElementById('api-key-input');
             if (input) input.value = "";
-            showToast(currentLang === 'ko' ? 'API 키가 삭제되었습니다.' : 'API key cleared.');
+            showToast('API key cleared.');
         }
 
         function showToast(message) {
@@ -751,15 +751,32 @@
         }
 
         // --- SAFE CALL GEMINI HELPER WITH DETAILED ERROR INFO & MULTI-MODEL FALLBACK ---
+        function getRetrySecondsFromErrorText(text) {
+            const source = String(text || "");
+            const retryInfoMatch = source.match(/retryDelay["']?\s*[:=]\s*["']?(\d+)s/i);
+            const plainMatch = source.match(/retry in\s+(\d+)\s+seconds/i);
+            const retryAfterMatch = source.match(/Retry-After["']?\s*[:=]\s*["']?(\d+)/i);
+            const value = retryInfoMatch?.[1] || plainMatch?.[1] || retryAfterMatch?.[1];
+            return value ? Number(value) : null;
+        }
+
+        function isQuotaExceededError(error) {
+            const message = String(error?.message || error || "").toLowerCase();
+            return message.includes("429") || message.includes("quota") || message.includes("resource_exhausted") || message.includes("free_tier");
+        }
+
+        function getQuotaFallbackMessage(error) {
+            const seconds = getRetrySecondsFromErrorText(error?.message || error);
+            const base = "Gemini 무료 API 사용량 한도를 초과했습니다. 잠시 후 다시 시도하거나, API 사용량을 줄이기 위해 로컬 요약 모드로 전환합니다.";
+            return seconds ? base + " 예상 대기 시간: " + seconds + "초." : base;
+        }
+
+        // --- SAFE CALL GEMINI HELPER WITH DETAILED ERROR INFO & LIGHTWEIGHT MODEL DEFAULT ---
         async function safeCallGemini(prompt, systemInstruction = "", models = null) {
-            // 서버 프록시를 통해 호출합니다. 실제 Gemini 인증은 서버에서 처리됩니다.
-            const modelsToTry = Array.isArray(models) && models.length
-                ? models
-                : ["gemini-2.5-flash-lite", "gemini-2.5-flash", "gemini-flash-latest"];
+            const modelsToTry = Array.isArray(models) && models.length ? models : ["gemini-2.5-flash-lite"];
             let lastError = null;
 
             for (const model of modelsToTry) {
-                const url = `/api/generate`;
                 const payload = {
                     model,
                     payload: {
@@ -767,54 +784,52 @@
                     }
                 };
                 if (systemInstruction) {
-                    payload.systemInstruction = { parts: [{ text: systemInstruction }] };
+                    payload.payload.systemInstruction = { parts: [{ text: systemInstruction }] };
                 }
 
-                let retries = 0;
-                const delays = [1000, 2000, 4000];
+                try {
+                    const response = await fetch('/api/generate', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
 
-                while (retries < 3) {
+                    const resultText = await response.text();
+                    let result;
                     try {
-                        const response = await fetch(url, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(payload)
-                        });
+                        result = JSON.parse(resultText);
+                    } catch (parseError) {
+                        throw new Error("Server returned a non-JSON response: " + resultText.substring(0, 180));
+                    }
 
-                        const resultText = await response.text();
-                        let result;
-                        try {
-                            result = JSON.parse(resultText);
-                        } catch (parseError) {
-                            throw new Error(`서버가 JSON이 아닌 응답을 반환했습니다: ${resultText.substring(0, 180)}`);
+                    if (!response.ok) {
+                        const rawError = result.error || result;
+                        const errorMessage = typeof rawError === 'string' ? rawError : (rawError.message || JSON.stringify(rawError));
+                        const retryAfter = result.retryAfter || response.headers.get('Retry-After') || '';
+                        if (response.status === 429 || /quota|RESOURCE_EXHAUSTED|free_tier/i.test(errorMessage)) {
+                            const quotaError = new Error("QUOTA_EXCEEDED: " + errorMessage + " Retry-After: " + retryAfter);
+                            quotaError.code = 429;
+                            quotaError.retryAfter = retryAfter;
+                            throw quotaError;
                         }
+                        if (response.status === 404 || rawError.code === 404) {
+                            throw new Error("MODEL_NOT_FOUND: " + errorMessage);
+                        }
+                        throw new Error("[API Error " + response.status + "]: " + errorMessage);
+                    }
 
-                        if (!response.ok) {
-                            if (result.error) {
-                                if (result.error.code === 404 || response.status === 404) {
-                                    throw new Error(`MODEL_NOT_FOUND: ${result.error.message}`);
-                                }
-                                throw new Error(`[API Error ${result.error.code}]: ${result.error.message}`);
-                            }
-                            throw new Error(`HTTP Error: ${response.status}`);
-                        }
-
-                        if (result.candidates && result.candidates[0]?.content?.parts?.[0]?.text) {
-                            return result.candidates[0].content.parts[0].text;
-                        } else if (result.promptFeedback?.blockReason) {
-                            throw new Error(`콘텐츠 차단됨: ${result.promptFeedback.blockReason}`);
-                        } else {
-                            throw new Error("API 응답이 비어있거나 올바르지 않은 형식입니다.");
-                        }
-                    } catch (error) {
-                        lastError = error;
-                        if (error.message.startsWith("MODEL_NOT_FOUND") || error.message.includes("API_KEY_INVALID") || error.message.includes("차단됨")) {
-                            break;
-                        }
-                        retries++;
-                        if (retries < 3) {
-                            await new Promise(r => setTimeout(r, delays[retries - 1]));
-                        }
+                    if (result.candidates && result.candidates[0]?.content?.parts?.[0]?.text) {
+                        return result.candidates[0].content.parts[0].text;
+                    }
+                    if (result.promptFeedback?.blockReason) {
+                        throw new Error("Content blocked: " + result.promptFeedback.blockReason);
+                    }
+                    throw new Error("API response is empty or invalid.");
+                } catch (error) {
+                    lastError = error;
+                    if (isQuotaExceededError(error)) throw error;
+                    if (error.message?.startsWith("MODEL_NOT_FOUND") || error.message?.includes("API_KEY_INVALID") || error.message?.includes("Content blocked")) {
+                        break;
                     }
                 }
             }
@@ -1549,146 +1564,102 @@
             return limitInsightCandidates(bullets.length ? bullets : lines, max);
         }
 
+        function extractLocalKeywords(text, max = 12) {
+            const stopWords = new Set(["with", "from", "that", "this", "and", "the", "for", "are", "you", "your", "our", "into"]);
+            const words = String(text || "")
+                .replace(/[^\p{L}\p{N}\s-]/gu, " ")
+                .split(/\s+/)
+                .map(word => word.trim())
+                .filter(word => word.length >= 2 && !stopWords.has(word.toLowerCase()));
+            const counts = new Map();
+            words.forEach(word => counts.set(word, (counts.get(word) || 0) + 1));
+            return [...counts.entries()].sort((a, b) => b[1] - a[1]).map(([word]) => word).slice(0, max);
+        }
+
+        function buildLocalLearningSummary(sourceType, sourceName, targetProduct, rawText, memo = "") {
+            const normalized = String(rawText || "").replace(/\s+/g, " ").trim();
+            const sentences = normalized
+                .split(/[\n.!?]+/)
+                .map(sentence => sentence.trim())
+                .filter(sentence => sentence.length > 24);
+            const keywords = extractLocalKeywords([normalized, memo].join(" "), 12);
+            const previewSentences = sentences.slice(0, 5);
+            const insights = [];
+            insights.push(sourceName + " was saved as local learning data for " + targetProduct + ".");
+            if (keywords.length) insights.push("Keyword candidates: " + keywords.slice(0, 8).join(", "));
+            previewSentences.slice(0, 3).forEach((sentence, index) => {
+                insights.push("Key sentence " + (index + 1) + ": " + sentence.slice(0, 180));
+            });
+            if (memo) insights.push("User memo: " + memo.slice(0, 180));
+            while (insights.length < 3) {
+                insights.push("Use the source name, extracted text, and memo as reference material for " + targetProduct + " marketing content.");
+            }
+            return JSON.stringify({
+                SOURCE: sourceName,
+                TYPE: sourceType === "url" ? "Local URL Reference" : "Local Summary",
+                MODE: "local-fallback-no-api",
+                INSIGHTS: insights.slice(0, 7),
+                EXECUTIVE_SUMMARY: normalized.slice(0, 900) || memo || sourceName,
+                KEYWORDS: keywords,
+                MARKETING_POINTS: insights.slice(0, 4),
+                CAUTIONS: ["Saved with local summary mode to reduce Gemini API usage.", "Review product compliance rules and banned expressions before publishing."]
+            }, null, 2);
+        }
+
         async function saveLearningData() {
             const btn = document.querySelector('button[onclick="saveLearningData()"]');
-            const origHtml = btn.innerHTML;
+            const origHtml = btn ? btn.innerHTML : "";
             const targetProduct = document.getElementById('general-product-select').value;
+            const memo = document.getElementById('general-text-input')?.value?.trim() || "";
 
-            if (pendingGeneralSource === 'url') {
-                const url = pendingGeneralName;
-                if (!url.startsWith('http')) {
-                    showErrorModal("학습 데이터 적용 미반영", "유효하지 않은 URL 형식입니다.", "올바른 웹사이트 주소(http:// 또는 https:// 포함)를 입력해주세요.");
+            if (!pendingGeneralSource && !memo) {
+                showErrorModal("Learning data not saved", "No learning data was entered.", "Please add a file, URL, or direct text first.");
+                return;
+            }
+
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i data-lucide="loader-2" class="w-3.5 h-3.5 mr-1 animate-spin"></i> Saving local summary...';
+            }
+            createIconsSafe();
+
+            try {
+                let sourceType = pendingGeneralSource || 'text';
+                let sourceName = pendingGeneralName || "Direct text input";
+                let rawText = "";
+
+                if (sourceType === 'url') {
+                    const url = pendingGeneralName;
+                    if (!url || !url.startsWith('http')) {
+                        showErrorModal("Learning data not saved", "Invalid URL format.", "Please enter a valid URL beginning with http:// or https://.");
+                        return;
+                    }
+                    rawText = "URL: " + url + "\nUser memo: " + (memo || "None") + "\nSaved as a local URL reference to reduce Gemini API usage.";
+                } else if (sourceType === 'file') {
+                    rawText = ["File name: " + pendingGeneralName, memo ? "User memo: " + memo : "", "[Extracted file text]", pendingGeneralData || ""].filter(Boolean).join("\n\n");
+                } else {
+                    sourceType = 'text';
+                    sourceName = "Direct text input";
+                    rawText = memo || pendingGeneralData || "";
+                }
+
+                if (!rawText || rawText.trim().length < 10) {
+                    showErrorModal("Learning data not saved", "There is not enough text to summarize.", "Please add key content to the file or direct text field.");
                     return;
                 }
-                
-                btn.disabled = true;
-                btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 mr-1 animate-spin"></i> AI 분석 중...`;
-                createIconsSafe();
 
-                try {
-                    let prompt = "";
-                    if (url.includes('instagram.com') || url.includes('facebook.com')) {
-                        prompt = `You are a top-tier marketing analyst. Analyze this SNS URL (${url}). Extract detailed product information, analyze competitor products if visible, and derive 3 to 5 critical differentiation points that can be used to promote our product "${targetProduct}". Return ONLY a valid JSON object strictly matching this format without markdown blocks:\n{ "SOURCE": "${url}", "TYPE": "SNS Analysis", "INSIGHTS": ["insight 1", "insight 2", "insight 3"] }`;
-                    } else {
-                        prompt = `You are a top-tier marketing analyst. I want to analyze a competitor or market reference URL: ${url}. Based on your extensive knowledge about this website, company, or domain, extract 3 to 5 critical marketing insights, competitor weaknesses, or market trends that can be used to strategically differentiate and promote our product "${targetProduct}". Return ONLY a valid JSON object strictly matching this format without markdown blocks:\n{ "SOURCE": "${url}", "TYPE": "Competitor/Market Analysis", "INSIGHTS": ["insight 1", "insight 2", "insight 3"] }`;
-                    }
-                    
-                    const text = await safeCallGemini(prompt, "", ["gemini-2.5-flash-lite", "gemini-2.5-flash", "gemini-flash-latest"]);
-                    executeSaveLearningHistory('url', pendingGeneralName, targetProduct, text);
-                } catch (e) {
-                    console.error(e);
-                    showErrorModal("학습 데이터 적용 미반영", "AI URL 분석 중 오류가 발생했습니다.", e.message || "네트워크 상태를 확인하거나 유효한 공개 URL인지 확인해주세요.");
-                } finally {
+                const localSummary = buildLocalLearningSummary(sourceType, sourceName, targetProduct, rawText, memo);
+                executeSaveLearningHistory(sourceType, sourceName, targetProduct, localSummary);
+                showToast("Saved as local learning data without a Gemini API call.");
+            } catch (e) {
+                console.error(e);
+                showErrorModal("Learning data not saved", "Local summary failed.", e.message || "Please check the input and try again.");
+            } finally {
+                if (btn) {
                     btn.disabled = false;
                     btn.innerHTML = origHtml;
-                    createIconsSafe();
                 }
-
-            } else if (pendingGeneralSource === 'file' || pendingGeneralSource === 'text') {
-                if (!pendingGeneralData) {
-                    showErrorModal("학습 데이터 적용 미반영", "입력된 데이터가 없습니다.", "학습할 파일, URL 또는 텍스트를 먼저 입력해주세요.");
-                    return;
-                }
-                
-                btn.disabled = true;
-                btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 mr-1 animate-spin"></i> 대용량 분석 준비 중...`;
                 createIconsSafe();
-
-                try {
-                    // --- 지능형 대용량 자동 분할 분석 (Text Chunking / Map-Reduce) ---
-                    function chunkText(text, size = 15000, overlap = 1500) {
-                        const chunks = [];
-                        let index = 0;
-                        while (index < text.length) {
-                            chunks.push(text.substring(index, index + size));
-                            index += (size - overlap);
-                            if (index >= text.length) break;
-                        }
-                        return chunks;
-                    }
-
-                    const normalizedText = normalizeLearningText(pendingGeneralData);
-                    const chunks = chunkText(normalizedText, 15000, 1500);
-                    const maxChunks = 5;
-                    if (chunks.length > maxChunks) {
-                        chunks.length = maxChunks;
-                    }
-                    let finalInsightsResult = "";
-
-                    if (chunks.length === 1) {
-                        // 일반 크기 파일: 단일 전송 AI 딥 분석 진행
-                        btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 mr-1 animate-spin"></i> AI 딥 분석 중...`;
-                        createIconsSafe();
-
-                        const prompt = `You are a top-tier marketing data analyst. Analyze the following data (text/document/JSON) regarding the market, product, or competitor for our product "${targetProduct}". Extract 3 to 5 crucial marketing insights, unfulfilled customer needs, strategic differentiation points, or competitive advantages. If it's a chat history or raw text input, extract the core strategies discussed. Return ONLY a JSON object or a concise list of insights, without extra commentary.\n\nRAW DATA:\n${chunks[0]}`;
-                        
-                        const text = await safeCallGemini(prompt, "", ["gemini-2.5-flash-lite", "gemini-2.5-flash", "gemini-flash-latest"]);
-                        finalInsightsResult = text;
-                    } else {
-                        // 초대용량 파일: 조각별 다중 맵리듀스(Map-Reduce) 분석 프로세스 진행
-                        const intermediateInsights = [];
-                        for (let i = 0; i < chunks.length; i++) {
-                            btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 mr-1 animate-spin"></i> AI 파트 분석 중 (${i + 1}/${chunks.length})...`;
-                            createIconsSafe();
-
-                            const chunkPrompt = `You are a professional marketing data analyst. Analyze the following portion (${i + 1}/${chunks.length}) of a massive document for our product "${targetProduct}". Extract up to 3 key strategic points, competitor product details, or user needs discussed. Return ONLY a JSON array of strings or a plain newline-separated list of insights. Do not include any extra commentary.\n\nRAW PORTION:\n${chunks[i]}`;
-
-                            try {
-                                const rawChunkText = await safeCallGemini(chunkPrompt, "", ["gemini-2.5-flash-lite", "gemini-2.5-flash", "gemini-flash-latest"]);
-                                const parsed = extractInsightsFromText(rawChunkText, 3);
-                                if (parsed.length) {
-                                    intermediateInsights.push(...parsed);
-                                } else {
-                                    console.warn(`Chunk ${i+1} returned no parseable insights. Falling back to raw text extraction.`, rawChunkText);
-                                    intermediateInsights.push(...extractInsightsFromText(chunks[i], 3));
-                                }
-                            } catch (e) {
-                                console.warn(`Failed to parse chunk ${i+1}:`, e);
-                                intermediateInsights.push(...extractInsightsFromText(chunks[i], 3));
-                            }
-                        }
-
-                        let dedupedInsights = limitInsightCandidates(intermediateInsights, 8);
-                        if (dedupedInsights.length === 0) {
-                            const fallbackPrompt = `You are a marketing analyst. Summarize the following content into 3 concise marketing insights or competitor strengths/weaknesses. Return your answer as a JSON array or plain bullet lines only.\n\nCONTENT:\n${normalizedText.slice(0, 25000)}`;
-                            const fallbackText = await safeCallGemini(fallbackPrompt, "", ["gemini-2.5-flash-lite", "gemini-2.5-flash", "gemini-flash-latest"]);
-                            dedupedInsights = extractInsightsFromText(fallbackText, 5);
-                        }
-
-                        if (dedupedInsights.length === 0) {
-                            const rawLines = normalizedText
-                                .split(/\r?\n/)
-                                .map(line => line.trim())
-                                .filter(line => line.length > 20)
-                                .slice(0, 5);
-                            dedupedInsights = limitInsightCandidates(rawLines, 5);
-                        }
-
-                        if (dedupedInsights.length === 0) {
-                            throw new Error("대용량 문서의 세부 파트 분석 중 유효한 마케팅 인사이트를 추출하지 못했습니다. 문서의 텍스트 형식을 확인해주세요.");
-                        }
-
-                        // 분석된 모든 조각 데이터 통합 요약 (Synthesis Pass)
-                        btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 mr-1 animate-spin"></i> 대용량 요약 병합 중...`;
-                        createIconsSafe();
-
-                        const synthesisPrompt = `You are a master brand strategist. We have extracted the following intermediate insights from a massive document about "${targetProduct}":\n${JSON.stringify(dedupedInsights)}\n\nYour task is to merge, clean, and synthesize these insights into 3 to 5 highly polished, high-impact strategic market insights or competitor weaknesses. Return ONLY a JSON object or a concise list of insights without extra commentary.`;
-
-                        const finalTextResult = await safeCallGemini(synthesisPrompt, "", ["gemini-2.5-flash-lite", "gemini-2.5-flash", "gemini-flash-latest"]);
-                        finalInsightsResult = finalTextResult;
-                    }
-
-                    executeSaveLearningHistory(pendingGeneralSource, pendingGeneralName, targetProduct, finalInsightsResult);
-                } catch (e) {
-                    console.error(e);
-                    showErrorModal("학습 데이터 적용 미반영", "AI 대용량 문서 분석 중 오류가 발생했습니다.", e.message || "서버와의 연결 상태가 불안정하거나 문서 파일의 형식이 비정상적입니다. 작은 분량으로 쪼개서 업로드해 주세요.");
-                } finally {
-                    btn.disabled = false;
-                    btn.innerHTML = origHtml;
-                    createIconsSafe();
-                }
-            } else {
-                showErrorModal("학습 데이터 적용 미반영", "입력된 데이터가 없습니다.", "학습할 파일, URL 또는 텍스트를 먼저 입력해주세요.");
             }
         }
 
@@ -1755,7 +1726,6 @@
                     return obj.INSIGHTS.slice(0, limit);
                 }
 
-                // ChatGPT 엑스포트 등 복잡한 JSON 처리를 위한 Deep Search
                 function deepExtractStrings(item) {
                     if (typeof item === 'string' && item.length > 15) {
                         highlights.push(item.replace(/\n/g, ' ').substring(0, 60) + '...');
@@ -1908,7 +1878,6 @@
 
         function deleteLearningHistory(id) {
             learningHistory = learningHistory.filter(i => i.id !== id);
-            localStorage.setItem('exosystems_learning_history', JSON.stringify(learningHistory));
             
             closeLearningDetailModal();
             renderLearningHistory();
@@ -2008,6 +1977,35 @@
                 console.error("Imagen API Error:", e);
                 statusEl.innerHTML = `<span class="text-red-500 font-bold">${currentLang === 'ko' ? '이미지 생성에 실패했습니다.' : 'Failed to generate image.'}</span>`;
             }
+        }
+
+        function buildLocalFallbackContent(context) {
+            const kb = context.kb;
+            const rules = kb.rules[currentLang] || kb.rules.ko || [];
+            const prohibited = kb.prohibited[currentLang] || kb.prohibited.ko || [];
+            const disclaimer = kb.disclaimer[currentLang] || kb.disclaimer.ko || "";
+            const learningBlock = context.learningInsights.length ? "\n\n[Learned Data Applied]\n" + context.learningInsights.slice(0, 6).map(item => "- " + item).join("\n") : "";
+            const memoBlock = context.fileMemoText ? "\n\n[Strategy Memo]\n- " + context.fileMemoText : "";
+            const keywordLine = context.keywords.join(", ");
+            const hashtagLine = context.hashtags.join(" ");
+            const commonHeader = "[Local Summary Mode]\nGemini API quota is unavailable, so this content was generated locally from Product KB, compliance rules, and saved learning data.\n\n";
+            const compliance = "\n\n[Compliance Check]\n- Required rules: " + rules.join(", ") + "\n- Banned expressions: " + prohibited.join(", ") + "\n- Disclaimer: " + disclaimer;
+            const productDef = kb.definition[currentLang] || kb.definition.ko;
+            const productPos = kb.positioning[currentLang] || kb.positioning.ko;
+
+            if (context.type === 'email') {
+                return commonHeader + "Subject: Data-based proposal for " + context.product + "\n\nHello,\n\nThe key challenge for " + context.localizedTarget + " is: " + context.strategicInsight + ". " + context.product + " is " + productDef + ", positioned around: " + productPos + ".\n\nCore message:\n- " + keywordLine + "\n- Support objective, data-based consultation\n- Keep claims aligned with product-specific compliance rules\n\nCTA: Review product materials and request a demo consultation." + learningBlock + memoBlock + compliance;
+            }
+            if (context.type === 'cardnews') {
+                return commonHeader + "[5-slide Card News]\n1. Hook: Move from intuition to data for " + context.localizedTarget + ".\n2. Pain: " + context.strategicInsight + "\n3. Solution: " + context.product + " - " + productDef + "\n4. Proof: Objective message built around " + keywordLine + "\n5. CTA: Review product information and request consultation. " + hashtagLine + learningBlock + memoBlock + compliance;
+            }
+            if (context.type === 'reels') {
+                return commonHeader + "[Short-form/Reels Script]\n0-3s: Are important decisions still based only on intuition?\n4-10s: " + context.product + " helps communicate around " + productPos + ".\n11-15s: Build trust with " + keywordLine + ".\nRecommended captions: " + hashtagLine + learningBlock + memoBlock + compliance;
+            }
+            if (context.type === 'adcopy') {
+                return commonHeader + "[Ad Copy A/B]\nA: Address the challenge: " + context.strategicInsight + ". Use " + context.product + " to create a clearer consultation flow.\nB: EXOSYSTEMS solution built around " + keywordLine + ". Communicate expertise with objective data.\nHashtags: " + hashtagLine + learningBlock + memoBlock + compliance;
+            }
+            return commonHeader + "[Marketing Strategy Plan]\n1. Positioning: " + context.product + " is " + productDef + ", with the core message: " + productPos + ".\n2. Target challenge: " + context.localizedTarget + " faces " + context.strategicInsight + ".\n3. Keywords: " + keywordLine + "\n4. Execution: Connect compliant product messaging to materials, demo, and consultation CTA.\n5. Review: Include medical/non-medical classification, banned expressions, and disclaimer before publishing." + learningBlock + memoBlock + compliance;
         }
 
         async function generateContent(isAutoRefresh = false) {
@@ -2163,18 +2161,30 @@ ONLY if Content Type ID is 'imagegen' or 'reels', you MUST include a short Engli
 DO NOT include any introductory or concluding remarks (e.g., "Here is the content..."). Just output the raw requested content directly formatted cleanly. 
 `;
 
-                const textResult = await safeCallGemini(userPrompt, sysPrompt);
+                const textResult = await safeCallGemini(userPrompt, sysPrompt, ["gemini-2.5-flash-lite"]);
                 materialBody = textResult;
 
             } catch (error) {
                 console.error("Gemini API Error:", error);
-                const errorMsgs = {
-                    ko: `API 호출 중 오류가 발생했습니다: ${error.message || "통신 상태를 확인하고 잠시 후 다시 시도해주세요."}`,
-                    en: `An error occurred during the API call: ${error.message || "Please check your connection and try again."}`,
-                    zh: `API调用出错: ${error.message || "请检查网络并稍后重试。"}`,
-                    ja: `API呼び出し中にエラーが発生しました: ${error.message || "通信状態を確認し、後もう一度お試しください。"}`
+                const fallbackContext = {
+                    product,
+                    target,
+                    type,
+                    keywords,
+                    hashtags,
+                    kb,
+                    strategicInsight,
+                    localizedTarget,
+                    learningInsights,
+                    fileMemoText
                 };
-                materialBody = errorMsgs[currentLang] || errorMsgs['en'];
+                if (isQuotaExceededError(error)) {
+                    const quotaMessage = getQuotaFallbackMessage(error);
+                    showToast(quotaMessage);
+                    materialBody = quotaMessage + "\n\n" + buildLocalFallbackContent(fallbackContext);
+                } else {
+                    materialBody = buildLocalFallbackContent(fallbackContext);
+                }
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = originalBtnHtml;
@@ -2479,3 +2489,5 @@ DO NOT include any introductory or concluding remarks (e.g., "Here is the conten
     </script>
 </body>
 </html>
+
+
