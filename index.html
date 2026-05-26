@@ -54,7 +54,7 @@
                     <p class="text-[10px] sm:text-xs text-slate-500 hidden sm:block" id="ui-app-subtitle">EXOSYSTEMS 제품군을 위한 전략형 마케팅 콘텐츠 생성 도구</p>
                 </div>
             </div>
-            
+
             <div class="flex items-center space-x-2 bg-slate-100 p-1 sm:p-1.5 rounded-xl border-2 border-slate-200">
                 <span class="text-[10px] sm:text-xs font-semibold text-slate-500 px-1 sm:px-2 hidden md:block">회사 안전 연결</span>
             </div>
@@ -63,10 +63,10 @@
 
     <!-- MAIN CONTAINER -->
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
-        
+
         <!-- LEFT COLUMN: INPUT FORM & KB EXPANSION -->
         <section class="lg:col-span-5 space-y-6">
-            
+
             <!-- CONFIGURATION CARD -->
             <div class="bg-white rounded-2xl border-2 border-slate-200 p-5 sm:p-6 shadow-md space-y-5">
                 <div class="flex items-center space-x-2 pb-3 border-b-2 border-slate-100">
@@ -85,7 +85,7 @@
                         <option value="exoPill-Lite">exoPill-Lite</option>
                         <option value="exoRehab">exoRehab</option>
                     </select>
-                    
+
                     <!-- Product Info Auxiliary Box -->
                     <div id="product-info-box" class="hidden mt-3 bg-blue-50/70 border-2 border-blue-200 rounded-xl p-3 sm:p-4 space-y-2 transition-all">
                         <div class="flex justify-between items-start">
@@ -132,6 +132,20 @@
                             <option value="20">20초</option>
                         </select>
                     </div>
+                </div>
+
+                <div id="email-purpose-box" class="hidden space-y-2">
+                    <label class="text-xs sm:text-sm font-bold text-slate-700 block">이메일 목적</label>
+                    <select id="email-purpose-select" class="w-full bg-slate-50 border-2 border-slate-300 rounded-xl px-4 py-2.5 sm:py-3 text-slate-900 font-bold focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none text-sm hover:border-blue-400">
+                        <option value="new_partner_proposal">신규 거래처 제안</option>
+                        <option value="demo_purchase">데모 장비 구매 유도</option>
+                        <option value="product_material_share">제품 자료 공유</option>
+                        <option value="meeting_followup">미팅 후 F/U</option>
+                        <option value="partnership_proposal">파트너십 제안</option>
+                        <option value="exhibition_followup">전시회 후속 연락</option>
+                        <option value="overseas_distributor">해외 유통사 제안</option>
+                        <option value="product_newsletter">제품 News Letter</option>
+                    </select>
                 </div>
 <!-- Video Duration Context Tooltip (Dynamic) -->
                 <div id="video-duration-box" class="hidden p-3 bg-blue-50 border-2 border-blue-200 rounded-xl text-xs text-blue-800 flex items-start space-x-2 font-medium">
@@ -190,7 +204,7 @@
                     </div>
                     <span id="kb-medical-badge" class="px-2 py-0.5 sm:px-2.5 rounded-md text-[9px] sm:text-[10px] font-bold tracking-wider"></span>
                 </div>
-                
+
                 <div class="space-y-3.5 text-xs">
                     <div>
                         <span class="text-slate-500 font-bold block uppercase tracking-wider text-[9px] sm:text-[10px]" id="ui-monitor-def">제품 정의</span>
@@ -220,7 +234,7 @@
 
         <!-- RIGHT COLUMN: INTERACTIVE VIEW TABS -->
         <section class="lg:col-span-7 flex flex-col space-y-4 h-full">
-            
+
             <!-- VIEW NAVIGATION TABS -->
             <div class="bg-white p-1 rounded-xl border-2 border-slate-200 shadow-sm flex space-x-1 shrink-0">
                 <button onclick="switchView('generator')" id="tab-btn-generator" class="flex-1 py-2.5 sm:py-3 px-2 sm:px-4 rounded-lg font-bold text-xs sm:text-sm transition-all flex items-center justify-center space-x-1.5 sm:space-x-2 outline-none">
@@ -236,7 +250,7 @@
 
             <!-- TAB CONTAINER 1: GENERATOR OUTPUT PANEL -->
             <div id="view-panel-generator" class="space-y-4 sm:space-y-6 flex-1 flex flex-col min-h-[500px]">
-                
+
                 <!-- EMPTY STATE -->
                 <div id="generator-empty-state" class="bg-white rounded-2xl border-2 border-slate-200 p-8 sm:p-12 text-center flex-1 flex flex-col items-center justify-center space-y-4 shadow-sm">
                     <div class="bg-slate-100 p-4 rounded-full text-slate-400">
@@ -250,7 +264,7 @@
 
                 <!-- CONTENT OUTPUT PANEL -->
                 <div id="generator-result-panel" class="hidden bg-white rounded-2xl border-2 border-slate-200 shadow-md p-4 sm:p-6 space-y-4 sm:space-y-6 flex-1 flex flex-col h-full">
-                    
+
                     <!-- Top Actions Bar -->
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-2 border-slate-100 pb-3 sm:pb-4 shrink-0">
                         <div class="flex items-center space-x-2">
@@ -258,7 +272,7 @@
                             <span class="text-slate-300 text-xs sm:text-sm font-bold">|</span>
                             <span class="text-slate-800 text-xs sm:text-sm font-bold" id="output-meta-info"></span>
                         </div>
-                        
+
                         <!-- Action Buttons -->
                         <div class="flex items-center space-x-2 overflow-x-auto pb-1 sm:pb-0">
                             <button onclick="copyOutputText('all')" class="shrink-0 bg-white border-2 border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-800 p-1.5 sm:p-2 rounded-xl text-[11px] sm:text-xs font-bold flex items-center space-x-1 transition-all outline-none">
@@ -274,7 +288,7 @@
 
                     <!-- SCROLLABLE OUTPUT CONTAINER -->
                     <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-4 sm:space-y-6 text-sm leading-relaxed text-slate-800 pb-2">
-                        
+
                         <!-- SECTION 1: STRATEGIC BRIEF -->
                         <div class="bg-slate-50 border-2 border-slate-200 rounded-xl p-4 sm:p-5 space-y-3">
                             <h4 class="font-bold text-slate-900 flex items-center space-x-1.5 text-xs sm:text-sm border-b-2 border-slate-200 pb-2">
@@ -318,16 +332,16 @@
 
             <!-- TAB CONTAINER 2: LIBRARY PANEL -->
             <div id="view-panel-library" class="hidden space-y-4 flex-1 flex flex-col h-full min-h-[500px]">
-                
+
                 <!-- CLEAN LEARNING DATA UPDATE SECTION (ADMIN LOCKED) -->
                 <div id="learning-data-wrapper" class="bg-indigo-50 border-2 border-indigo-200 rounded-2xl p-4 sm:p-5 flex flex-col shadow-sm shrink-0 relative overflow-hidden">
-                    
+
                     <!-- Language/Auth Lock Overlay -->
                     <div id="admin-lock-overlay" class="absolute inset-0 z-10 bg-slate-900/85 backdrop-blur-md flex flex-col items-center justify-center text-white p-6 text-center">
                         <i data-lucide="lock" class="w-8 h-8 mb-3 text-indigo-400"></i>
                         <h3 class="text-base font-bold mb-1" id="admin-lock-title">학습 데이터 관리 (관리자 전용)</h3>
                         <p class="text-xs text-slate-300 mb-4" id="admin-lock-desc">학습 데이터 영역은 관리자 비밀번호가 필요합니다.</p>
-                        
+
                         <div id="admin-auth-form" class="flex flex-col items-center w-full max-w-xs space-y-3">
                             <div class="flex items-center space-x-2 w-full">
                                 <input type="password" id="admin-pwd-input" placeholder="비밀번호 입력" class="flex-1 bg-slate-800/50 border border-slate-600 rounded-xl px-3 py-2 text-xs font-bold text-white outline-none focus:border-indigo-400">
@@ -338,10 +352,10 @@
                     </div>
 
                     <h3 class="font-extrabold text-indigo-900 text-sm sm:text-base mb-4 flex items-center shrink-0">
-                        <i data-lucide="cpu" class="w-5 h-5 mr-1.5 text-indigo-600"></i> 
+                        <i data-lucide="cpu" class="w-5 h-5 mr-1.5 text-indigo-600"></i>
                         <span id="ui-lib-gen-title">학습 데이터 업데이트 (문서/URL/텍스트)</span>
                     </h3>
-                    
+
                     <div class="space-y-4">
                         <!-- Product Selection Dropdown (Top positioned for stability) -->
                         <div>
@@ -355,7 +369,7 @@
                                 <option value="exoRehab">exoRehab</option>
                             </select>
                         </div>
-                        
+
                         <!-- File / URL / Text Inputs Layout -->
                         <div class="space-y-4">
                             <!-- Top Row: File Upload and URL inputs -->
@@ -364,14 +378,14 @@
                                     <label class="text-[11px] font-bold text-indigo-800 block" id="ui-lib-update-file">모든 문서/JSON 업로드</label>
                                     <div class="flex items-center space-x-2 bg-white border-2 border-indigo-200 rounded-xl px-3 py-1.5 h-11 shadow-sm">
                                         <button onclick="document.getElementById('general-file-input').click()" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1 outline-none whitespace-nowrap border border-indigo-200">
-                                            <i data-lucide="upload-cloud" class="w-3.5 h-3.5"></i> 
+                                            <i data-lucide="upload-cloud" class="w-3.5 h-3.5"></i>
                                             <span id="ui-lib-btn-select">문서 선택</span>
                                         </button>
                                         <span id="general-file-status" class="text-[10px] sm:text-[11px] text-indigo-600 font-bold truncate flex-1 ml-2">선택 없음</span>
                                         <input type="file" id="general-file-input" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.md,.json,.csv" class="hidden" onchange="handleLearningFileSelect(event)">
                                     </div>
                                 </div>
-                                
+
                                 <div class="space-y-1">
                                     <label class="text-[11px] font-bold text-indigo-800 block" id="ui-lib-update-url">또는 웹사이트 URL 분석</label>
                                     <div class="relative h-11 flex items-center">
@@ -396,7 +410,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- History List Block -->
                     <div class="mt-4 pt-3 border-t-2 border-indigo-200/60">
                         <div class="flex justify-between items-center mb-2 px-1">
@@ -462,7 +476,7 @@
     <!-- LIBRARY DETAILED MODAL -->
     <div id="library-modal" class="hidden fixed inset-0 z-[50] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
         <div class="bg-white w-full max-w-3xl rounded-2xl shadow-2xl border border-slate-200 flex flex-col max-h-[90vh]">
-            
+
             <div class="p-4 sm:p-5 border-b-2 border-slate-100 flex items-center justify-between bg-slate-50 rounded-t-2xl shrink-0">
                 <div class="space-y-1">
                     <div class="flex items-center space-x-2">
@@ -477,7 +491,7 @@
             </div>
 
             <div class="p-4 sm:p-6 overflow-y-auto space-y-5 text-xs leading-relaxed text-slate-800 custom-scrollbar flex-1">
-                
+
                 <!-- Status Controls -->
                 <div class="bg-slate-50 p-3 rounded-xl border-2 border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <span class="font-extrabold text-slate-800 text-[11px] sm:text-xs" id="ui-modal-status-lbl">상태 관리</span>
@@ -518,7 +532,7 @@
                     <i data-lucide="trash-2" class="w-4 h-4"></i>
                     <span id="ui-modal-btn-del">삭제</span>
                 </button>
-                
+
                 <div class="flex space-x-2">
                     <button id="modal-copy-all-btn" class="bg-white border-2 border-slate-300 hover:bg-slate-100 text-slate-800 px-4 py-2.5 rounded-xl text-[11px] sm:text-xs font-extrabold flex items-center space-x-1 transition-all outline-none shadow-sm">
                         <i data-lucide="copy" class="w-4 h-4"></i>
@@ -552,7 +566,7 @@
                     </div>
                     <span id="ld-modal-product" class="bg-blue-100 text-blue-800 text-[10px] font-extrabold px-2.5 py-1 rounded uppercase tracking-wider border border-blue-200"></span>
                 </div>
-                
+
                 <!-- AI 분석 요약 정보 표시 영역 (Summary Card) -->
                 <div id="ld-modal-summary-section" class="hidden bg-emerald-50 border-2 border-emerald-200 p-4 rounded-xl space-y-2">
                     <h4 class="font-extrabold text-emerald-900 flex items-center text-xs">
@@ -618,12 +632,12 @@
                 <p class="text-slate-600 font-semibold leading-relaxed">비밀번호를 분실하셨거나 변경을 원하시면 james.han@exosystems.io 로 승인 코드를 요청한 뒤, 신규 비밀번호를 적용하실 수 있습니다.</p>
                 <div class="bg-blue-50 p-4 rounded-xl border-2 border-blue-200 text-center space-y-2">
                     <p class="font-bold text-blue-900">승인 코드 생성 요청</p>
-                    <a href="mailto:james.han@exosystems.io?subject=학습 데이터 비밀번호 변경 승인 요청&body=관리자님,%0D%0A%0D%0A학습 데이터 시스템의 비밀번호 변경을 위한 승인 코드를 요청합니다.%0D%0A%0D%0A감사합니다." 
+                    <a href="mailto:james.han@exosystems.io?subject=학습 데이터 비밀번호 변경 승인 요청&body=관리자님,%0D%0A%0D%0A학습 데이터 시스템의 비밀번호 변경을 위한 승인 코드를 요청합니다.%0D%0A%0D%0A감사합니다."
                        class="inline-block bg-blue-600 text-white font-extrabold px-4 py-2 rounded-lg hover:bg-blue-700 transition-all border border-blue-700 shadow-sm">
                         james.han@exosystems.io 로 요청 메일 쓰기
                     </a>
                 </div>
-                
+
                 <div class="space-y-3 pt-2">
                     <div>
                         <label class="block font-bold text-slate-700 mb-1.5">이메일 승인 코드</label>
@@ -740,7 +754,7 @@
                     console.warn("Regex-based extraction failed to parse JSON, trying fallback.", e);
                 }
             }
-            
+
             try {
                 const cleaned = text.replace(/```json/g, '').replace(/```/g, '').trim();
                 return JSON.parse(cleaned);
@@ -945,6 +959,58 @@
             "videoprompt": { ko: "영상 프롬프트", en: "Video Prompt", zh: "视频提示词", ja: "動画プロンプト" }
         };
 
+        const EMAIL_PURPOSE_CONTEXT = {
+            new_partner_proposal: {
+                label: "신규 거래처 제안",
+                direction: "아직 관계가 형성되지 않은 신규 거래처에게 제품의 차별성과 시장성을 간결하게 전달하고, 첫 미팅 또는 데모 상담을 유도합니다.",
+                tone: "정중하고 신뢰감 있는 첫 제안 톤",
+                cta: "간단한 미팅 또는 데모 일정 제안"
+            },
+            demo_purchase: {
+                label: "데모 장비 구매 유도",
+                direction: "상대가 제품을 직접 테스트해볼 수 있도록 데모 장비 운영의 필요성과 빠른 시장 검증 가치를 설득합니다.",
+                tone: "실무적이고 설득력 있는 제안 톤",
+                cta: "데모 장비 견적 또는 구매 조건 검토 요청"
+            },
+            product_material_share: {
+                label: "제품 자료 공유",
+                direction: "제품 카탈로그, 소개자료, 영상, 세일즈 노트 등을 공유하면서 핵심 확인 포인트를 함께 안내합니다.",
+                tone: "간결하고 안내 중심의 톤",
+                cta: "자료 검토 후 추가 문의 또는 미팅 요청"
+            },
+            meeting_followup: {
+                label: "미팅 후 F/U",
+                direction: "이전 미팅에서 논의된 내용을 정리하고, 다음 액션 아이템과 검토 요청 사항을 명확히 전달합니다.",
+                tone: "정리된 비즈니스 후속 커뮤니케이션 톤",
+                cta: "다음 미팅, 내부 검토, 피드백 회신 요청"
+            },
+            partnership_proposal: {
+                label: "파트너십 제안",
+                direction: "단순 제품 판매가 아니라 양사 협업 구조, 시장 확대, 공동 사업화 가능성을 중심으로 제안합니다.",
+                tone: "전략적이고 장기 협력 중심의 톤",
+                cta: "협업 방향 논의 미팅 제안"
+            },
+            exhibition_followup: {
+                label: "전시회 후속 연락",
+                direction: "전시회에서 만난 리드에게 감사 인사를 전하고, 현장에서 관심을 보인 내용과 연결해 후속 미팅 또는 자료 검토를 유도합니다.",
+                tone: "친근하지만 전문적인 후속 연락 톤",
+                cta: "전시 후속 미팅 또는 제품 자료 검토 요청"
+            },
+            overseas_distributor: {
+                label: "해외 유통사 제안",
+                direction: "해외 유통사가 관심을 가질 시장성, 현지 판매 가능성, 데모 운영, 인증 및 파트너십 구조를 중심으로 제안합니다.",
+                tone: "글로벌 비즈니스 파트너 제안 톤",
+                cta: "현지 시장 테스트, 데모 장비, 유통 조건 논의 요청"
+            },
+            product_newsletter: {
+                label: "제품 News Letter",
+                direction: "제품 업데이트, 활용 사례, 시장 인사이트, 주요 성과를 뉴스레터 형식으로 전달합니다.",
+                tone: "정보 전달형이지만 흥미를 유도하는 톤",
+                cta: "자세한 자료 확인 또는 문의 유도"
+            }
+        };
+        window.EMAIL_PURPOSE_CONTEXT = EMAIL_PURPOSE_CONTEXT;
+
         const STATUS_NAMES = {
             "Draft": { ko: "작성중 (Draft)", en: "Draft", zh: "草稿 (Draft)", ja: "下書き (Draft)" },
             "Reviewed": { ko: "검토완료 (Reviewed)", en: "Reviewed", zh: "已审阅 (Reviewed)", ja: "レビュー済 (Reviewed)" },
@@ -1047,20 +1113,20 @@
         let currentLang = 'ko';
         let activeView = 'generator';
         let currentUploadedImages = [];
-        
+
         let pendingGeneralData = null;
-        let pendingGeneralSource = null; 
+        let pendingGeneralSource = null;
         let pendingGeneralName = "";
-        
+
         let libraryItems = [];
         let learningHistory = []; // 통합 관리 배열 (리스트 표시용)
-        
+
         let activeModalItemId = null;
         let activeLearningModalId = null;
         let generatedCache = null;
 
-        let isAdminUnlocked = false; 
-        const MOCK_APPROVAL_CODE = "EXO2026"; 
+        let isAdminUnlocked = false;
+        const MOCK_APPROVAL_CODE = "EXO2026";
 
         function verifyAndInitializeLanguage() {
             currentLang = 'ko';
@@ -1092,7 +1158,7 @@
             const authForm = document.getElementById('admin-auth-form');
             const desc = document.getElementById('admin-lock-desc');
             const title = document.getElementById('admin-lock-title');
-            
+
             if (currentLang === 'ko') {
                 if (isAdminUnlocked) {
                     overlay.classList.add('hidden');
@@ -1149,7 +1215,7 @@
             localStorage.setItem('exosystems_admin_pwd', newPwd);
             showToast("비밀번호가 성공적으로 변경되었습니다. (새 비밀번호로 로그인해주세요)");
             closeChangePwdModal();
-            
+
             isAdminUnlocked = false;
             checkAdminAuthUI();
         }
@@ -1158,12 +1224,12 @@
             const dict = TRANSLATIONS[currentLang];
             document.querySelectorAll('[id^="ui-"]').forEach(el => {
                 // If it's the button label, skip automatic replacement to avoid destroying innerHTML
-                if (el.id === 'ui-btn-generate') return; 
+                if (el.id === 'ui-btn-generate') return;
 
                 const key = el.id.replace('ui-', '').replace(/-([a-z])/g, (g) => g[1].toUpperCase());
                 if(dict[key]) el.textContent = dict[key];
             });
-            
+
             // Explicitly set the generate button text depending on mode
             let type = document.getElementById('type-select').value;
             if (!CONTENT_TYPE_NAMES[type]) type = 'strategyplan';
@@ -1177,7 +1243,7 @@
             }
 
             document.getElementById('library-search').placeholder = currentLang === 'ko' ? "키워드 검색..." : "Search...";
-            
+
             if (currentUploadedImages.length === 0) document.getElementById('img-upload-status').textContent = dict.noFile;
             if (!pendingGeneralSource) document.getElementById('general-file-status').textContent = dict.noFile;
             createIconsSafe();
@@ -1189,7 +1255,7 @@
             targetSelect.innerHTML = '';
 
             const allTargets = [
-                "일반 회원", "트레이너", "피트니스 센터 대표", "메디컬 피트니스 센터", 
+                "일반 회원", "트레이너", "피트니스 센터 대표", "메디컬 피트니스 센터",
                 "병원", "제약사", "국내 유통사", "해외 유통사", "재활센터", "연구기관", "검진센터", "물리치료사"
             ];
 
@@ -1197,7 +1263,7 @@
                 if (currentLang !== 'ko' && ["국내 유통사", "해외 유통사", "제약사"].includes(target)) return;
                 const opt = document.createElement('option');
                 opt.value = target;
-                opt.textContent = TARGET_NAMES[target]?.[currentLang] || target; 
+                opt.textContent = TARGET_NAMES[target]?.[currentLang] || target;
                 targetSelect.appendChild(opt);
             });
 
@@ -1271,7 +1337,7 @@
             const extendedKB = localStorage.getItem(`exosystems_extended_kb_${prodKey}`);
             const jsonBadge = document.getElementById('pi-json-badge');
             const isChecked = document.getElementById('doc-reflect-check').checked;
-            
+
             let hasValidKB = false;
             if (extendedKB && extractLearningHighlights(extendedKB).length > 0) {
                 hasValidKB = true;
@@ -1291,6 +1357,7 @@
             if (!CONTENT_TYPE_NAMES[type]) type = 'strategyplan';
             const videoBox = document.getElementById('video-duration-box');
             const durationSelect = document.getElementById('reels-duration');
+            const emailPurposeBox = document.getElementById('email-purpose-box');
             const btnLabel = document.getElementById('ui-btn-generate');
             const dict = TRANSLATIONS[currentLang];
 
@@ -1306,6 +1373,14 @@
                 videoBox.classList.add('hidden');
             }
 
+            if (emailPurposeBox) {
+                if (type === 'email') {
+                    emailPurposeBox.classList.remove('hidden');
+                } else {
+                    emailPurposeBox.classList.add('hidden');
+                }
+            }
+
             if (btnLabel) {
                 if (type === 'imagegen') {
                     btnLabel.innerHTML = `<i data-lucide="image" class="w-4 h-4 sm:w-5 sm:h-5"></i><span id="ui-btn-generate-text">${dict.btnGenerateImage || "이미지 생성"}</span>`;
@@ -1319,11 +1394,11 @@
         function handleImageUpload(event) {
             const files = event.target.files;
             const previewContainer = document.getElementById('image-previews');
-            
+
             for(let i = 0; i < files.length; i++) {
                 const file = files[i];
                 const reader = new FileReader();
-                
+
                 reader.onload = function(e) {
                     const base64Data = e.target.result;
                     const imageObj = {
@@ -1333,7 +1408,7 @@
                         size: file.size
                     };
                     currentUploadedImages.push(imageObj);
-                    
+
                     const div = document.createElement('div');
                     div.className = "relative group bg-slate-50 border-2 border-slate-200 rounded-xl p-2 flex flex-col items-center justify-center text-[10px] text-slate-500 text-center truncate h-14 sm:h-16 overflow-hidden";
                     div.setAttribute('data-img-name', file.name);
@@ -1346,10 +1421,10 @@
                     previewContainer.appendChild(div);
                     createIconsSafe();
                 };
-                
+
                 reader.readAsDataURL(file);
             }
-            
+
             document.getElementById('img-upload-status').textContent = `${currentUploadedImages.length} 개 이미지`;
         }
 
@@ -1357,7 +1432,7 @@
             currentUploadedImages = currentUploadedImages.filter(img => img.name !== name);
             const elem = document.querySelector(`[data-img-name="${name}"]`);
             if (elem) elem.remove();
-            
+
             const dict = TRANSLATIONS[currentLang];
             document.getElementById('img-upload-status').textContent = currentUploadedImages.length > 0 ? `${currentUploadedImages.length} 개 이미지` : dict.noFile;
         }
@@ -1754,7 +1829,7 @@ ${sampleText}`;
             const newHistory = {
                 id: `lrn_${Date.now()}`,
                 name: name,
-                type: type, 
+                type: type,
                 product: product,
                 date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
                 content: dataString
@@ -1764,24 +1839,24 @@ ${sampleText}`;
             if (learningHistory.length > 50) {
                 learningHistory = learningHistory.slice(0, 50);
             }
-            
+
             // Backup the raw history array. (generateContent now reads directly from this array)
             localStorage.setItem('exosystems_learning_history', JSON.stringify(learningHistory));
-            
+
             showToast(currentLang === 'ko' ? `${product} 모델에 분석 및 학습데이터 적용 완료되었습니다.` : `Analysis and learning data applied for ${product}.`);
-            
+
             if (document.getElementById('product-select').value === product) {
                 document.getElementById('doc-reflect-check').checked = true;
                 handleProductChange();
             }
-            
+
             document.getElementById('general-file-input').value = "";
             document.getElementById('general-url-input').value = "";
             document.getElementById('general-text-input').value = "";
             pendingGeneralData = null;
             pendingGeneralSource = null;
             pendingGeneralName = "";
-            
+
             const statusEl = document.getElementById('general-file-status');
             statusEl.innerHTML = `<span class="text-emerald-600 font-bold flex items-center"><i data-lucide="check-circle" class="w-3.5 h-3.5 mr-1"></i>${currentLang === 'ko' ? '분석 및 적용 완료' : 'Analysis & Applied'}</span>`;
             createIconsSafe();
@@ -1798,9 +1873,9 @@ ${sampleText}`;
             try {
                 const obj = typeof dataString === 'string' ? extractJSON(dataString) : dataString;
                 if (!obj) throw new Error("JSON 추출에 실패했습니다.");
-                
+
                 let highlights = [];
-                
+
                 if (obj.INSIGHTS && Array.isArray(obj.INSIGHTS)) {
                     return obj.INSIGHTS.slice(0, limit);
                 }
@@ -1814,12 +1889,12 @@ ${sampleText}`;
                         Object.values(item).forEach(deepExtractStrings);
                     }
                 }
-                
+
                 deepExtractStrings(obj);
-                
+
                 const uniqueHighlights = [...new Set(highlights)];
                 return uniqueHighlights.slice(0, limit);
-                
+
             } catch (e) {
                 const lines = dataString.split('\n').map(l => l.trim()).filter(l => l.length > 10);
                 return lines.slice(0, limit).map(l => l.substring(0, 60) + '...');
@@ -1840,7 +1915,7 @@ ${sampleText}`;
                     const li = document.createElement('li');
                     li.className = "bg-white p-2.5 rounded-xl border-2 border-indigo-100 hover:border-indigo-400 cursor-pointer flex justify-between items-center transition-all group shadow-sm";
                     li.setAttribute('onclick', `openLearningDetailModal('${item.id}')`);
-                    
+
                     let iconHtml = "";
                     if (item.type === 'url') iconHtml = `<i data-lucide="link" class="w-3.5 h-3.5 text-indigo-400 mr-2 shrink-0"></i>`;
                     else if (item.type === 'text') iconHtml = `<i data-lucide="message-square" class="w-3.5 h-3.5 text-indigo-400 mr-2 shrink-0"></i>`;
@@ -1879,7 +1954,7 @@ ${sampleText}`;
         function renderFullHistoryList() {
             const list = document.getElementById('full-history-list');
             list.innerHTML = '';
-            
+
             const emptyMsg = TRANSLATIONS[currentLang].libHistEmpty || "기록이 없습니다.";
 
             if (learningHistory.length === 0) {
@@ -1889,7 +1964,7 @@ ${sampleText}`;
                     const li = document.createElement('li');
                     li.className = "bg-white p-3 rounded-xl border-2 border-indigo-100 hover:border-indigo-400 cursor-pointer flex justify-between items-center transition-all group shadow-sm";
                     li.setAttribute('onclick', `openLearningDetailModal('${item.id}')`);
-                    
+
                     let iconHtml = "";
                     if (item.type === 'url') iconHtml = `<i data-lucide="link" class="w-4 h-4 text-indigo-400 mr-2 shrink-0"></i>`;
                     else if (item.type === 'text') iconHtml = `<i data-lucide="message-square" class="w-4 h-4 text-indigo-400 mr-2 shrink-0"></i>`;
@@ -1957,13 +2032,13 @@ ${sampleText}`;
 
         function deleteLearningHistory(id) {
             learningHistory = learningHistory.filter(i => i.id !== id);
-            
+
             closeLearningDetailModal();
             renderLearningHistory();
             if (!document.getElementById('full-history-modal').classList.contains('hidden')) {
                 renderFullHistoryList();
             }
-            
+
             showToast(currentLang === 'ko' ? "리스트 기록이 삭제되었습니다. (학습 데이터는 유지됨)" : "Record removed from list.");
         }
 
@@ -2043,7 +2118,7 @@ ${sampleText}`;
                     imgEl.src = imageUrl;
                     imgEl.classList.remove('hidden');
                     statusEl.classList.add('hidden');
-                    
+
                     if (generatedCache) {
                         generatedCache.generatedImage = imageUrl;
                         libraryItems[0] = { ...libraryItems[0], generatedImage: imageUrl };
@@ -2060,31 +2135,35 @@ ${sampleText}`;
 
         function buildLocalFallbackContent(context) {
             const kb = context.kb;
-            const rules = kb.rules[currentLang] || kb.rules.ko || [];
-            const prohibited = kb.prohibited[currentLang] || kb.prohibited.ko || [];
-            const disclaimer = kb.disclaimer[currentLang] || kb.disclaimer.ko || "";
-            const learningBlock = context.learningInsights.length ? "\n\n[Learned Data Applied]\n" + context.learningInsights.slice(0, 6).map(item => "- " + item).join("\n") : "";
-            const memoBlock = context.fileMemoText ? "\n\n[Strategy Memo]\n- " + context.fileMemoText : "";
             const keywordLine = context.keywords.join(", ");
-            const hashtagLine = context.hashtags.join(" ");
-            const commonHeader = "[Local Summary Mode]\nGemini API quota is unavailable, so this content was generated locally from Product KB, compliance rules, and saved learning data.\n\n";
-            const compliance = "\n\n[Compliance Check]\n- Required rules: " + rules.join(", ") + "\n- Banned expressions: " + prohibited.join(", ") + "\n- Disclaimer: " + disclaimer;
             const productDef = kb.definition[currentLang] || kb.definition.ko;
             const productPos = kb.positioning[currentLang] || kb.positioning.ko;
+            const learnedPointText = context.learningInsights && context.learningInsights.length
+                ? context.learningInsights.slice(0, 3).map(item => String(item).replace(/\[[^\]]+\]/g, "").trim()).filter(Boolean).join("\n")
+                : "제품의 핵심 기능과 타겟 고객의 니즈를 기준으로 메시지를 구성했습니다.";
 
             if (context.type === 'email') {
-                return commonHeader + "Subject: Data-based proposal for " + context.product + "\n\nHello,\n\nThe key challenge for " + context.localizedTarget + " is: " + context.strategicInsight + ". " + context.product + " is " + productDef + ", positioned around: " + productPos + ".\n\nCore message:\n- " + keywordLine + "\n- Support objective, data-based consultation\n- Keep claims aligned with product-specific compliance rules\n\nCTA: Review product materials and request a demo consultation." + learningBlock + memoBlock + compliance;
+                const emailPurposeContext = context.emailPurposeContext || EMAIL_PURPOSE_CONTEXT.new_partner_proposal;
+                const purposeLabel = emailPurposeContext.label || "신규 거래처 제안";
+                const purposeDirection = emailPurposeContext.direction || "제품의 차별성과 시장성을 전달하고 후속 미팅을 유도합니다.";
+                const purposeCTA = emailPurposeContext.cta || "미팅 또는 데모 일정 검토 요청";
+                return "제목: " + context.product + " " + purposeLabel + " 관련 제안드립니다\n\n" +
+                    "안녕하세요 담당자님,\n\n" +
+                    purposeDirection + "\n\n" +
+                    context.product + "는 " + productDef + "입니다.\n" + productPos + "\n\n" +
+                    context.localizedTarget + " 관점에서 " + context.product + "의 핵심 가치는 다음과 같습니다.\n\n" +
+                    "1. 데이터 기반으로 고객 상태를 설명할 수 있습니다.\n" +
+                    "2. 상담과 제안의 객관성을 높일 수 있습니다.\n" +
+                    "3. 제품 또는 서비스의 차별성을 명확하게 전달할 수 있습니다.\n\n" +
+                    "이번 제안의 핵심 키워드는 " + keywordLine + "입니다.\n\n" +
+                    learnedPointText + "\n\n" +
+                    "가능하시다면 " + purposeCTA + "을 위해 편하신 일정을 공유 부탁드립니다.\n\n" +
+                    "감사합니다.\n한광석 드림";
             }
             if (context.type === 'cardnews') {
-                return commonHeader + "[5-slide Card News]\n1. Hook: Move from intuition to data for " + context.localizedTarget + ".\n2. Pain: " + context.strategicInsight + "\n3. Solution: " + context.product + " - " + productDef + "\n4. Proof: Objective message built around " + keywordLine + "\n5. CTA: Review product information and request consultation. " + hashtagLine + learningBlock + memoBlock + compliance;
+                return "카드뉴스 구성안\n\n1페이지\n데이터 없이 설명하는 시대는 지나가고 있습니다.\n\n2페이지\n고객은 객관적인 기준과 이해하기 쉬운 변화를 원합니다.\n\n3페이지\n" + context.product + "는 " + productDef + "로, " + productPos + "\n\n4페이지\n핵심 키워드는 " + keywordLine + "입니다.\n\n5페이지\n" + context.product + "를 통해 더 설득력 있는 고객 경험을 제안하세요.";
             }
-            if (context.type === 'reels') {
-                return commonHeader + "[Short-form/Reels Script]\n0-3s: Are important decisions still based only on intuition?\n4-10s: " + context.product + " helps communicate around " + productPos + ".\n11-15s: Build trust with " + keywordLine + ".\nRecommended captions: " + hashtagLine + learningBlock + memoBlock + compliance;
-            }
-            if (context.type === 'adcopy') {
-                return commonHeader + "[Ad Copy A/B]\nA: Address the challenge: " + context.strategicInsight + ". Use " + context.product + " to create a clearer consultation flow.\nB: EXOSYSTEMS solution built around " + keywordLine + ". Communicate expertise with objective data.\nHashtags: " + hashtagLine + learningBlock + memoBlock + compliance;
-            }
-            return commonHeader + "[Marketing Strategy Plan]\n1. Positioning: " + context.product + " is " + productDef + ", with the core message: " + productPos + ".\n2. Target challenge: " + context.localizedTarget + " faces " + context.strategicInsight + ".\n3. Keywords: " + keywordLine + "\n4. Execution: Connect compliant product messaging to materials, demo, and consultation CTA.\n5. Review: Include medical/non-medical classification, banned expressions, and disclaimer before publishing." + learningBlock + memoBlock + compliance;
+            return context.product + " 콘텐츠 초안\n\n" + context.product + "는 " + productDef + "입니다.\n" + productPos + "\n\n핵심 키워드는 " + keywordLine + "입니다.\n\n1. 제품 기능보다 고객이 얻는 변화를 먼저 설명합니다.\n2. 데이터 기반 상담과 객관적 설명의 가치를 강조합니다.\n3. 과장된 효과 표현은 피하고 참고 데이터와 의사결정 보조 관점으로 설명합니다.\n\n" + learnedPointText;
         }
 
         async function generateContent(isAutoRefresh = false) {
@@ -2094,6 +2173,8 @@ ${sampleText}`;
             if (!CONTENT_TYPE_NAMES[type]) type = 'strategyplan';
             const keywordString = document.getElementById('keywords-input').value;
             const reelsDuration = document.getElementById('reels-duration').value;
+            const emailPurpose = document.getElementById('email-purpose-select')?.value || 'new_partner_proposal';
+            const emailPurposeContext = EMAIL_PURPOSE_CONTEXT[emailPurpose] || EMAIL_PURPOSE_CONTEXT.new_partner_proposal;
             const rawKeywords = keywordString.split(',').map(k => k.trim()).filter(k => k.length > 0);
             const keywords = rawKeywords.length > 0 ? rawKeywords : ["Innovation", "Exosystems", "Data"];
 
@@ -2108,7 +2189,7 @@ ${sampleText}`;
             const productHistory = learningHistory.filter(h => h.product === product);
             const isExtendedKBActive = docReflectActive && productHistory.length > 0;
             let learningInsights = [];
-            
+
             if (isExtendedKBActive) {
                 productHistory.forEach(h => {
                     const extracted = extractLearningHighlights(h.content, 3);
@@ -2203,7 +2284,7 @@ Do not use Markdown syntax in the final output. Do not use **bold**, ### heading
                 let formatInstruction = `Output Format Rules:
 If Content Type ID is 'strategyplan': Output a highly detailed 4-step plan (Market Positioning, Sales Funnel Strategy, Channel PR Tactics, Phased Promo Cycle).
 If 'imagegen': Output a brief rationale for the image concept based on the target and keywords.
-If 'email': Output a high-converting B2B/B2C sales email highlighting specific ROI.
+If 'email': Output a Korean business email that follows the selected email purpose. Use this structure: 제목, 안녕하세요 담당자님, 본문, 마무리, 감사합니다. 한광석 드림. Do not expose internal learning data names or logs.
 If 'cardnews': Output a 5-slide storyboard (Hook, Agitation, Solution, Proof, CTA) with visual cues.
 If 'reels': Output a timecoded script for exactly a ${reelsDuration} second video. The video MUST conceptually be "clean" (no baked-in text). You MUST explicitly provide a separate "Recommended Subtitles / Captions (추천 자막)" section for each scene to overlay later.
 If 'adcopy': Output Variant A (Pain-point focus) and Variant B (Benefit & Authority focus) for A/B testing.
@@ -2221,7 +2302,20 @@ Generate marketing content with the following parameters:
 - Keywords to Emphasize: ${keywords.join(', ')}
 - Prohibited Expressions (DO NOT USE THESE): ${prohibitedWords.join(', ')}
 - Required Rules: ${rules.join(', ')}
+${type === 'email' ? `
+[Email Purpose]
+- Purpose Label: ${emailPurposeContext.label}
+- Strategic Direction: ${emailPurposeContext.direction}
+- Recommended Tone: ${emailPurposeContext.tone}
+- Recommended CTA: ${emailPurposeContext.cta}
 
+[Email Writing Rules]
+- Write a Korean business email ready to copy and send.
+- Change the subject, opening sentence, body structure, and CTA according to the selected email purpose.
+- Naturally integrate product KB, target audience, keywords, and learned context.
+- Do not expose learning data file names, internal logs, API status, quota information, or compliance check logs.
+- Do not use Markdown symbols such as **, ###, or code blocks.
+` : ''}
 [CORE REQUIREMENT: KEYWORD CENTRIC]
 The entire narrative and strategic angle MUST revolve heavily around these Keywords: ${keywords.join(', ')}. Make them the central theme of your output.
 
@@ -2238,7 +2332,7 @@ ${formatInstruction}
 [IMAGE ASSET GENERATION]
 ONLY if Content Type ID is 'imagegen' or 'reels', you MUST include a short English prompt (max 300 chars) for an AI image generator to create a conceptual visual for this campaign (or a clean keyframe for the video). Prefix it EXACTLY with "[IMAGE_PROMPT:" and end with "]" at the end.
 
-DO NOT include any introductory or concluding remarks (e.g., "Here is the content..."). Just output the raw requested content directly formatted cleanly. 
+DO NOT include any introductory or concluding remarks (e.g., "Here is the content..."). Just output the raw requested content directly formatted cleanly.
 `;
 
                 const textResult = await safeCallGemini(userPrompt, sysPrompt, ["gemini-2.5-flash-lite"]);
@@ -2256,15 +2350,15 @@ DO NOT include any introductory or concluding remarks (e.g., "Here is the conten
                     strategicInsight,
                     localizedTarget,
                     learningInsights,
-                    fileMemoText
+                    fileMemoText,
+                    emailPurposeContext
                 };
                 if (isQuotaExceededError(error)) {
-                    const quotaMessage = getQuotaFallbackMessage(error);
-                    showToast(quotaMessage);
-                    materialBody = quotaMessage + "\n\n" + buildLocalFallbackContent(fallbackContext);
+                    showToast(getQuotaFallbackMessage(error));
                 } else {
-                    materialBody = buildLocalFallbackContent(fallbackContext);
+                    showToast(currentLang === 'ko' ? "Gemini API 연결에 실패하여 저장된 제품 지식 기준으로 임시 콘텐츠를 생성했습니다." : "Gemini API failed. A local fallback draft was generated.");
                 }
+                materialBody = buildLocalFallbackContent(fallbackContext);
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = originalBtnHtml;
@@ -2278,7 +2372,7 @@ DO NOT include any introductory or concluding remarks (e.g., "Here is the conten
 
             const disclaimerList = document.getElementById('output-disclaimer-list');
             disclaimerList.innerHTML = '';
-            
+
             const baseLi = document.createElement('li');
             baseLi.className = "font-extrabold text-amber-900 mb-1";
             baseLi.textContent = kb.disclaimer[currentLang] || kb.disclaimer['ko'];
@@ -2308,11 +2402,11 @@ DO NOT include any introductory or concluding remarks (e.g., "Here is the conten
                 fileMemos: docReflectActive ? fileMemoText : "",
                 hashtags: hashtags,
                 isMedicalDevice: kb.isMedical,
-                generatedImage: "" 
+                generatedImage: ""
             };
 
             switchView('generator');
-            
+
             if (!isAutoRefresh) {
                 saveCurrentToLibrary(true);
                 showToast(currentLang === 'ko' ? "생성이 완료되어 라이브러리에 자동 저장되었습니다." : "Generated and auto-saved to Library.");
@@ -2354,7 +2448,7 @@ DO NOT include any introductory or concluding remarks (e.g., "Here is the conten
             if (!generatedCache) return;
             const dict = TRANSLATIONS[currentLang];
             const markdownString = `# ${dict.appTitle}\n\n## 1. Parameters\n${document.getElementById('output-strategic-brief').innerText}\n\n## 2. Copy\n\`\`\`\n${generatedCache.generatedContent}\n\`\`\`\n\n## 3. Compliance\n${document.getElementById('output-disclaimer-box').innerText}`;
-            
+
             const blob = new Blob([markdownString], { type: 'text/markdown;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -2378,9 +2472,9 @@ DO NOT include any introductory or concluding remarks (e.g., "Here is the conten
 
             libraryItems.unshift(newItem);
             localStorage.setItem('exosystems_library', JSON.stringify(libraryItems));
-            
+
             updateLibraryCounterBadge();
-            
+
             if (!isSilent) {
                 showToast(currentLang === 'ko' ? "라이브러리에 보관되었습니다." : "Saved to Library.");
             }
@@ -2401,8 +2495,8 @@ DO NOT include any introductory or concluding remarks (e.g., "Here is the conten
             const scopeFilteredItems = libraryItems.filter(item => currentLang === 'ko' ? true : item.language === currentLang);
 
             const finalRenderedPool = scopeFilteredItems.filter(item => {
-                const matchesSearch = item.productName.toLowerCase().includes(searchTerm) || 
-                                      item.targetAudience.toLowerCase().includes(searchTerm) || 
+                const matchesSearch = item.productName.toLowerCase().includes(searchTerm) ||
+                                      item.targetAudience.toLowerCase().includes(searchTerm) ||
                                       item.keywords.some(k => k.toLowerCase().includes(searchTerm));
                 const matchesStatus = filterStatus === 'ALL' || item.status === filterStatus;
                 return matchesSearch && matchesStatus;
@@ -2464,7 +2558,7 @@ DO NOT include any introductory or concluding remarks (e.g., "Here is the conten
             document.getElementById('modal-meta-date').textContent = `${item.createdAt} | ${item.language.toUpperCase()}`;
             document.getElementById('modal-strategic-brief').innerHTML = item.strategicDirection;
             document.getElementById('modal-generated-body').textContent = item.generatedContent;
-            
+
             // Image handling in modal
             const imgWrapper = document.getElementById('modal-image-wrapper');
             const imgElement = document.getElementById('modal-generated-image');
@@ -2528,6 +2622,7 @@ DO NOT include any introductory or concluding remarks (e.g., "Here is the conten
         }
 
         Object.assign(window, {
+            EMAIL_PURPOSE_CONTEXT,
             setLanguage,
             generateContent,
             switchView,
@@ -2557,7 +2652,7 @@ DO NOT include any introductory or concluding remarks (e.g., "Here is the conten
         window.addEventListener('DOMContentLoaded', () => {
             const storedLib = localStorage.getItem('exosystems_library');
             if (storedLib) libraryItems = JSON.parse(storedLib);
-            
+
             const storedHist = localStorage.getItem('exosystems_learning_history');
             if (storedHist) learningHistory = JSON.parse(storedHist);
 
@@ -2569,5 +2664,3 @@ DO NOT include any introductory or concluding remarks (e.g., "Here is the conten
     </script>
 </body>
 </html>
-
-
