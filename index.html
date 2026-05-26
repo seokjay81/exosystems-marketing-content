@@ -748,7 +748,7 @@
             // 서버 프록시를 통해 호출합니다. 실제 Gemini 인증은 서버에서 처리됩니다.
             const modelsToTry = Array.isArray(models) && models.length
                 ? models
-                : ["gemini-2.5-flash", "gemini-flash-latest", "gemini-2.5-flash-lite", "gemini-1.5-flash"];
+                : ["gemini-2.5-flash-lite", "gemini-2.5-flash", "gemini-flash-latest"];
             let lastError = null;
 
             for (const model of modelsToTry) {
@@ -1443,7 +1443,7 @@
                         prompt = `You are a top-tier marketing analyst. I want to analyze a competitor or market reference URL: ${url}. Based on your extensive knowledge about this website, company, or domain, extract 3 to 5 critical marketing insights, competitor weaknesses, or market trends that can be used to strategically differentiate and promote our product "${targetProduct}". Return ONLY a valid JSON object strictly matching this format without markdown blocks:\n{ "SOURCE": "${url}", "TYPE": "Competitor/Market Analysis", "INSIGHTS": ["insight 1", "insight 2", "insight 3"] }`;
                     }
                     
-                    const text = await safeCallGemini(prompt, "", ["gemini-2.5-flash-lite", "gemini-1.5-flash"]);
+                    const text = await safeCallGemini(prompt, "", ["gemini-2.5-flash-lite", "gemini-2.5-flash", "gemini-flash-latest"]);
                     executeSaveLearningHistory('url', pendingGeneralName, targetProduct, text);
                 } catch (e) {
                     console.error(e);
@@ -1492,7 +1492,7 @@
 
                         const prompt = `You are a top-tier marketing data analyst. Analyze the following data (text/document/JSON) regarding the market, product, or competitor for our product "${targetProduct}". Extract 3 to 5 crucial marketing insights, unfulfilled customer needs, strategic differentiation points, or competitive advantages. If it's a chat history or raw text input, extract the core strategies discussed. Return ONLY a valid JSON object strictly matching this format without markdown blocks:\n{ "SOURCE": "${pendingGeneralName}", "TYPE": "Data Analysis", "INSIGHTS": ["insight 1", "insight 2", "insight 3"] }\n\nRAW DATA:\n${chunks[0]}`;
                         
-                        const text = await safeCallGemini(prompt, "", ["gemini-2.5-flash-lite", "gemini-1.5-flash"]);
+                        const text = await safeCallGemini(prompt, "", ["gemini-2.5-flash-lite", "gemini-2.5-flash", "gemini-flash-latest"]);
                         finalInsightsResult = text;
                     } else {
                         // 초대용량 파일: 조각별 다중 맵리듀스(Map-Reduce) 분석 프로세스 진행
@@ -1510,7 +1510,7 @@ RAW PORTION:
 ${chunks[i]}`;
 
                             try {
-                                const rawChunkText = await safeCallGemini(chunkPrompt, "", ["gemini-2.5-flash-lite", "gemini-1.5-flash"]);
+                                const rawChunkText = await safeCallGemini(chunkPrompt, "", ["gemini-2.5-flash-lite", "gemini-2.5-flash", "gemini-flash-latest"]);
                                 const parsed = extractJSON(rawChunkText);
                                 if (Array.isArray(parsed)) {
                                     intermediateInsights.push(...parsed);
@@ -1539,7 +1539,7 @@ Your task is to merge, clean, and synthesize these insights into 3 to 5 highly p
 Return ONLY a valid JSON object strictly matching this format without markdown blocks:
 { "SOURCE": "${pendingGeneralName}", "TYPE": "Massive Data Analysis", "INSIGHTS": ["insight 1", "insight 2", "insight 3"] }`;
 
-                        const finalTextResult = await safeCallGemini(synthesisPrompt, "", ["gemini-2.5-flash-lite", "gemini-1.5-flash"]);
+                        const finalTextResult = await safeCallGemini(synthesisPrompt, "", ["gemini-2.5-flash-lite", "gemini-2.5-flash", "gemini-flash-latest"]);
                         finalInsightsResult = finalTextResult;
                     }
 
