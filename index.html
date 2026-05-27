@@ -1699,17 +1699,16 @@
             if (!text) return "";
 
             let output = String(text);
+            const sectionLabels = ["Local Summary Mode", "Learned Data Applied", "Compliance Check"];
+            sectionLabels.forEach(label => {
+                output = output.replace(new RegExp("\\[" + label + "\\][\\s\\S]*?(?=\\n\\[|\\n[A-Z0-9]|$)", "gi"), "");
+                output = output.replace(new RegExp(label + "[\\s\\S]*?(?=\\n\\n|$)", "gi"), "");
+            });
 
             output = output
-                .replace(/\[Local Summary Mode\][\s\S]*?(?=\n[A-Z가-힣0-9]|$)/gi, "")
-                .replace(/\[Learned Data Applied\][\s\S]*?(?=\n\[|$)/gi, "")
-                .replace(/\[Compliance Check\][\s\S]*?(?=\n\[|$)/gi, "")
-                .replace(/Learned Data Applied[\s\S]*?(?=\n\n|$)/gi, "")
-                .replace(/Compliance Check[\s\S]*?(?=\n\n|$)/gi, "");
-
-            output = output
-                .replace(/API 호출 중 오류가 발생했습니다:[\s\S]*?(?=\n\n|$)/gi, "")
-                .replace(/Gemini 무료 API 사용량 한도를 초과했습니다[\s\S]*?(?=\n\n|$)/gi, "")
+                .replace(new RegExp("API \uD638\uCD9C \uC911 \uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC2B5\uB2C8\uB2E4:[\\s\\S]*?(?=\\n\\n|$)", "gi"), "")
+                .replace(new RegExp("Gemini \uBB34\uB8CC API \uC0AC\uC6A9\uB7C9 \uD55C\uB3C4\uB97C \uCD08\uACFC\uD588\uC2B5\uB2C8\uB2E4[\\s\\S]*?(?=\\n\\n|$)", "gi"), "")
+                .replace(/API Error[\s\S]*?(?=\n\n|$)/gi, "")
                 .replace(/Gemini API quota[\s\S]*?(?=\n\n|$)/gi, "")
                 .replace(/Quota exceeded[\s\S]*?(?=\n\n|$)/gi, "")
                 .replace(/QUOTA_EXCEEDED[\s\S]*?(?=\n\n|$)/gi, "")
@@ -1719,24 +1718,29 @@
                 .replace(/https:\/\/ai\.dev[^\s]*/gi, "")
                 .replace(/rate-limits?[^\n]*/gi, "");
 
-            output = output
-                .replace(/요약:\s*File name:[\s\S]*?(?=\n요약:|\n제목:|\n안녕하세요|\n[0-9]\.|$)/gi, "")
-                .replace(/File name:[^\n]*(\n|$)/gi, "")
-                .replace(/Applied product:[^\n]*(\n|$)/gi, "")
-                .replace(/Analysis status:[\s\S]*?(?=\n요약:|\n키워드:|\n인사이트:|\n주의사항:|\n제목:|\n안녕하세요|\n\n|$)/gi, "")
-                .replace(/Extracted document preview:[\s\S]*?(?=\n요약:|\n키워드:|\n인사이트:|\n주의사항:|\n제목:|\n안녕하세요|\n\n|$)/gi, "")
-                .replace(/Local learning data generated[\s\S]*?(?=\n\n|$)/gi, "")
-                .replace(/Use as supporting context for content generation\.?/gi, "");
+            const koreanLogLabels = ["\uC694\uC57D", "\uD0A4\uC6CC\uB4DC", "\uC778\uC0AC\uC774\uD2B8", "\uC8FC\uC758\uC0AC\uD56D"];
+            koreanLogLabels.forEach(label => {
+                output = output.replace(new RegExp("^" + label + ":[\\s\\S]*?(?=\\n\\uC81C\\uBAA9:|\\n\\uC548\\uB155\\uD558\\uC138\\uC694|\\n[0-9]+\\.|$)", "gmi"), "");
+            });
 
             output = output
-                .replace(/"SOURCE"\s*:\s*"[^"]*",?/gi, "")
-                .replace(/"TYPE"\s*:\s*"[^"]*",?/gi, "")
-                .replace(/"SUMMARY"\s*:\s*"[\s\S]*?",?/gi, "")
+                .replace(/File name:[^\n]*(\n|$)/gi, "")
+                .replace(/Applied product:[^\n]*(\n|$)/gi, "")
+                .replace(/Analysis status:[\s\S]*?(?=\n\n|$)/gi, "")
+                .replace(/Extracted document preview:[\s\S]*?(?=\n\n|$)/gi, "")
+                .replace(/Local learning data generated[\s\S]*?(?=\n\n|$)/gi, "")
+                .replace(/Use as supporting context(?: for content generation)?\.?/gi, "");
+
+            output = output
+                .replace(/"SOURCE"\s*:\s*"[^"\\]*(?:\\.[^"\\]*)*",?/gi, "")
+                .replace(/"TYPE"\s*:\s*"[^"\\]*(?:\\.[^"\\]*)*",?/gi, "")
+                .replace(/"SUMMARY"\s*:\s*"[\s\S]*?",?\s*(?=\n\s*"(?:INSIGHTS|KEYWORDS|MARKETING_POINTS|CAUTIONS|NOTICE|RAW_TEXT_PREVIEW)"|\n\s*}|$)/gi, "")
                 .replace(/"INSIGHTS"\s*:\s*\[[\s\S]*?\],?/gi, "")
                 .replace(/"KEYWORDS"\s*:\s*\[[\s\S]*?\],?/gi, "")
                 .replace(/"MARKETING_POINTS"\s*:\s*\[[\s\S]*?\],?/gi, "")
                 .replace(/"CAUTIONS"\s*:\s*\[[\s\S]*?\],?/gi, "")
-                .replace(/^\s*(SOURCE|TYPE|INSIGHTS|KEYWORDS|MARKETING_POINTS|CAUTIONS|SUMMARY|EXECUTIVE_SUMMARY|RAW_TEXT_PREVIEW|NOTICE)\s*[:=].*$/gmi, "");
+                .replace(/^\s*(SOURCE|TYPE|INSIGHTS|KEYWORDS|MARKETING_POINTS|CAUTIONS|SUMMARY|EXECUTIVE_SUMMARY|RAW_TEXT_PREVIEW|NOTICE)\s*[:=].*$/gmi, "")
+                .replace(/^\s*[{},]\s*$/gm, "");
 
             output = output
                 .replace(/```[\s\S]*?```/g, match => match.replace(/```[a-zA-Z]*\n?/g, "").replace(/```/g, ""))
@@ -1756,22 +1760,30 @@
         function sanitizeLearningInsightForPrompt(text) {
             if (!text) return "";
             return String(text)
+                .replace(/\[Local Summary Mode\]|\[Learned Data Applied\]|\[Compliance Check\]/gi, "")
                 .replace(/File name:[^\n]*(\n|$)/gi, "")
                 .replace(/Applied product:[^\n]*(\n|$)/gi, "")
                 .replace(/Analysis status:[\s\S]*?(?=\n|$)/gi, "")
+                .replace(/Extracted document preview:[\s\S]*?(?=\n|$)/gi, "")
                 .replace(/QUOTA_EXCEEDED[\s\S]*?(?=\n|$)/gi, "")
                 .replace(/Quota exceeded[\s\S]*?(?=\n|$)/gi, "")
+                .replace(/Gemini API quota[\s\S]*?(?=\n|$)/gi, "")
+                .replace(/API Error[\s\S]*?(?=\n|$)/gi, "")
                 .replace(/Please retry[\s\S]*?(?=\n|$)/gi, "")
                 .replace(/Retry-After:[^\n]*/gi, "")
                 .replace(/Local learning data generated[\s\S]*?(?=\n|$)/gi, "")
-                .replace(/Use as supporting context for content generation\.?/gi, "")
-                .replace(/Extracted document preview:[\s\S]*?(?=\n|$)/gi, "")
+                .replace(/Use as supporting context(?: for content generation)?\.?/gi, "")
+                .replace(/\uC694\uC57D:/gi, "")
+                .replace(/\uD0A4\uC6CC\uB4DC:/gi, "")
+                .replace(/\uC778\uC0AC\uC774\uD2B8:/gi, "")
+                .replace(/\uC8FC\uC758\uC0AC\uD56D:/gi, "")
                 .replace(/https:\/\/ai\.google\.dev[^\s]*/gi, "")
                 .replace(/https:\/\/ai\.dev[^\s]*/gi, "")
-                .replace(/\b(SOURCE|TYPE|INSIGHTS|KEYWORDS|MARKETING_POINTS|CAUTIONS|RAW_TEXT_PREVIEW|NOTICE)\b:?/gi, "")
+                .replace(/\b(SOURCE|TYPE|INSIGHTS|KEYWORDS|MARKETING_POINTS|CAUTIONS|SUMMARY|RAW_TEXT_PREVIEW|NOTICE|Website Context Analysis)\b:?/gi, "")
+                .replace(/[{}\[\]"]/g, "")
                 .replace(/\s+/g, " ")
                 .trim()
-                .slice(0, 400);
+                .slice(0, 500);
         }
 
         function buildFallbackLearningJSON(sourceName, product, rawText, reason) {
@@ -2360,31 +2372,32 @@ ${sampleText}`;
             const productDef = kb.definition[currentLang] || kb.definition.ko;
             const productPos = kb.positioning[currentLang] || kb.positioning.ko;
             const learnedPointText = context.learningInsights && context.learningInsights.length
-                ? context.learningInsights.slice(0, 3).map(item => String(item).replace(/\[[^\]]+\]/g, "").trim()).filter(Boolean).join("\n")
-                : "제품의 핵심 기능과 타겟 고객의 니즈를 기준으로 메시지를 구성했습니다.";
+                ? context.learningInsights.slice(0, 3).map(item => sanitizeLearningInsightForPrompt(String(item).replace(/\[[^\]]+\]/g, ""))).filter(Boolean).join("\n")
+                : "\uC81C\uD488\uC758 \uD575\uC2EC \uAE30\uB2A5\uACFC \uD0C0\uAC9F \uACE0\uAC1D\uC758 \uB2C8\uC988\uB97C \uAE30\uC900\uC73C\uB85C \uBA54\uC2DC\uC9C0\uB97C \uAD6C\uC131\uD588\uC2B5\uB2C8\uB2E4.";
 
             if (context.type === 'email') {
                 const emailPurposeContext = context.emailPurposeContext || EMAIL_PURPOSE_CONTEXT.new_partner_proposal;
-                const purposeLabel = emailPurposeContext.label || "신규 거래처 제안";
-                const purposeDirection = emailPurposeContext.direction || "제품의 차별성과 시장성을 전달하고 후속 미팅을 유도합니다.";
-                const purposeCTA = emailPurposeContext.cta || "미팅 또는 데모 일정 검토 요청";
-                return "제목: " + context.product + " " + purposeLabel + " 관련 제안드립니다\n\n" +
-                    "안녕하세요 담당자님,\n\n" +
+                const purposeLabel = emailPurposeContext.label || "\uC2E0\uADDC \uAC70\uB798\uCC98 \uC81C\uC548";
+                const purposeDirection = emailPurposeContext.direction || "\uC81C\uD488\uC758 \uAC80\uD1A0 \uAC00\uCE58\uB97C \uC804\uB2EC\uD558\uACE0 \uD6C4\uC18D \uBBF8\uD305\uC744 \uC720\uB3C4\uD569\uB2C8\uB2E4.";
+                const purposeCTA = emailPurposeContext.cta || "\uB370\uBAA8 \uB610\uB294 \uBBF8\uD305 \uC77C\uC815 \uB17C\uC758";
+                return "\uC81C\uBAA9: " + context.product + " " + purposeLabel + " \uAD00\uB828 \uAC80\uD1A0 \uC81C\uC548\uB4DC\uB9BD\uB2C8\uB2E4\n\n" +
+                    "\uC548\uB155\uD558\uC138\uC694 \uB2F4\uB2F9\uC790\uB2D8,\n\n" +
+                    context.localizedTarget + " \uAD00\uC810\uC5D0\uC11C\uB294 \uB2E8\uC21C\uD55C \uC81C\uD488 \uC18C\uAC1C\uBCF4\uB2E4 \uC2E4\uC81C \uC6B4\uC601\uC5D0\uC11C \uD655\uC778\uD560 \uC218 \uC788\uB294 \uAC80\uD1A0 \uAC00\uCE58\uAC00 \uC911\uC694\uD569\uB2C8\uB2E4.\n\n" +
                     purposeDirection + "\n\n" +
-                    context.product + "는 " + productDef + "입니다.\n" + productPos + "\n\n" +
-                    context.localizedTarget + " 관점에서 " + context.product + "의 핵심 가치는 다음과 같습니다.\n\n" +
-                    "1. 데이터 기반으로 고객 상태를 설명할 수 있습니다.\n" +
-                    "2. 상담과 제안의 객관성을 높일 수 있습니다.\n" +
-                    "3. 제품 또는 서비스의 차별성을 명확하게 전달할 수 있습니다.\n\n" +
-                    "이번 제안의 핵심 키워드는 " + keywordLine + "입니다.\n\n" +
+                    context.product + "\uB294 " + productDef + "\uC785\uB2C8\uB2E4. " + productPos + "\n\n" +
+                    "\uC774\uBC88 \uC81C\uC548\uC758 \uD575\uC2EC\uC740 " + keywordLine + "\uC785\uB2C8\uB2E4. \uAE30\uB2A5 \uB098\uC5F4\uBCF4\uB2E4 \uD604\uC7A5\uC758 \uD65C\uC6A9 \uAC00\uCE58\uC5D0 \uCD08\uC810\uC744 \uB450\uC5C8\uC2B5\uB2C8\uB2E4.\n\n" +
+                    "1. \uB370\uC774\uD130 \uAE30\uBC18\uC73C\uB85C \uACE0\uAC1D \uC0C1\uD0DC\uB97C \uC124\uBA85\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.\n" +
+                    "2. \uC0C1\uB2F4\uACFC \uC81C\uC548\uC758 \uAC1D\uAD00\uC131\uC744 \uB192\uC77C \uC218 \uC788\uC2B5\uB2C8\uB2E4.\n" +
+                    "3. \uCC28\uBCC4\uD654\uB41C \uB370\uC774\uD130 \uAE30\uBC18 \uACBD\uD5D8\uC744 \uC81C\uC2DC\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.\n\n" +
                     learnedPointText + "\n\n" +
-                    "가능하시다면 " + purposeCTA + "을 위해 편하신 일정을 공유 부탁드립니다.\n\n" +
-                    "감사합니다.\n한광석 드림";
+                    "\uD655\uC778\uB418\uC9C0 \uC54A\uC740 \uD6A8\uACFC\uB97C \uC57D\uC18D\uD558\uAE30\uBCF4\uB2E4, \uC2E4\uC81C \uB3C4\uC785 \uAC00\uB2A5\uC131\uACFC \uD65C\uC6A9 \uC2DC\uB098\uB9AC\uC624\uB97C \uD568\uAED8 \uAC80\uD1A0\uD558\uACE0\uC790 \uD569\uB2C8\uB2E4.\n" +
+                    "\uAC00\uB2A5\uD558\uC2DC\uB2E4\uBA74 " + purposeCTA + "\uB97C \uC704\uD574 \uD3B8\uD558\uC2E0 \uC77C\uC815\uC744 \uACF5\uC720 \uBD80\uD0C1\uB4DC\uB9BD\uB2C8\uB2E4.\n\n" +
+                    "\uAC10\uC0AC\uD569\uB2C8\uB2E4.\n\uD55C\uAD11\uC11D \uB4DC\uB9BC";
             }
             if (context.type === 'cardnews') {
-                return "카드뉴스 구성안\n\n1페이지\n데이터 없이 설명하는 시대는 지나가고 있습니다.\n\n2페이지\n고객은 객관적인 기준과 이해하기 쉬운 변화를 원합니다.\n\n3페이지\n" + context.product + "는 " + productDef + "로, " + productPos + "\n\n4페이지\n핵심 키워드는 " + keywordLine + "입니다.\n\n5페이지\n" + context.product + "를 통해 더 설득력 있는 고객 경험을 제안하세요.";
+                return "\uCE74\uB4DC\uB274\uC2A4 \uAD6C\uC131\uC548\n\n1\uD398\uC774\uC9C0\n\uB370\uC774\uD130 \uC5C6\uC774 \uC124\uBA85\uD558\uB294 \uC2DC\uB300\uB294 \uC9C0\uB098\uAC00\uACE0 \uC788\uC2B5\uB2C8\uB2E4.\n\n2\uD398\uC774\uC9C0\n\uACE0\uAC1D\uC740 \uAC1D\uAD00\uC801\uC778 \uAE30\uC900\uACFC \uC774\uD574\uD558\uAE30 \uC26C\uC6B4 \uBCC0\uD654\uB97C \uC6D0\uD569\uB2C8\uB2E4.\n\n3\uD398\uC774\uC9C0\n" + context.product + "\uB294 " + productDef + "\uB85C, " + productPos + "\n\n4\uD398\uC774\uC9C0\n\uD575\uC2EC \uD0A4\uC6CC\uB4DC\uB294 " + keywordLine + "\uC785\uB2C8\uB2E4.\n\n5\uD398\uC774\uC9C0\n" + context.product + "\uB97C \uD1B5\uD574 \uB354 \uC124\uB4DD\uB825 \uC788\uB294 \uACE0\uAC1D \uACBD\uD5D8\uC744 \uC81C\uC548\uD558\uC138\uC694.";
             }
-            return context.product + " 콘텐츠 초안\n\n" + context.product + "는 " + productDef + "입니다.\n" + productPos + "\n\n핵심 키워드는 " + keywordLine + "입니다.\n\n1. 제품 기능보다 고객이 얻는 변화를 먼저 설명합니다.\n2. 데이터 기반 상담과 객관적 설명의 가치를 강조합니다.\n3. 과장된 효과 표현은 피하고 참고 데이터와 의사결정 보조 관점으로 설명합니다.\n\n" + learnedPointText;
+            return context.product + " \uCF58\uD150\uCE20 \uCD08\uC548\n\n" + context.product + "\uB294 " + productDef + "\uC785\uB2C8\uB2E4.\n" + productPos + "\n\n\uD575\uC2EC \uD0A4\uC6CC\uB4DC\uB294 " + keywordLine + "\uC785\uB2C8\uB2E4.\n\n1. \uC81C\uD488 \uAE30\uB2A5\uBCF4\uB2E4 \uACE0\uAC1D\uC774 \uC5BB\uB294 \uBCC0\uD654\uB97C \uBA3C\uC800 \uC124\uBA85\uD569\uB2C8\uB2E4.\n2. \uB370\uC774\uD130 \uAE30\uBC18 \uC0C1\uB2F4\uACFC \uAC1D\uAD00\uC801 \uC124\uBA85\uC758 \uAC00\uCE58\uB97C \uAC15\uC870\uD569\uB2C8\uB2E4.\n3. \uACFC\uC7A5\uB41C \uD6A8\uACFC \uD45C\uD604\uC740 \uD53C\uD558\uACE0 \uCC38\uACE0 \uB370\uC774\uD130\uC640 \uC758\uC0AC\uACB0\uC815 \uBCF4\uC870 \uAD00\uC810\uC73C\uB85C \uC124\uBA85\uD569\uB2C8\uB2E4.\n\n" + learnedPointText;
         }
 
         async function generateContent(isAutoRefresh = false) {
@@ -2494,13 +2507,15 @@ ${sampleText}`;
             let imgPromptToGenerate = "";
 
             try {
-                const sysPrompt = `당신은 세계 최고 수준의 B2B 헬스케어·피트니스 테크 마케팅 컨설턴트입니다.
-단순 요약이 아니라, 제공된 제품 KB, 타겟 고객, 핵심 키워드, 학습 데이터에서 확인 가능한 사실을 바탕으로 메시지 구조를 재설계해야 합니다.
-다만 확인되지 않은 수치, 고객 사례, 인증, 효과, 시장 점유율, 계약, 임상 결과는 절대 추론하거나 만들어내지 마세요. 제공된 정보에서 확인 가능한 내용만 사용하세요.
-학습 데이터는 내부적으로만 반영하고, 파일명·분석 상태·API 오류·quota 정보는 결과물에 표시하지 마세요.
-최종 결과물은 바로 복사해 사용할 수 있는 한국어 중심의 비즈니스 문장으로 작성하세요. videoprompt 유형의 실제 프롬프트 본문만 필요한 경우 영어로 작성할 수 있습니다.
-콘텐츠 품질 기준: 타겟 고객의 현실적 문제를 먼저 짚고, 제품 기능을 실무적 가치로 전환하며, 학습 데이터의 제품 설명을 핵심 메시지로 재구성하세요. 과장된 효과 표현은 피하고, 의료기기 제품은 규제 표현 기준을 지키며, 확인되지 않은 수치나 성과는 만들지 마세요.
-이메일이면 제목, 도입, 핵심 가치, 제안 이유, 다음 액션이 명확해야 합니다. 전략 계획이면 실행 전략, 홍보 채널, 프로모션 방향, 타겟별 접근 방식이 구체적이어야 합니다. 카드뉴스면 페이지별 메시지가 명확해야 합니다.
+                const sysPrompt = `You are a world-class management consultant and B2B healthcare/fitness-tech marketing strategist.
+Do not merely summarize. Redesign the message structure using only facts confirmed in the provided Product KB, target audience, keywords, email purpose, user memo, and sanitized learned context.
+Write with the logic and persuasion expected from a top-tier strategy and brand advisory team such as McKinsey, BCG, and Ogilvy.
+Never invent unsupported numbers, customer cases, certifications, effects, market share, contracts, clinical outcomes, or performance claims. Use only information that is explicitly provided.
+Use learned data internally only. Never show file names, analysis status, API errors, quota messages, learning-data lists, JSON keys, or internal logs in the final output.
+The final output must be copy-ready Korean business writing. For videoprompt, only the actual visual prompt body may be in English.
+Quality rules: start from the target customer's practical problem, translate product features into operational business value, reformulate learned product descriptions into stronger messaging, avoid exaggerated effect claims, and follow medical-device compliance rules when relevant.
+For email, make the subject, opening, core value, reason to review, and next action clear. For new-partner proposal emails, explain market relevance, differentiation, review value, and the need for a demo or meeting to an audience with no existing relationship.
+For strategy plans, provide concrete execution strategy, promotion direction, channel tactics, and target-specific approach. For card news, make each page's message clear.
 Do not use Markdown syntax in the final output. Do not use **bold**, ### headings, or code blocks. Use ordinary numbered lines and line breaks only when needed.`;
 
                 const prohibitedWords = kb.prohibited[currentLang] || kb.prohibited['ko'] || [];
@@ -2548,8 +2563,8 @@ The entire narrative and strategic angle MUST revolve heavily around these Keywo
 아래 학습 데이터는 내부 참고용입니다. 결과물에 파일명, 요약 로그, API 오류, quota 메시지, 학습 데이터 목록을 표시하지 마세요. 학습 데이터에서 확인 가능한 핵심 메시지만 콘텐츠 문장에 자연스럽게 반영하세요. 모르는 내용은 추정하지 말고 생략하세요.
 콘텐츠는 단순 요약이 아니라 타겟의 현실적 문제, 제품의 실무적 가치, 다음 액션을 중심으로 재구성하세요.
 
-[CRITICAL INSTRUCTION: Combine Data & Real-time AI Insight]
-You must NOT just rely on generic templates. You MUST synthesize your own up-to-date industry knowledge and real-time market intelligence regarding "${product}" and "${localizedTarget}" WITH the specific learned data below (which includes market analysis, JSON exports, or competitor insights). Provide fresh, persuasive angles that emphasize differentiation.
+[CRITICAL INSTRUCTION: Consultant-Level Grounded Synthesis]
+Do not rely on generic templates. Reconstruct the message like a senior strategy consultant using only the provided Product KB, target context, keywords, additional memo, and sanitized learned context below. Create a sharper positioning angle and persuasive business logic, but do not invent market data, performance numbers, certifications, customer cases, clinical outcomes, contracts, or unverifiable claims.
 ${isExtendedKBActive && learningInsights.length > 0 ? `
 [Internal Learned Context]
 Use the following structured summaries only as internal context. Do not expose source names, URLs, JSON, labels, logs, or the phrase Website Context Analysis in the final output:
