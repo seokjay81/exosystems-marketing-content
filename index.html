@@ -1043,6 +1043,150 @@
             "videoprompt": { ko: "영상 프롬프트", en: "Video Prompt", zh: "视频提示词", ja: "動画プロンプト" }
         };
 
+
+        const CONTENT_FORMAT_GUIDE = {
+            strategyplan: {
+                label: "\uB9C8\uCF00\uD305 \uC804\uB7B5 \uACC4\uD68D",
+                formatInstruction: `
+Write as a Korean strategy document.
+Required structure:
+1. \uC804\uB7B5 \uBAA9\uD45C
+2. \uD0C0\uAC9F \uACE0\uAC1D \uC815\uC758
+3. \uD575\uC2EC \uC778\uC0AC\uC774\uD2B8
+4. \uD3EC\uC9C0\uC154\uB2DD \uBC29\uD5A5
+5. \uD575\uC2EC \uBA54\uC2DC\uC9C0
+6. \uD310\uB9E4 \uC804\uB7B5
+7. \uD504\uB85C\uBAA8\uC158 \uC804\uB7B5
+8. \uCC44\uB110\uBCC4 \uC2E4\uD589 \uC804\uB7B5
+9. \uC2E4\uD589 \uC6B0\uC120\uC21C\uC704
+10. \uB2E4\uC74C \uC561\uC158
+
+Writing standard:
+- Make it review-ready for management or business-development meetings.
+- Do not invent numbers, outcomes, certifications, or cases.
+`
+            },
+            email: {
+                label: "\uC774\uBA54\uC77C",
+                formatInstruction: `
+Write as a Korean business email.
+Required structure:
+\uC81C\uBAA9:
+\uC548\uB155\uD558\uC138\uC694 [\uB2F4\uB2F9\uC790]\uB2D8,
+
+\uB3C4\uC785:
+\uD575\uC2EC \uC81C\uC548:
+\uC81C\uD488 \uB610\uB294 \uC194\uB8E8\uC158 \uAC00\uCE58:
+\uC0C1\uB300\uBC29\uC774 \uAC80\uD1A0\uD574\uC57C \uD558\uB294 \uC774\uC720:
+\uB2E4\uC74C \uC561\uC158 \uC81C\uC548:
+\uB9C8\uBB34\uB9AC:
+
+Writing standard:
+- Make it copy-ready for email.
+- Use short, readable paragraphs and natural business wording.
+- Adapt the flow to the selected email purpose.
+`
+            },
+            cardnews: {
+                label: "\uCE74\uB4DC\uB274\uC2A4",
+                formatInstruction: `
+Write as a Korean page-by-page card news plan.
+Required structure:
+1\uD398\uC774\uC9C0:
+2\uD398\uC774\uC9C0:
+3\uD398\uC774\uC9C0:
+4\uD398\uC774\uC9C0:
+5\uD398\uC774\uC9C0:
+\uB9C8\uBB34\uB9AC \uD398\uC774\uC9C0:
+
+Writing standard:
+- One clear message per page.
+- Add concise visual-direction hints when useful.
+- Avoid long explanatory paragraphs.
+`
+            },
+            reels: {
+                label: "\uB9B4\uC2A4",
+                formatInstruction: `
+Write as a Korean short-form video plan.
+Required structure:
+\uC601\uC0C1 \uAE38\uC774:
+\uCCAB 1\uCD08 \uD6C4\uD0B9:
+\uC7A5\uBA74 1:
+\uC7A5\uBA74 2:
+\uC7A5\uBA74 3:
+\uD575\uC2EC \uBA54\uC2DC\uC9C0:
+\uB9C8\uBB34\uB9AC CTA:
+
+Writing standard:
+- Make the scene flow clear and quick.
+- Keep on-screen wording short and intuitive.
+- Focus on use scenes and emotion, not only product specs.
+`
+            },
+            adcopy: {
+                label: "\uAD11\uACE0 \uCE74\uD53C",
+                formatInstruction: `
+Write as Korean ad copy ready for paid or organic creative.
+Required structure:
+\uBA54\uC778 \uCE74\uD53C:
+\uC11C\uBE0C \uCE74\uD53C:
+\uC9E7\uC740 \uD6C4\uD0B9 \uBB38\uAD6C:
+CTA:
+\uD65C\uC6A9 \uCC44\uB110 \uC81C\uC548:
+
+Writing standard:
+- Make the message short, strong, and grounded.
+- Connect the target customer's problem with the product value.
+- Avoid exaggerated claims.
+`
+            },
+            imagegen: {
+                label: "\uC774\uBBF8\uC9C0 \uC0DD\uC131 \uD504\uB86C\uD504\uD2B8",
+                formatInstruction: `
+Write as a prompt-engineering output for Gemini or image-generation tools.
+Required structure:
+\uC774\uBBF8\uC9C0 \uBAA9\uC801:
+\uC7A5\uBA74 \uAD6C\uC131:
+\uC8FC\uC694 \uD53C\uC0AC\uCCB4:
+\uC81C\uD488 \uD45C\uD604 \uBC29\uC2DD:
+\uBC30\uACBD \uBC0F \uBD84\uC704\uAE30:
+\uC2DC\uAC01 \uC2A4\uD0C0\uC77C:
+\uD14D\uC2A4\uD2B8 \uC0BD\uC785 \uC5EC\uBD80:
+\uAE08\uC9C0 \uC694\uC18C:
+\uCD5C\uC885 \uC774\uBBF8\uC9C0 \uC0DD\uC131 \uD504\uB86C\uD504\uD2B8:
+
+Writing standard:
+- The final prompt must be one complete paragraph ready to paste into an image tool.
+- Reflect product and target context.
+- Avoid exaggerated medical effects or treatment scenes.
+`
+            },
+            videoprompt: {
+                label: "\uC601\uC0C1 \uD504\uB86C\uD504\uD2B8",
+                formatInstruction: `
+Write as a prompt-engineering output for Gemini or video-generation tools.
+Required structure:
+\uC601\uC0C1 \uBAA9\uC801:
+\uC601\uC0C1 \uAE38\uC774:
+\uC8FC\uC694 \uC7A5\uBA74 \uD750\uB984:
+\uB4F1\uC7A5 \uC778\uBB3C \uB610\uB294 \uC0AC\uC6A9 \uC0C1\uD669:
+\uC81C\uD488 \uB178\uCD9C \uBC29\uC2DD:
+\uCE74\uBA54\uB77C \uC6C0\uC9C1\uC784:
+\uBD84\uC704\uAE30 \uBC0F \uD1A4:
+\uC790\uB9C9 \uC0AC\uC6A9 \uC5EC\uBD80:
+\uAE08\uC9C0 \uC694\uC18C:
+\uCD5C\uC885 \uC601\uC0C1 \uC0DD\uC131 \uD504\uB86C\uD504\uD2B8:
+
+Writing standard:
+- The final prompt must be specific enough for a video-generation tool.
+- Clarify scene flow, emotion, product exposure, and message.
+- Avoid scenes or wording that guarantee medical treatment effects.
+`
+            }
+        };
+        window.CONTENT_FORMAT_GUIDE = CONTENT_FORMAT_GUIDE;
+
         const EMAIL_PURPOSE_CONTEXT = {
             new_partner_proposal: {
                 label: "신규 거래처 제안",
@@ -1394,6 +1538,13 @@
             }
         }
 
+        function getDefaultTargetByGroup(groupKey) {
+            if (groupKey === "end_consumer") return "\uC77C\uBC18 \uD68C\uC6D0";
+            if (groupKey === "distributor") return "\uD574\uC678 \uC720\uD1B5\uC0AC";
+            if (groupKey === "buyer") return "\uD53C\uD2B8\uB2C8\uC2A4 \uC13C\uD130 \uB300\uD45C";
+            return "\uC77C\uBC18 \uD68C\uC6D0";
+        }
+
         function handleTargetGroupChange() {
             const groupSelect = document.getElementById('target-group-select');
             const targetSelect = document.getElementById('target-select');
@@ -1414,7 +1565,7 @@
                 targetSelect.disabled = true;
                 targetSelect.innerHTML = `<option value="">\uD0C0\uAC9F \uACE0\uAC1D\uAD70\uC744 \uBA3C\uC800 \uC120\uD0DD\uD558\uC138\uC694</option>`;
                 typeSelect.disabled = true;
-                typeSelect.innerHTML = `<option value="">\uC138\uBD80 \uD0C0\uAC9F \uACE0\uAC1D\uC744 \uBA3C\uC800 \uC120\uD0DD\uD558\uC138\uC694</option>`;
+                typeSelect.innerHTML = `<option value="">\uD0C0\uAC9F \uACE0\uAC1D\uAD70\uC744 \uBA3C\uC800 \uC120\uD0DD\uD558\uC138\uC694</option>`;
                 toneSelect.disabled = true;
                 if (descriptionEl) {
                     descriptionEl.textContent = "";
@@ -1425,47 +1576,13 @@
             }
 
             targetSelect.disabled = false;
-            targetSelect.innerHTML = `<option value="">\uC138\uBD80 \uD0C0\uAC9F \uACE0\uAC1D\uC744 \uC120\uD0DD\uD558\uC138\uC694</option>`;
+            targetSelect.innerHTML = `<option value="">\uC138\uBD80 \uD0C0\uAC9F \uACE0\uAC1D \uC120\uD0DD (\uC120\uD0DD)</option>`;
             group.targets.forEach(target => {
                 const option = document.createElement('option');
                 option.value = target;
                 option.textContent = TARGET_NAMES[target]?.[currentLang] || target;
                 targetSelect.appendChild(option);
             });
-
-            typeSelect.disabled = true;
-            typeSelect.innerHTML = `<option value="">\uC138\uBD80 \uD0C0\uAC9F \uACE0\uAC1D\uC744 \uBA3C\uC800 \uC120\uD0DD\uD558\uC138\uC694</option>`;
-            toneSelect.disabled = true;
-
-            if (descriptionEl) {
-                descriptionEl.textContent = group.description || "";
-                descriptionEl.classList.remove('hidden');
-            }
-            if (typeof handleContentTypeChange === "function") handleContentTypeChange();
-            if (typeof createIconsSafe === "function") createIconsSafe();
-        }
-
-        function handleTargetAudienceChange() {
-            const groupSelect = document.getElementById('target-group-select');
-            const targetSelect = document.getElementById('target-select');
-            const typeSelect = document.getElementById('type-select');
-            const toneSelect = document.getElementById('tone-select');
-
-            const groupKey = groupSelect ? groupSelect.value : "";
-            const group = TARGET_GROUPS[groupKey];
-            const selectedTarget = targetSelect ? targetSelect.value : "";
-
-            if (!typeSelect || !toneSelect) return;
-            typeSelect.innerHTML = "";
-
-            if (!group || !selectedTarget) {
-                typeSelect.disabled = true;
-                typeSelect.innerHTML = `<option value="">\uC138\uBD80 \uD0C0\uAC9F \uACE0\uAC1D\uC744 \uBA3C\uC800 \uC120\uD0DD\uD558\uC138\uC694</option>`;
-                toneSelect.disabled = true;
-                toneSelect.value = "";
-                if (typeof handleContentTypeChange === "function") handleContentTypeChange();
-                return;
-            }
 
             typeSelect.disabled = false;
             typeSelect.innerHTML = `<option value="">\uCF58\uD150\uCE20 \uC720\uD615\uC744 \uC120\uD0DD\uD558\uC138\uC694</option>`;
@@ -1477,11 +1594,33 @@
             });
 
             toneSelect.disabled = true;
-            toneSelect.value = "";
+            if (descriptionEl) {
+                descriptionEl.textContent = group.description || "";
+                descriptionEl.classList.remove('hidden');
+            }
             if (typeof handleContentTypeChange === "function") handleContentTypeChange();
             if (typeof createIconsSafe === "function") createIconsSafe();
         }
 
+        function handleTargetAudienceChange() {
+            const groupSelect = document.getElementById('target-group-select');
+            const typeSelect = document.getElementById('type-select');
+            const toneSelect = document.getElementById('tone-select');
+            const groupKey = groupSelect ? groupSelect.value : "";
+            const group = TARGET_GROUPS[groupKey];
+
+            if (!typeSelect || !toneSelect) return;
+
+            if (!group) {
+                typeSelect.disabled = true;
+                typeSelect.innerHTML = `<option value="">\uD0C0\uAC9F \uACE0\uAC1D\uAD70\uC744 \uBA3C\uC800 \uC120\uD0DD\uD558\uC138\uC694</option>`;
+                toneSelect.disabled = true;
+                toneSelect.value = "";
+            }
+
+            if (typeof handleContentTypeChange === "function") handleContentTypeChange();
+            if (typeof createIconsSafe === "function") createIconsSafe();
+        }
 
         function handleProductChange() {
             const prodKey = document.getElementById('product-select').value;
@@ -2624,7 +2763,7 @@ ${sampleText}`;
 
         function buildLocalFallbackContent(context) {
             const kb = context.kb;
-            const keywordLine = context.keywords.join(", ");
+            const keywordLine = context.keywords && context.keywords.length ? context.keywords.join(", ") : "\uC81C\uD488 KB\uC640 \uD559\uC2B5 \uB370\uC774\uD130 \uAE30\uBC18";
             const productDef = kb.definition[currentLang] || kb.definition.ko;
             const productPos = kb.positioning[currentLang] || kb.positioning.ko;
             const learnedPointText = context.learningInsights && context.learningInsights.length
@@ -2639,6 +2778,51 @@ ${sampleText}`;
                 attention: "\uCCAB \uAC80\uD1A0 \uB2E8\uACC4\uC5D0\uC11C \uBB38\uC81C\uC758\uC2DD\uACFC \uB2E4\uC74C \uD589\uB3D9\uC774 \uBC14\uB85C \uBCF4\uC774\uB3C4\uB85D \uAD6C\uC131\uD558\uB294 \uAC83\uC774 \uC801\uD569\uD569\uB2C8\uB2E4."
             };
             const toneLead = toneLeadMap[localToneKey] || toneLeadMap.professional;
+
+
+            if (context.type === 'strategyplan') {
+                return "\uB9C8\uCF00\uD305 \uC804\uB7B5 \uACC4\uD68D\n\n" +
+                    "1. \uC804\uB7B5 \uBAA9\uD45C\n" + context.localizedTarget + "\uC774 \uC81C\uD488\uC744 \uAC80\uD1A0\uD574\uC57C \uD558\uB294 \uC2E4\uBB34\uC801 \uC774\uC720\uB97C \uBA85\uD655\uD788 \uC81C\uC2DC\uD569\uB2C8\uB2E4.\n\n" +
+                    "2. \uD0C0\uAC9F \uACE0\uAC1D \uC815\uC758\n" + context.localizedTarget + "\uB294 \uC11C\uBE44\uC2A4 \uCC28\uBCC4\uD654\uC640 \uB370\uC774\uD130 \uAE30\uBC18 \uC0C1\uB2F4 \uAC00\uCE58\uB97C \uAC80\uD1A0\uD560 \uC218 \uC788\uB294 \uD0C0\uAC9F\uC785\uB2C8\uB2E4.\n\n" +
+                    "3. \uD575\uC2EC \uC778\uC0AC\uC774\uD2B8\n" + toneLead + "\n\n" +
+                    "4. \uD3EC\uC9C0\uC154\uB2DD \uBC29\uD5A5\n" + context.product + "\uB294 " + productDef + "\uC785\uB2C8\uB2E4. " + productPos + "\n\n" +
+                    "5. \uD575\uC2EC \uBA54\uC2DC\uC9C0\n" + keywordLine + "\uC744 \uC911\uC2EC\uC73C\uB85C \uC81C\uD488 \uAE30\uB2A5\uC744 \uACE0\uAC1D \uAC80\uD1A0 \uAC00\uCE58\uB85C \uC804\uD658\uD569\uB2C8\uB2E4.\n\n" +
+                    "6. \uD310\uB9E4 \uC804\uB7B5\n\uAE30\uB2A5 \uC18C\uAC1C\uBCF4\uB2E4 \uD604\uC7A5\uC758 \uBB38\uC81C, \uB370\uC774\uD130 \uD65C\uC6A9 \uBC29\uC2DD, \uB3C4\uC785 \uD6C4 \uC0C1\uB2F4 \uAC00\uCE58\uB97C \uC21C\uC11C\uB300\uB85C \uC81C\uC2DC\uD569\uB2C8\uB2E4.\n\n" +
+                    "7. \uD504\uB85C\uBAA8\uC158 \uC804\uB7B5\n\uB370\uBAA8, \uC81C\uD488 \uC790\uB8CC, \uC0AC\uC6A9 \uC7A5\uBA74 \uC911\uC2EC\uC758 \uCEE8\uD150\uCE20\uB85C \uAC80\uD1A0 \uC7A5\uBCBD\uC744 \uB0AE\uCD9C \uC218 \uC788\uC2B5\uB2C8\uB2E4.\n\n" +
+                    "8. \uCC44\uB110\uBCC4 \uC2E4\uD589 \uC804\uB7B5\n\uC774\uBA54\uC77C\uC740 \uC81C\uC548\uACFC \uBBF8\uD305 \uC720\uB3C4, \uCE74\uB4DC\uB274\uC2A4\uB294 \uAC1C\uB150 \uC124\uBA85, \uAD11\uACE0 \uCE74\uD53C\uB294 \uD6C4\uD0B9\uACFC CTA\uC5D0 \uC0AC\uC6A9\uD569\uB2C8\uB2E4.\n\n" +
+                    "9. \uC2E4\uD589 \uC6B0\uC120\uC21C\uC704\n\uC790\uB8CC \uACF5\uC720, \uB370\uBAA8 \uC81C\uC548, \uD6C4\uC18D \uBBF8\uD305 \uC21C\uC73C\uB85C \uC804\uD658\uD569\uB2C8\uB2E4.\n\n" +
+                    "10. \uB2E4\uC74C \uC561\uC158\n\uB300\uC0C1 \uACE0\uAC1D\uC5D0\uAC8C \uAC04\uB2E8\uD55C \uB370\uBAA8 \uB610\uB294 \uC790\uB8CC \uAC80\uD1A0 \uC77C\uC815\uC744 \uC81C\uC548\uD569\uB2C8\uB2E4.";
+            }
+            if (context.type === 'adcopy') {
+                return "\uBA54\uC778 \uCE74\uD53C:\n" + context.product + "\uB85C \uC0C1\uB2F4\uC758 \uADFC\uAC70\uB97C \uB370\uC774\uD130\uB85C \uBC14\uAFB8\uC138\uC694.\n\n" +
+                    "\uC11C\uBE0C \uCE74\uD53C:\n" + context.localizedTarget + "\uC5D0\uAC8C \uD544\uC694\uD55C \uAC83\uC740 \uB2E8\uC21C\uD55C \uC124\uBA85\uC774 \uC544\uB2C8\uB77C \uC774\uD574\uD560 \uC218 \uC788\uB294 \uAC1D\uAD00\uC801 \uADFC\uAC70\uC785\uB2C8\uB2E4.\n\n" +
+                    "\uC9E7\uC740 \uD6C4\uD0B9 \uBB38\uAD6C:\n\uC9C1\uAD00\uC744 \uB118\uC5B4, \uB370\uC774\uD130\uB85C \uC124\uBA85\uD558\uB294 \uACBD\uD5D8.\n\n" +
+                    "CTA:\n\uC81C\uD488 \uC790\uB8CC \uAC80\uD1A0 \uBC0F \uB370\uBAA8 \uC0C1\uB2F4 \uC77C\uC815\uC744 \uC694\uCCAD\uD558\uC138\uC694.\n\n" +
+                    "\uD65C\uC6A9 \uCC44\uB110 \uC81C\uC548:\nSNS \uAD11\uACE0, \uB9AC\uD0C0\uAC8C\uD305 \uC18C\uC7AC, \uB79C\uB529\uD398\uC774\uC9C0 \uD5E4\uB4DC\uB77C\uC778";
+            }
+            if (context.type === 'imagegen') {
+                return "\uC774\uBBF8\uC9C0 \uBAA9\uC801:\n" + context.product + "\uC758 \uB370\uC774\uD130 \uAE30\uBC18 \uC0C1\uB2F4 \uAC00\uCE58\uB97C \uC2DC\uAC01\uC801\uC73C\uB85C \uD45C\uD604\n\n" +
+                    "\uC7A5\uBA74 \uAD6C\uC131:\n\uC804\uBB38\uC801\uC778 \uACF5\uAC04\uC5D0\uC11C \uB2F4\uB2F9\uC790\uAC00 \uACE0\uAC1D\uC5D0\uAC8C \uD3C9\uAC00 \uB370\uC774\uD130\uB97C \uC124\uBA85\uD558\uB294 \uC7A5\uBA74\n\n" +
+                    "\uC8FC\uC694 \uD53C\uC0AC\uCCB4:\n\uC0AC\uC6A9\uC790, \uC804\uBB38\uAC00, \uD0DC\uBE14\uB9BF \uD654\uBA74, " + context.product + " \uC81C\uD488 \uB178\uCD9C\n\n" +
+                    "\uC81C\uD488 \uD45C\uD604 \uBC29\uC2DD:\n\uACFC\uC7A5\uB41C \uCE58\uB8CC \uC7A5\uBA74 \uC5C6\uC774 \uB370\uC774\uD130 \uAE30\uBC18 \uC774\uD574\uB97C \uB3D5\uB294 \uC194\uB8E8\uC158\uC73C\uB85C \uD45C\uD604\n\n" +
+                    "\uBC30\uACBD \uBC0F \uBD84\uC704\uAE30:\n\uBC1D\uACE0 \uC2E0\uB8B0\uAC10 \uC788\uB294 \uD5EC\uC2A4\uCF00\uC5B4 \uD14C\uD06C \uD658\uACBD\n\n" +
+                    "\uC2DC\uAC01 \uC2A4\uD0C0\uC77C:\n\uD604\uB300\uC801, \uC804\uBB38\uC801, \uD504\uB9AC\uBBF8\uC5C4, \uC2E4\uC0AC\uD615\n\n" +
+                    "\uD14D\uC2A4\uD2B8 \uC0BD\uC785 \uC5EC\uBD80:\n\uD14D\uC2A4\uD2B8\uB294 \uCD5C\uC18C\uD654\uD558\uACE0 \uC2DC\uAC01\uC801 \uC0C1\uD669\uC73C\uB85C \uBA54\uC2DC\uC9C0\uB97C \uC804\uB2EC\n\n" +
+                    "\uAE08\uC9C0 \uC694\uC18C:\n\uCE58\uB8CC \uD6A8\uACFC \uBCF4\uC7A5, \uC9C4\uB2E8 \uD655\uC815, \uACFC\uC7A5\uB41C \uC758\uB8CC \uC5F0\uCD9C\n\n" +
+                    "\uCD5C\uC885 \uC774\uBBF8\uC9C0 \uC0DD\uC131 \uD504\uB86C\uD504\uD2B8:\n\uC804\uBB38\uC801\uC774\uACE0 \uD604\uB300\uC801\uC778 \uACF5\uAC04\uC5D0\uC11C \uC804\uBB38\uAC00\uAC00 \uACE0\uAC1D\uC5D0\uAC8C " + context.product + " \uD3C9\uAC00 \uB370\uC774\uD130\uB97C \uD0DC\uBE14\uB9BF\uC73C\uB85C \uC124\uBA85\uD558\uB294 \uC7A5\uBA74. \uC2E0\uB8B0\uAC10 \uC788\uB294 \uD5EC\uC2A4\uCF00\uC5B4 \uD14C\uD06C \uC2A4\uD0C0\uC77C, \uBC1D\uC740 \uC870\uBA85, \uD504\uB9AC\uBBF8\uC5C4 \uBD84\uC704\uAE30, \uACFC\uC7A5\uB41C \uCE58\uB8CC \uC7A5\uBA74 \uC5C6\uC74C.";
+            }
+            if (context.type === 'videoprompt' || context.type === 'reels') {
+                return "\uC601\uC0C1 \uBAA9\uC801:\n" + context.product + "\uC744 \uD65C\uC6A9\uD55C \uB370\uC774\uD130 \uAE30\uBC18 \uC0C1\uB2F4 \uACBD\uD5D8 \uD45C\uD604\n\n" +
+                    "\uC601\uC0C1 \uAE38\uC774:\n10\uCD08 \uC774\uB0B4\n\n" +
+                    "\uC8FC\uC694 \uC7A5\uBA74 \uD750\uB984:\n1. \uACE0\uAC1D\uC774 \uD3C9\uAC00 \uB610\uB294 \uC6B4\uB3D9 \uC0C1\uD669\uC744 \uC9C4\uD589\uD558\uB294 \uC7A5\uBA74\n2. " + context.product + "\uAC00 \uC790\uC5F0\uC2A4\uB7FD\uAC8C \uB178\uCD9C\uB418\uB294 \uC7A5\uBA74\n3. \uC804\uBB38\uAC00\uAC00 \uB370\uC774\uD130\uB97C \uC124\uBA85\uD558\uB294 \uC7A5\uBA74\n4. \uACE0\uAC1D\uC774 \uACB0\uACFC\uB97C \uC774\uD574\uD558\uB294 \uC7A5\uBA74\n\n" +
+                    "\uB4F1\uC7A5 \uC778\uBB3C \uB610\uB294 \uC0AC\uC6A9 \uC0C1\uD669:\n" + context.localizedTarget + "\uC758 \uD604\uC7A5 \uBB38\uB9E5\uC5D0 \uB9DE\uB294 \uC804\uBB38\uAC00\uC640 \uACE0\uAC1D\n\n" +
+                    "\uC81C\uD488 \uB178\uCD9C \uBC29\uC2DD:\n\uB370\uC774\uD130 \uCE21\uC815\uACFC \uC0C1\uB2F4 \uD750\uB984 \uC18D\uC5D0\uC11C \uC790\uC5F0\uC2A4\uB7FD\uAC8C \uB178\uCD9C\n\n" +
+                    "\uCE74\uBA54\uB77C \uC6C0\uC9C1\uC784:\n\uC81C\uD488 \uADFC\uC811 \uC0F7, \uB370\uC774\uD130 \uD654\uBA74, \uC0C1\uB2F4 \uC7A5\uBA74\uC744 \uC9E7\uACE0 \uB9E4\uB044\uB7FD\uAC8C \uC5F0\uACB0\n\n" +
+                    "\uBD84\uC704\uAE30 \uBC0F \uD1A4:\n\uC804\uBB38\uC801\uC774\uACE0 \uC2E0\uB8B0\uAC10 \uC788\uB294 \uD5EC\uC2A4\uCF00\uC5B4 \uD14C\uD06C \uD1A4\n\n" +
+                    "\uC790\uB9C9 \uC0AC\uC6A9 \uC5EC\uBD80:\n\uC790\uB9C9\uC740 \uCD5C\uC18C\uD654\uD558\uACE0 \uD544\uC694\uD55C \uD575\uC2EC \uBB38\uAD6C\uB9CC \uC0AC\uC6A9\n\n" +
+                    "\uAE08\uC9C0 \uC694\uC18C:\n\uCE58\uB8CC \uD6A8\uACFC \uBCF4\uC7A5, \uC9C4\uB2E8 \uD655\uC815, \uC218\uCE58 \uC131\uACFC \uACFC\uC7A5\n\n" +
+                    "\uCD5C\uC885 \uC601\uC0C1 \uC0DD\uC131 \uD504\uB86C\uD504\uD2B8:\n10\uCD08 \uC774\uB0B4\uC758 \uC138\uB85C\uD615 \uC601\uC0C1. \uC804\uBB38\uC801\uC778 \uD658\uACBD\uC5D0\uC11C \uACE0\uAC1D\uC774 \uD3C9\uAC00 \uB610\uB294 \uC6B4\uB3D9 \uC0C1\uD669\uC744 \uC9C4\uD589\uD558\uACE0, " + context.product + "\uAC00 \uB370\uC774\uD130 \uAE30\uBC18 \uC0C1\uB2F4\uC758 \uB3C4\uAD6C\uB85C \uC790\uC5F0\uC2A4\uB7FD\uAC8C \uB178\uCD9C\uB41C\uB2E4. \uC804\uBB38\uAC00\uAC00 \uD0DC\uBE14\uB9BF \uB610\uB294 \uD654\uBA74\uC744 \uBCF4\uBA70 \uB370\uC774\uD130\uB97C \uC124\uBA85\uD558\uACE0, \uACE0\uAC1D\uC740 \uC790\uC2E0\uC758 \uC0C1\uD0DC\uB97C \uC774\uD574\uD558\uB294 \uD45C\uC815\uC744 \uBCF4\uC778\uB2E4. \uACFC\uC7A5\uB41C \uCE58\uB8CC \uC7A5\uBA74\uC740 \uD3EC\uD568\uD558\uC9C0 \uC54A\uB294\uB2E4.";
+            }
 
             if (context.type === 'email') {
                 const emailPurposeContext = context.emailPurposeContext || EMAIL_PURPOSE_CONTEXT.new_partner_proposal;
@@ -2667,33 +2851,26 @@ ${sampleText}`;
         }
 
         async function generateContent(isAutoRefresh = false) {
-            const product = document.getElementById('product-select').value;
+            const productSelect = document.getElementById('product-select');
+            const product = productSelect?.value || productSelect?.options?.[0]?.value || 'exoFit';
             const targetGroupKey = document.getElementById('target-group-select')?.value || "";
             const targetGroupContext = TARGET_GROUPS[targetGroupKey] || null;
             const targetGroupStrategy = TARGET_GROUP_MESSAGE_STRATEGY[targetGroupKey] || null;
-            const target = document.getElementById('target-select').value;
-            let type = document.getElementById('type-select').value;
-            const keywordString = document.getElementById('keywords-input').value;
-            const reelsDuration = document.getElementById('reels-duration').value;
+            const target = document.getElementById('target-select')?.value || getDefaultTargetByGroup(targetGroupKey);
+            let type = document.getElementById('type-select')?.value || "";
+            const keywordString = document.getElementById('keywords-input')?.value || "";
+            const reelsDuration = document.getElementById('reels-duration')?.value || "10";
             const emailPurpose = document.getElementById('email-purpose-select')?.value || 'new_partner_proposal';
             const emailPurposeContext = EMAIL_PURPOSE_CONTEXT[emailPurpose] || EMAIL_PURPOSE_CONTEXT.new_partner_proposal;
-            const selectedTone = document.getElementById('tone-select')?.value || "";
-            const toneContext = TONE_CONTEXT[selectedTone] || null;
+            const selectedTone = document.getElementById('tone-select')?.value || 'professional';
+            const toneContext = TONE_CONTEXT[selectedTone] || TONE_CONTEXT.professional;
 
             if (!targetGroupKey || !targetGroupContext) {
-                showErrorModal("\uC785\uB825 \uD544\uC694", "\uD0C0\uAC9F \uACE0\uAC1D\uAD70\uC744 \uC120\uD0DD\uD574 \uC8FC\uC138\uC694.", "\uCD5C\uC885 \uC18C\uBE44\uC790, \uC720\uD1B5\uC0AC, \uAD6C\uB9E4 \uACE0\uAC1D \uC911 \uD558\uB098\uB97C \uBA3C\uC800 \uC120\uD0DD\uD574\uC57C \uD569\uB2C8\uB2E4.");
-                return;
-            }
-            if (!target) {
-                showErrorModal("\uC785\uB825 \uD544\uC694", "\uC138\uBD80 \uD0C0\uAC9F \uACE0\uAC1D\uC744 \uC120\uD0DD\uD574 \uC8FC\uC138\uC694.", "\uC120\uD0DD\uD55C \uD0C0\uAC9F \uACE0\uAC1D\uAD70\uC5D0 \uB9DE\uB294 \uC138\uBD80 \uB300\uC0C1\uC744 \uC120\uD0DD\uD574\uC57C \uD569\uB2C8\uB2E4.");
+                showErrorModal("\uC785\uB825 \uD544\uC694", "\uD0C0\uAC9F \uACE0\uAC1D\uAD70\uC744 \uC120\uD0DD\uD574 \uC8FC\uC138\uC694.", "\uCD5C\uC885 \uC18C\uBE44\uC790, \uC720\uD1B5\uC0AC, \uAD6C\uB9E4 \uACE0\uAC1D \uC911 \uD558\uB098\uB97C \uC120\uD0DD\uD574\uC57C \uCF58\uD150\uCE20\uB97C \uC0DD\uC131\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.");
                 return;
             }
             if (!type || !CONTENT_TYPE_NAMES[type]) {
-                showErrorModal("\uC785\uB825 \uD544\uC694", "\uCF58\uD150\uCE20 \uC720\uD615\uC744 \uC120\uD0DD\uD574 \uC8FC\uC138\uC694.", "\uC138\uBD80 \uD0C0\uAC9F \uACE0\uAC1D \uC120\uD0DD \uD6C4 \uCF58\uD150\uCE20 \uC720\uD615\uC744 \uC120\uD0DD\uD574\uC57C \uD569\uB2C8\uB2E4.");
-                return;
-            }
-            if (!selectedTone || !toneContext) {
-                showErrorModal("\uC785\uB825 \uD544\uC694", "\uD1A4\uC564\uB9E4\uB108\uB97C \uC120\uD0DD\uD574 \uC8FC\uC138\uC694.", "\uCF58\uD150\uCE20 \uC720\uD615 \uC120\uD0DD \uD6C4 \uACB0\uACFC\uBB3C\uC758 \uD1A4\uC564\uB9E4\uB108\uB97C \uC120\uD0DD\uD574\uC57C \uD569\uB2C8\uB2E4.");
+                showErrorModal("\uC785\uB825 \uD544\uC694", "\uCF58\uD150\uCE20 \uC720\uD615\uC744 \uC120\uD0DD\uD574 \uC8FC\uC138\uC694.", "\uC0DD\uC131\uD558\uB824\uB294 \uCF58\uD150\uCE20 \uC720\uD615\uC744 \uC120\uD0DD\uD574\uC57C \uD569\uB2C8\uB2E4.");
                 return;
             }
             const allowedTypes = targetGroupContext.allowedContentTypes || [];
@@ -2755,6 +2932,7 @@ ${sampleText}`;
             briefContainer.innerHTML = briefHTML;
 
             const translatedType = CONTENT_TYPE_NAMES[type]?.[currentLang] || type;
+            const formatGuide = CONTENT_FORMAT_GUIDE[type] || CONTENT_FORMAT_GUIDE.email;
             const titleLabels = {
                 ko: `${translatedType} 상세 결과물`,
                 en: `Generated ${translatedType} Details`,
@@ -2815,18 +2993,26 @@ Do not use Markdown syntax in the final output. Do not use **bold**, ### heading
                 const prohibitedWords = kb.prohibited[currentLang] || kb.prohibited['ko'] || [];
                 const rules = kb.rules[currentLang] || kb.rules['ko'] || [];
                 const durationText = type === 'reels' ? `\n- Required Video Duration: EXACTLY ${reelsDuration} seconds` : '';
-                let formatInstruction = `Output Format Rules:
-If Content Type ID is 'strategyplan': Output a highly detailed 4-step plan (Market Positioning, Sales Funnel Strategy, Channel PR Tactics, Phased Promo Cycle).
-If 'imagegen': Output a brief rationale for the image concept based on the target and keywords.
-If 'email': Output a Korean business email that follows the selected email purpose. Use this structure: 제목, 안녕하세요 담당자님, 본문, 마무리, 감사합니다. 한광석 드림. Do not expose internal learning data names or logs.
-If 'cardnews': Output a 5-slide storyboard (Hook, Agitation, Solution, Proof, CTA) with visual cues.
-If 'reels': Output a timecoded script for exactly a ${reelsDuration} second video. The video MUST conceptually be "clean" (no baked-in text). You MUST explicitly provide a separate "Recommended Subtitles / Captions (추천 자막)" section for each scene to overlay later.
-If 'adcopy': Output Variant A (Pain-point focus) and Variant B (Benefit & Authority focus) for A/B testing.
-If 'videoprompt': Output a text prompt optimized for AI video generators (Midjourney/Runway) describing a cinematic scene (Prompt body MUST be in English).`;
+                let formatInstruction = `
+[Content Format Guide]
+- Content Type: ${formatGuide.label}
+- Required Format:
+${formatGuide.formatInstruction}
+
+Mandatory format rules:
+1. Follow the selected content type format exactly.
+2. If strategyplan, write a strategy document.
+3. If email, write a copy-ready business email.
+4. If cardnews, write a page-by-page card news plan.
+5. If reels, write a short-form video plan.
+6. If adcopy, write main copy, sub copy, hook, CTA, and channel suggestion.
+7. If imagegen or videoprompt, write prompt-engineering output that can be pasted directly into an image/video generation tool.
+8. Show only final content. Never expose learned data, API logs, file names, JSON, quota messages, or internal notes.
+`;
 
                 const userPrompt = `
 Generate marketing content with the following parameters:
-- Target Language: ${currentLang} (IMPORTANT: The output must be written in this language, unless 'videoprompt' is requested which should be in English)
+- Target Language: ${currentLang} (write primarily in Korean unless the selected content type explicitly requires an English visual prompt body)
 - Product Name: ${product}
 - Product Definition: ${kb.definition[currentLang] || kb.definition['ko']}
 - Product Positioning: ${kb.positioning[currentLang] || kb.positioning['ko']}
@@ -2839,12 +3025,14 @@ Generate marketing content with the following parameters:
 [Target Group Message Strategy]
 ${targetGroupStrategy?.strategy || ""}
 
-- Target Audience: ${localizedTarget}
-- Target Audience Pain Point: ${strategicInsight}
-- Content Type: ${translatedType} (ID: ${type})${durationText}
-- Keywords to Emphasize: ${keywords.length ? keywords.join(', ') : 'None provided. Use Product KB and learned context to derive the core message.'}
-- Prohibited Expressions (DO NOT USE THESE): ${prohibitedWords.join(', ')}
-- Required Rules: ${rules.join(', ')}
+[Content Type]
+- Type Label: ${translatedType}
+- Type ID: ${type}${durationText}
+
+[Content Format Guide]
+- Content Type: ${formatGuide.label}
+- Required Format:
+${formatGuide.formatInstruction}
 
 [Tone & Manner]
 - Tone Label: ${toneContext.label}
@@ -2857,69 +3045,37 @@ ${type === 'email' ? `
 - Strategic Direction: ${emailPurposeContext.direction}
 - Recommended Tone: ${emailPurposeContext.tone}
 - Recommended CTA: ${emailPurposeContext.cta}
-
-[Email Writing Rules]
-- Write a Korean business email ready to copy and send.
-- Change the subject, opening sentence, body structure, and CTA according to the selected email purpose.
-- Naturally integrate product KB, target audience, keywords, and learned context.
-- Do not expose learning data file names, internal logs, API status, quota information, or compliance check logs.
-- Do not use Markdown symbols such as **, ###, or code blocks.
 ` : ''}
-[CORE REQUIREMENT: KEYWORD HANDLING]
-${keywords.length ? `The narrative and strategic angle should clearly reflect these user keywords: ${keywords.join(', ')}.` : 'No emphasis keywords were provided. Build the core message from the Product KB, target group strategy, selected target, content type, tone and manner, and learned context only.'}
+[Keywords]
+${keywords.length ? keywords.join(', ') : 'No emphasis keywords were provided. Build the core message from Product KB, target group, content type, tone, and learned context.'}
 
-[TARGET GROUP APPROACH]
-1. Adapt the message approach to the selected target group.
-2. For end consumers, focus on direct experience, understandable value, trust, and personal relevance.
-3. For distributors, focus on marketability, sales logic, demo operation, partnership structure, and why they should carry or propose the product.
-4. For buyers, focus on adoption need, operational value, service differentiation, customer consultation quality, and purchase review rationale.
-5. Respect the content-type restrictions implied by the target group.
+[Compliance Boundaries]
+- Prohibited Expressions: ${prohibitedWords.join(', ')}
+- Required Rules: ${rules.join(', ')}
 
-[GROUNDING AND PRIVACY RULES]
-아래 학습 데이터는 내부 참고용입니다. 결과물에 파일명, 요약 로그, API 오류, quota 메시지, 학습 데이터 목록을 표시하지 마세요. 학습 데이터에서 확인 가능한 핵심 메시지만 콘텐츠 문장에 자연스럽게 반영하세요. 모르는 내용은 추정하지 말고 생략하세요.
-콘텐츠는 단순 요약이 아니라 타겟의 현실적 문제, 제품의 실무적 가치, 다음 액션을 중심으로 재구성하세요.
+[Grounded Learned Context]
+${isExtendedKBActive && learningInsights.length > 0 ? learningInsights.map(item => `- ${item}`).join('\n') : 'No additional learned context is available.'}
+${docReflectActive && fileMemoText ? `\n[Additional Strategy Memo]\n${fileMemoText}` : ''}
 
-[CONTENT QUALITY AND STRUCTURE RULES]
-1. Treat learned data as internal reference only. Do not display source text, file names, keyword lists, summary logs, insight lists, URL lists, JSON, API logs, quota information, or learning-data labels.
-2. Select only context relevant to the current product, target audience, content type, email purpose, selected tone, and keywords. Ignore unrelated learned data.
-3. Design a fresh story structure for the content goal. Do not repeat generic template sentences.
-4. Convert product features into customer-facing value: decision-making evidence, consultation quality, sales conversion potential, service differentiation, customer experience, partnership potential, market validation, or operational efficiency only when grounded in provided facts.
-5. For medical-device products, use conservative wording such as evaluation support, diagnostic support, decision support, or expert judgment support when appropriate. Never promise treatment, confirmed diagnosis, insurance coverage, revenue, or guaranteed outcomes.
-6. For wellness products, emphasize exercise evaluation, data-based consultation, customer understanding, and service differentiation when supported by the Product KB or learned data.
-7. If information is unknown or unverified, omit it.
-8. Show only final content. Do not include process explanations or system notes.
-9. Use clear paragraph breaks and keep long paragraphs under control.
-10. Email structure should naturally cover subject, opening, customer problem, strategic product value, reason to review, next action, and closing.
-11. Strategy-plan structure should cover strategic direction, target-customer perspective, core message, channel usage, and execution proposal.
-12. Card-news structure should make each page's key message clear.
-13. Ad-copy structure should clearly separate main copy, sub copy, and CTA when useful.
-14. Video-prompt structure should clarify scene flow, emotion, product exposure, and key message.
-15. Write primarily in Korean and avoid AI-sounding generic wording.
+[Reference Images]
+${currentUploadedImages.length > 0 && (type === 'videoprompt' || type === 'cardnews' || type === 'reels' || type === 'adcopy' || type === 'imagegen') ? `User uploaded reference image files: ${currentUploadedImages.join(', ')}. Use them only as visual context.` : 'None'}
 
-[TONE-SPECIFIC WRITING RULES]
-- professional: logical structure, problem framing, product value, adoption rationale, next action. Suitable for hospitals, pharma, distributors, and partners.
-- soft: natural and low-pressure wording focused on relationship building and review. Suitable for follow-up and material sharing.
-- premium: restrained premium language emphasizing technical credibility and differentiated customer experience. Suitable for premium fitness, medical fitness, and overseas partners.
-- fun: easy, lively, memorable wording for card news, SNS, reels, and newsletters while preserving medical-device expression boundaries.
-- attention: strong opening that creates problem awareness and explains why the reader should review now. Suitable for new partner proposals, exhibition follow-up, and demo conversion.
-
-[CRITICAL INSTRUCTION: Consultant-Level Grounded Synthesis]
-Even with identical inputs, design the message differently according to content type, tone and manner, email purpose, and target audience. Avoid simple template repetition. Use provided facts to create new expressions and persuasive logic, but never invent facts, numbers, outcomes, certifications, customer cases, clinical results, contracts, or unverifiable claims.
-${isExtendedKBActive && learningInsights.length > 0 ? `
-[Internal Learned Context]
-Use the following structured summaries only as internal context. Do not expose source names, URLs, JSON, labels, logs, or the phrase Website Context Analysis in the final output:
-- ${learningInsights.join('\n- ')}` : ''}
-${docReflectActive && fileMemoText ? `\n[Additional Strategy Memo]\nPrioritize this memo context heavily: ${fileMemoText}` : ''}
-
-[REFERENCE IMAGES]
-${currentUploadedImages.length > 0 && (type === 'videoprompt' || type === 'cardnews' || type === 'reels' || type === 'adcopy' || type === 'imagegen') ? `The user uploaded these reference image files: ${currentUploadedImages.join(', ')}. Please consider the visual elements associated with these product images when drafting visual cues or generating image prompts.` : ''}
+[Mandatory Writing Rules]
+1. Only the target group and content type are required. If product, detailed target, tone, email purpose, or keywords are not selected, use the provided defaults naturally without mentioning that defaults were used.
+2. Follow the selected content format exactly.
+3. Do not show internal learned-data lists, file names, source names, URLs, JSON keys, API logs, quota information, analysis status, or compliance check logs in the final result.
+4. Use learned context only internally and synthesize it into natural final marketing content.
+5. Do not invent unsupported numbers, certifications, customer cases, treatment effects, diagnosis certainty, insurance coverage, revenue outcomes, or market share.
+6. If information is unknown or unverified, omit it.
+7. Do not use Markdown syntax. Do not use **bold**, ### headings, or code blocks.
+8. Use readable paragraph breaks and avoid overly long paragraphs.
+9. For imagegen or videoprompt, the result must be prompt-engineering output that can be pasted directly into a generation tool.
+10. Output only the final requested content. Do not add introductory or closing explanations about the task.
 
 ${formatInstruction}
 
 [IMAGE ASSET GENERATION]
-ONLY if Content Type ID is 'imagegen' or 'reels', you MUST include a short English prompt (max 300 chars) for an AI image generator to create a conceptual visual for this campaign (or a clean keyframe for the video). Prefix it EXACTLY with "[IMAGE_PROMPT:" and end with "]" at the end.
-
-DO NOT include any introductory or concluding remarks (e.g., "Here is the content..."). Just output the raw requested content directly formatted cleanly.
+ONLY if Content Type ID is 'imagegen' or 'reels', include a short English prompt (max 300 chars) for an AI image generator to create a conceptual visual or clean keyframe. Prefix it EXACTLY with "[IMAGE_PROMPT:" and end with "]" at the end.
 `;
 
                 const textResult = await safeCallGemini(userPrompt, sysPrompt, ["gemini-2.5-flash-lite"], { temperature: 0.7 });
@@ -2940,7 +3096,8 @@ DO NOT include any introductory or concluding remarks (e.g., "Here is the conten
                     fileMemoText,
                     emailPurposeContext,
                     selectedTone,
-                    toneContext
+                    toneContext,
+                    formatGuide
                 };
                 if (isQuotaExceededError(error)) {
                     showToast(getQuotaFallbackMessage(error));
@@ -3272,9 +3429,11 @@ DO NOT include any introductory or concluding remarks (e.g., "Here is the conten
         Object.assign(window, {
             EMAIL_PURPOSE_CONTEXT,
             TONE_CONTEXT,
+            CONTENT_FORMAT_GUIDE,
             TARGET_GROUPS,
             TARGET_GROUP_MESSAGE_STRATEGY,
             saveGeneratedContentToLearningHistory,
+            getDefaultTargetByGroup,
             handleTargetGroupChange,
             handleTargetAudienceChange,
             setLanguage,
