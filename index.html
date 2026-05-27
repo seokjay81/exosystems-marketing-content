@@ -1039,43 +1039,44 @@
             strategyplan: {
                 label: "\uB9C8\uCF00\uD305 \uC804\uB7B5 \uACC4\uD68D",
                 formatInstruction: `
-Write as a Korean strategy document.
+Write as a rich Korean strategy document, not a short idea list.
 Required structure:
 1. \uC804\uB7B5 \uBAA9\uD45C
-2. \uD0C0\uAC9F \uACE0\uAC1D \uC815\uC758
+2. \uD0C0\uAC9F \uACE0\uAC1D\uAD70 \uC815\uC758
 3. \uD575\uC2EC \uC778\uC0AC\uC774\uD2B8
 4. \uD3EC\uC9C0\uC154\uB2DD \uBC29\uD5A5
-5. \uD575\uC2EC \uBA54\uC2DC\uC9C0
-6. \uD310\uB9E4 \uC804\uB7B5
-7. \uD504\uB85C\uBAA8\uC158 \uC804\uB7B5
-8. \uCC44\uB110\uBCC4 \uC2E4\uD589 \uC804\uB7B5
+5. \uBA54\uC2DC\uC9C0 \uC804\uB7B5
+6. \uACE0\uAC1D \uC811\uADFC \uC804\uB7B5
+7. \uCC44\uB110\uBCC4 \uC2E4\uD589 \uC804\uB7B5
+8. \uB370\uBAA8 \uBC0F \uD504\uB85C\uBAA8\uC158 \uC804\uB7B5
 9. \uC2E4\uD589 \uC6B0\uC120\uC21C\uC704
-10. \uB2E4\uC74C \uC561\uC158
+10. \uB9AC\uC2A4\uD06C \uBC0F \uD45C\uD604 \uC8FC\uC758\uC0AC\uD56D
+11. \uB2E4\uC74C \uC561\uC158
 
 Writing standard:
-- Make it review-ready for management or business-development meetings.
-- Do not invent numbers, outcomes, certifications, or cases.
+- Make it review-ready for management, sales, or business-development meetings.
+- Avoid generic marketing advice. Tailor the strategy to the selected product, target group, and content purpose.
+- Do not invent numbers, outcomes, certifications, customer cases, contracts, or clinical claims.
 `
             },
             email: {
                 label: "\uC774\uBA54\uC77C",
                 formatInstruction: `
-Write as a Korean business email.
+Write as a complete Korean business email ready to send.
 Required structure:
 \uC81C\uBAA9:
 \uC548\uB155\uD558\uC138\uC694 [\uB2F4\uB2F9\uC790]\uB2D8,
-
 \uB3C4\uC785:
-\uD575\uC2EC \uC81C\uC548:
-\uC81C\uD488 \uB610\uB294 \uC194\uB8E8\uC158 \uAC00\uCE58:
-\uC0C1\uB300\uBC29\uC774 \uAC80\uD1A0\uD574\uC57C \uD558\uB294 \uC774\uC720:
-\uB2E4\uC74C \uC561\uC158 \uC81C\uC548:
+\uC0C1\uB300\uBC29 \uAD00\uC810\uC758 \uBB38\uC81C:
+\uC81C\uD488 \uAC80\uD1A0 \uC774\uC720:
+\uC81C\uC548 \uAC00\uCE58:
+\uB2E4\uC74C \uC561\uC158:
 \uB9C8\uBB34\uB9AC:
 
 Writing standard:
-- Make it copy-ready for email.
-- Use short, readable paragraphs and natural business wording.
-- Adapt the flow to the selected email purpose.
+- Adapt the subject, opening, body logic, and CTA to the selected email purpose and tone.
+- Keep paragraphs short, natural, and copy-ready.
+- Do not expose internal learned data or source information.
 `
             },
             cardnews: {
@@ -1092,8 +1093,8 @@ Required structure:
 
 Writing standard:
 - One clear message per page.
-- Add concise visual-direction hints when useful.
-- Avoid long explanatory paragraphs.
+- Include concise visual-direction hints when useful.
+- Avoid long explanatory paragraphs and unsupported claims.
 `
             },
             reels: {
@@ -1110,9 +1111,9 @@ Required structure:
 \uB9C8\uBB34\uB9AC CTA:
 
 Writing standard:
-- Make the scene flow clear and quick.
-- Keep on-screen wording short and intuitive.
-- Focus on use scenes and emotion, not only product specs.
+- Make scene flow clear, quick, and production-ready.
+- Include draft captions separately from visual direction.
+- Focus on use scenes and customer value, not only product specs.
 `
             },
             adcopy: {
@@ -1129,13 +1130,13 @@ CTA:
 Writing standard:
 - Make the message short, strong, and grounded.
 - Connect the target customer's problem with the product value.
-- Avoid exaggerated claims.
+- Provide more than one usable copy angle when appropriate.
 `
             },
             imagegen: {
                 label: "\uC774\uBBF8\uC9C0 \uC0DD\uC131 \uD504\uB86C\uD504\uD2B8",
                 formatInstruction: `
-Write as a prompt-engineering output for Gemini or image-generation tools.
+Write as prompt-engineering output for Gemini or image-generation tools.
 Required structure:
 \uC774\uBBF8\uC9C0 \uBAA9\uC801:
 \uC7A5\uBA74 \uAD6C\uC131:
@@ -1149,14 +1150,14 @@ Required structure:
 
 Writing standard:
 - The final prompt must be one complete paragraph ready to paste into an image tool.
-- Reflect product and target context.
+- Reflect product, target, tone, and content purpose.
 - Avoid exaggerated medical effects or treatment scenes.
 `
             },
             videoprompt: {
                 label: "\uC601\uC0C1 \uD504\uB86C\uD504\uD2B8",
                 formatInstruction: `
-Write as a prompt-engineering output for Gemini or video-generation tools.
+Write as prompt-engineering output for Gemini or video-generation tools.
 Required structure:
 \uC601\uC0C1 \uBAA9\uC801:
 \uC601\uC0C1 \uAE38\uC774:
@@ -1171,9 +1172,10 @@ Required structure:
 
 Writing standard:
 - The final prompt must be specific enough for a video-generation tool.
-- Clarify scene flow, emotion, product exposure, and message.
+- Clarify scene flow, emotion, product exposure, camera movement, and message.
 - Avoid scenes or wording that guarantee medical treatment effects.
-`,
+`
+            },
             reels_story: {
                 label: "\uB9B4\uC2A4 \uAD6C\uC131",
                 formatInstruction: `
@@ -1196,11 +1198,9 @@ Writing standard:
 - For 15 seconds, use 4 to 5 scenes covering problem, product value, and action.
 - Each scene must include time range, screen content, caption draft, product exposure, and intent/emotion.
 - Differentiate opening, caption language, emotional flow, and CTA by the selected tone and manner.
-- Learned data and Product KB are internal only. Do not show file names or learning logs.
+- For distributor targets, write a B2B partner/product introduction rather than consumer emotional advertising.
 - Do not invent unsupported numbers, effects, cases, diagnosis, treatment guarantees, insurance coverage, or revenue guarantees.
-- Make it concrete enough for a video producer or Gemini video-generation workflow.
 `
-            }
             }
         };
         window.CONTENT_FORMAT_GUIDE = CONTENT_FORMAT_GUIDE;
@@ -2983,15 +2983,17 @@ ${sampleText}`;
             let imgPromptToGenerate = "";
 
             try {
-                const sysPrompt = `You are a world-class management consultant, B2B marketing strategist, and sales strategy consultant for healthcare and fitness technology.
-Do not merely summarize input. Strategically design the message architecture using only the Product KB, target audience, content type, email purpose, selected tone and manner, keywords, user memo, uploaded materials, and sanitized learned context.
-Do not list learned data in the final result. Select only the core context that is relevant to the current product, target audience, content type, email purpose, and tone, then rebuild it into a story that serves the requested content goal.
-Translate product features into decision-making value, business value, sales value, customer-experience value, and practical adoption rationale for the target audience.
-Aim for the logic and persuasion expected from McKinsey, BCG, Ogilvy, and global B2B sales consulting.
-Never invent unsupported numbers, customer cases, clinical results, certifications, insurance coverage, revenue outcomes, market share, contracts, treatment effects, diagnostic certainty, or performance guarantees. If information is not provided or cannot be verified, omit it.
-Use only objective content confirmed in the provided information. Learned data is internal context only; never show file names, analysis status, API errors, quota messages, JSON keys, learning-data lists, source logs, or internal notes in the final output.
-The final output must be copy-ready Korean business content suitable for email, documents, proposals, card news, ad copy, strategy material, or video prompts. For videoprompt, only the actual visual prompt body may be in English.
-Adapt the opening, sentence rhythm, persuasion method, paragraphing, and CTA to the selected tone and content type.
+                const sysPrompt = `You are a world-class management consultant, marketing strategist, B2B sales strategy consultant, and brand message director for healthcare and fitness technology.
+Do not merely summarize input. Strategically design the message architecture using only the Product KB, learned data, target group, content type, email purpose, selected tone and manner, keywords, user memo, and sanitized learned context.
+Do not list learned data in the final result. Select only the core context that is relevant to the current product, target group, target audience, content type, email purpose, and tone, then rebuild it into a story, proposal logic, scene flow, or message architecture that serves the requested content goal.
+Translate product features into decision-making value, business value, sales value, customer-experience value, practical adoption rationale, channel usage, and next-action logic for the target audience.
+The result must be rich enough for a practitioner to use immediately. Avoid short summaries unless the selected content type requires compact copy.
+Even with identical inputs, do not write like the same template every time. Vary the opening, message sequence, CTA, framing, and expression according to content type, tone, and target group.
+Aim for the logic and persuasion expected from McKinsey, BCG, Ogilvy, and global B2B sales consulting, while staying grounded.
+Never invent unsupported numbers, performance results, customer cases, clinical results, certifications, insurance coverage, revenue outcomes, market share, contracts, treatment effects, diagnostic certainty, or performance guarantees. If information is not provided or cannot be verified, omit it.
+Use only objective content confirmed in the provided information. Learned data is internal context only; never show file names, analysis status, API errors, quota messages, JSON keys, learning-data lists, source logs, summary logs, insight lists, or internal notes in the final output.
+The final output must be copy-ready Korean business content suitable for email, documents, proposals, card news, ad copy, strategy material, reels planning, image prompts, or video prompts. For videoprompt, only the actual visual prompt body may be in English when useful.
+Adapt the opening, sentence rhythm, persuasion method, paragraphing, CTA, scene structure, and caption style to the selected tone and content type.
 Keep paragraphs readable, normally 2 to 4 sentences. Use numbered structures only when they improve clarity. Avoid excessive bullets and special symbols.
 Do not use Markdown syntax in the final output. Do not use **bold**, ### headings, or code blocks.`;
 
@@ -3060,10 +3062,21 @@ ${keywords.length ? keywords.join(', ') : 'No emphasis keywords were provided. B
 - Required Rules: ${rules.join(', ')}
 
 [Grounded Learned Context]
+The following learned context is internal reference only. Do not include all of it in the final result. Select only the parts most relevant to the product, target group, content type, tone, and keywords.
 ${isExtendedKBActive && learningInsights.length > 0 ? learningInsights.map(item => `- ${item}`).join('\n') : 'No additional learned context is available.'}
 ${docReflectActive && fileMemoText ? `\n[Additional Strategy Memo]\n${fileMemoText}` : ''}
 
 
+
+[Content Enrichment Rules]
+1. The result must not be a short summary. Build sufficient depth and structure for the selected content type.
+2. Avoid plain feature descriptions. Connect the target customer's problem, product usage value, message flow, and next action.
+3. Use learned context only when it is relevant to the selected product, target group, content type, tone, and keyword direction.
+4. Do not include every learned data point. Select the most relevant context and synthesize it into the content naturally.
+5. Vary the opening, body flow, CTA, examples of wording, and persuasion structure. Avoid repeating the same sentence pattern.
+6. If useful, combine narrative paragraphs with numbered structures for readability.
+7. Keep long paragraphs split by meaning. The final output should be easy to copy into email, proposals, reports, or production tools.
+8. Omit unverified information instead of filling gaps with assumptions.
 
 [Reels Story Tone Rules]
 Apply these rules only when Content Type ID is reels_story:
@@ -3092,7 +3105,7 @@ ${formatInstruction}
 ONLY if Content Type ID is 'imagegen' or 'reels', include a short English prompt (max 300 chars) for an AI image generator to create a conceptual visual or clean keyframe. Prefix it EXACTLY with "[IMAGE_PROMPT:" and end with "]" at the end.
 `;
 
-                const textResult = await safeCallGemini(userPrompt, sysPrompt, ["gemini-2.5-flash-lite"], { temperature: 0.7 });
+                const textResult = await safeCallGemini(userPrompt, sysPrompt, ["gemini-2.5-flash-lite"], { temperature: 0.7, topP: 0.9 });
                 materialBody = cleanGeneratedTextForCopy(textResult);
 
             } catch (error) {
