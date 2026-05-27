@@ -1179,27 +1179,47 @@ Writing standard:
             reels_story: {
                 label: "\uB9B4\uC2A4 \uAD6C\uC131",
                 formatInstruction: `
-Write as a Korean short-form reels storyboard for either 10 or 15 seconds.
-Required structure:
-1. \uB9B4\uC2A4 \uBAA9\uC801
-2. \uD0C0\uAC9F \uACE0\uAC1D
-3. \uC120\uD0DD \uD0A4\uC6CC\uB4DC
-4. \uC804\uCCB4 \uCF58\uC149\uD2B8
-5. \uC7A5\uBA74\uBCC4 \uAD6C\uC131
-6. \uC790\uB9C9 \uCD08\uC548
-7. \uD654\uBA74 \uC5F0\uCD9C \uBC29\uD5A5
-8. \uC81C\uD488 \uB178\uCD9C \uBC29\uC2DD
-9. CTA
-10. \uCD5C\uC885 \uB9B4\uC2A4 \uC81C\uC791 \uD504\uB86C\uD504\uD2B8
+Write as a Korean short-form content planning document, not as a generic video prompt.
+The final result MUST follow exactly these 7 sections in this order:
 
-Writing standard:
-- Adjust scene count and caption length to the selected duration.
-- For 10 seconds, use 3 to 4 short, strong scenes.
-- For 15 seconds, use 4 to 5 scenes covering problem, product value, and action.
-- Each scene must include time range, screen content, caption draft, product exposure, and intent/emotion.
-- Differentiate opening, caption language, emotional flow, and CTA by the selected tone and manner.
-- For distributor targets, write a B2B partner/product introduction rather than consumer emotional advertising.
-- Do not invent unsupported numbers, effects, cases, diagnosis, treatment guarantees, insurance coverage, or revenue guarantees.
+1. \uCF58\uD150\uCE20 \uBAA9\uC801
+- Explain clearly why this reels content is being made.
+- Clarify whether the purpose is product awareness, interest generation, demo conversion, consultation conversion, or data-based value communication.
+
+2. \uC804\uCCB4 \uD575\uC2EC \uBA54\uC2DC\uC9C0
+- Write one memorable sentence the viewer should remember.
+- Do not simply list product features. Translate the product into viewer-facing value.
+
+3. \uD0C0\uAC9F \uACE0\uAC1D\uC758 \uC2EC\uB9AC
+- Explain the selected target's likely interest, concern, need, and expectation.
+- Vary this by target group: end consumer, distributor, or buyer.
+- Keep this as reasonable interpretation grounded in product and target context; do not invent facts.
+
+4. \uCD08 \uB2E8\uC704 \uB9B4\uC2A4 \uCF58\uD2F0
+- Structure scenes by seconds according to selected duration.
+- For 10 seconds, use 3 to 4 scenes.
+- For 15 seconds, use 4 to 5 scenes.
+- For each scene include time range, screen content, and scene intent.
+
+5. \uCD08 \uB2E8\uC704 \uC790\uB9C9 \uBC0F \uD14D\uC2A4\uD2B8 \uBAA8\uC158 \uC9C0\uC2DC
+- For each time range, write caption copy and text motion direction.
+- Include motion ideas such as fade in, slide up, zoom emphasis, short blink, color emphasis, or soft reveal.
+- Adapt caption wording and motion energy to the selected tone and manner.
+
+6. \uAC15\uC870 \uD0A4\uC6CC\uB4DC
+- Convert the user's input keywords into hashtag form only.
+- Example format: #AI\uC6B4\uB3D9\uD3C9\uAC00 #\uC7AC\uD65C\uC6B4\uB3D9 #\uB370\uC774\uD130\uAE30\uBC18\uC0C1\uB2F4
+
+7. \uC601\uC0C1 \uC0DD\uC131 \uD504\uB86C\uD504\uD2B8
+- Write one complete prompt that can be copied into Gemini or a video-generation tool.
+- Include vertical reels format, scene flow, people or use context, product exposure method, mood, caption style, and compliance-safe restrictions.
+
+Common rules:
+- The sections \uCD08 \uB2E8\uC704 \uB9B4\uC2A4 \uCF58\uD2F0 and \uCD08 \uB2E8\uC704 \uC790\uB9C9 \uBC0F \uD14D\uC2A4\uD2B8 \uBAA8\uC158 \uC9C0\uC2DC must be separated.
+- Learned data and Product KB are internal only. Do not show file names, source lists, summary logs, API logs, quota messages, or JSON.
+- Do not invent unsupported numbers, effects, cases, certifications, diagnosis, treatment guarantees, insurance coverage, or revenue guarantees.
+- Avoid Markdown symbols such as **, ###, and code blocks.
+- Make the result immediately usable by a video producer or marketer.
 `
             }
         };
@@ -2761,20 +2781,31 @@ ${sampleText}`;
 
             if (context.type === 'reels_story') {
                 const duration = context.reelsDuration || '10';
-                const finalSceneTime = duration === '15' ? '8~15\uCD08' : '8~10\uCD08';
-                const optionalScene = duration === '15' ? "\n\n\uC7A5\uBA74 5. 12~15\uCD08\n\uD654\uBA74:\n\uC81C\uD488 \uAC80\uD1A0\uB97C \uC704\uD55C \uB370\uBAA8 \uB610\uB294 \uC790\uB8CC \uD655\uC778 \uC7A5\uBA74\n\uC790\uB9C9:\n\uB370\uC774\uD130\uB85C \uC124\uBA85\uD558\uB294 \uACBD\uD5D8\uC744 \uD655\uC778\uD574 \uBCF4\uC138\uC694\n\uC758\uB3C4:\n\uD589\uB3D9 \uC720\uB3C4\uB97C \uBA85\uD655\uD788 \uC804\uB2EC" : "";
-                return "\uB9B4\uC2A4 \uBAA9\uC801:\n" + context.product + "\uC758 \uD575\uC2EC \uAC00\uCE58\uB97C " + context.localizedTarget + "\uC5D0\uAC8C \uC9E7\uACE0 \uC124\uB4DD\uB825 \uC788\uAC8C \uC804\uB2EC\n\n" +
-                    "\uD0C0\uAC9F \uACE0\uAC1D:\n" + context.localizedTarget + "\n\n" +
-                    "\uAC15\uC870 \uD0A4\uC6CC\uB4DC:\n" + keywordLine + "\n\n" +
-                    "\uC804\uCCB4 \uCF58\uC149\uD2B8:\n" + toneLead + " " + context.product + "\uB97C \uB2E8\uC21C \uAE30\uB2A5 \uC18C\uAC1C\uAC00 \uC544\uB2C8\uB77C \uD604\uC7A5\uC5D0\uC11C \uAC80\uD1A0\uD560 \uB9CC\uD55C \uB370\uC774\uD130 \uAE30\uBC18 \uC194\uB8E8\uC158\uC73C\uB85C \uBCF4\uC5EC\uC90D\uB2C8\uB2E4.\n\n" +
-                    "\uC7A5\uBA74\uBCC4 \uAD6C\uC131:\n\n" +
-                    "\uC7A5\uBA74 1. 0~2\uCD08\n\uD654\uBA74:\n\uACE0\uAC1D\uC774 \uC790\uC2E0\uC758 \uC0C1\uD0DC\uB97C \uC124\uBA85\uBC1B\uAE30 \uC804 \uAD81\uAE08\uD574\uD558\uB294 \uC7A5\uBA74\n\uC790\uB9C9:\n\uC9C1\uAD00\uB9CC\uC73C\uB85C \uC124\uBA85\uD558\uACE0 \uC788\uC9C0 \uC54A\uB098\uC694?\n\uC758\uB3C4:\n\uCCAB 1\uCD08\uC5D0 \uBB38\uC81C\uC758\uC2DD\uC744 \uD615\uC131\n\n" +
-                    "\uC7A5\uBA74 2. 2~5\uCD08\n\uD654\uBA74:\n" + context.product + "\uAC00 \uC790\uC5F0\uC2A4\uB7FD\uAC8C \uB178\uCD9C\uB418\uACE0 \uB370\uC774\uD130 \uD654\uBA74\uC774 \uBCF4\uC774\uB294 \uC7A5\uBA74\n\uC790\uB9C9:\n\uC6C0\uC9C1\uC784\uACFC \uBC18\uC751\uC744 \uB370\uC774\uD130\uB85C \uD655\uC778\n\uC758\uB3C4:\n\uC81C\uD488 \uAC00\uCE58\uB97C \uC9E7\uAC8C \uC804\uB2EC\n\n" +
-                    "\uC7A5\uBA74 3. 5~8\uCD08\n\uD654\uBA74:\n\uC804\uBB38\uAC00\uAC00 \uD654\uBA74\uC744 \uBCF4\uBA70 \uACE0\uAC1D\uC5D0\uAC8C \uC124\uBA85\uD558\uB294 \uC7A5\uBA74\n\uC790\uB9C9:\n\uC0C1\uB2F4\uC774 \uB354 \uBA85\uD655\uD574\uC9D1\uB2C8\uB2E4\n\uC758\uB3C4:\n\uB370\uC774\uD130 \uAE30\uBC18 \uC0C1\uB2F4 \uACBD\uD5D8\uC744 \uBD80\uAC01\n\n" +
-                    "\uC7A5\uBA74 4. " + finalSceneTime + "\n\uD654\uBA74:\n\uBE0C\uB79C\uB4DC\uC640 \uC81C\uD488 \uBA54\uC2DC\uC9C0\uAC00 \uC815\uB9AC\uB418\uB294 \uB9C8\uBB34\uB9AC \uC7A5\uBA74\n\uC790\uB9C9:\n" + keywordLine + "\uC744 \uB370\uC774\uD130\uB85C \uC124\uBA85\uD558\uC138\uC694\n\uC758\uB3C4:\n\uD575\uC2EC \uBA54\uC2DC\uC9C0\uC640 CTA\uB97C \uC5F0\uACB0" + optionalScene +
-                    "\n\n\uC81C\uD488 \uB178\uCD9C \uBC29\uC2DD:\n\uC81C\uD488\uC740 \uACFC\uD55C \uAD11\uACE0 \uC5F0\uCD9C\uBCF4\uB2E4 \uC0C1\uB2F4 \uD750\uB984 \uC18D\uC5D0\uC11C \uC790\uC5F0\uC2A4\uB7FD\uAC8C \uB4F1\uC7A5\uD569\uB2C8\uB2E4.\n\n" +
-                    "CTA:\n\uC81C\uD488 \uC790\uB8CC \uD655\uC778 \uB610\uB294 \uB370\uBAA8 \uC0C1\uB2F4\uC73C\uB85C \uC5F0\uACB0\uD569\uB2C8\uB2E4.\n\n" +
-                    "\uCD5C\uC885 \uB9B4\uC2A4 \uC81C\uC791 \uD504\uB86C\uD504\uD2B8:\n" + duration + "\uCD08 \uAE38\uC774\uC758 \uC138\uB85C\uD615 \uB9B4\uC2A4. " + context.localizedTarget + "\uC774 \uAC80\uD1A0\uD560 \uB9CC\uD55C \uB370\uC774\uD130 \uAE30\uBC18 \uC0C1\uB2F4 \uACBD\uD5D8\uC744 \uC9E7\uACE0 \uBA85\uD655\uD558\uAC8C \uBCF4\uC5EC\uC900\uB2E4. \uCCAB \uC7A5\uBA74\uC740 \uBB38\uC81C\uC758\uC2DD, \uC911\uAC04\uC740 " + context.product + "\uC758 \uB370\uC774\uD130 \uAE30\uBC18 \uAC00\uCE58, \uB9C8\uBB34\uB9AC\uB294 \uB370\uBAA8 \uB610\uB294 \uC790\uB8CC \uAC80\uD1A0 CTA\uB85C \uAD6C\uC131\uD55C\uB2E4. \uCE58\uB8CC \uD6A8\uACFC \uBCF4\uC7A5\uC774\uB098 \uC9C4\uB2E8 \uD655\uC815 \uD45C\uD604\uC740 \uD3EC\uD568\uD558\uC9C0 \uC54A\uB294\uB2E4.";
+                const hashtagsText = context.keywords && context.keywords.length
+                    ? context.keywords.map(k => "#" + String(k).replace(/#/g, "").replace(/\s+/g, "")).join(" ")
+                    : "#" + context.product.replace(/[^a-zA-Z0-9\uAC00-\uD7A3]/g, "");
+                const fourthSceneEnd = duration === '15' ? '8~12\uCD08' : '8~10\uCD08';
+                const fifthScene = duration === '15'
+                    ? "\n\n12~15\uCD08:\n\uD654\uBA74:\n\uC81C\uD488 \uC790\uB8CC \uB610\uB294 \uB370\uBAA8 \uC0C1\uB2F4\uC73C\uB85C \uC5F0\uACB0\uB418\uB294 \uB9C8\uBB34\uB9AC \uC7A5\uBA74\n\uC758\uB3C4:\n\uC2DC\uCCAD\uC790\uAC00 \uB2E4\uC74C \uD589\uB3D9\uC744 \uC774\uD574\uD558\uAC8C \uD569\uB2C8\uB2E4."
+                    : "";
+                const fifthCaption = duration === '15'
+                    ? "\n\n12~15\uCD08:\n\uC790\uB9C9:\n\uC9C0\uAE08 \uC790\uB8CC\uB97C \uD655\uC778\uD558\uACE0 \uB370\uBAA8\uB97C \uAC80\uD1A0\uD574 \uBCF4\uC138\uC694\n\uD14D\uC2A4\uD2B8 \uBAA8\uC158:\n\uD558\uB2E8\uC5D0\uC11C \uC2AC\uB77C\uC774\uB4DC \uC5C5\uD558\uACE0 CTA\uB97C \uCEEC\uB7EC\uB85C \uAC15\uC870"
+                    : "";
+                return "\uCF58\uD150\uCE20 \uBAA9\uC801:\n" + context.product + "\uC758 \uB370\uC774\uD130 \uAE30\uBC18 \uAC00\uCE58\uB97C " + context.localizedTarget + "\uC5D0\uAC8C \uC9E7\uACE0 \uBA85\uD655\uD558\uAC8C \uC804\uB2EC\uD558\uACE0, \uC790\uB8CC \uAC80\uD1A0\uB098 \uB370\uBAA8 \uC0C1\uB2F4\uC73C\uB85C \uC5F0\uACB0\uD558\uB294 \uAC83\uC785\uB2C8\uB2E4.\n\n" +
+                    "\uC804\uCCB4 \uD575\uC2EC \uBA54\uC2DC\uC9C0:\n\uC9C1\uAD00\uC774 \uC544\uB2C8\uB77C \uB370\uC774\uD130\uB85C \uC124\uBA85\uD558\uB294 \uACBD\uD5D8\uC774 " + context.localizedTarget + "\uC758 \uAC80\uD1A0 \uAC00\uCE58\uB97C \uB192\uC785\uB2C8\uB2E4.\n\n" +
+                    "\uD0C0\uAC9F \uACE0\uAC1D\uC758 \uC2EC\uB9AC:\n" + context.localizedTarget + "\uB294 \uB2E8\uC21C\uD55C \uC81C\uD488 \uC18C\uAC1C\uBCF4\uB2E4 \uC2E4\uC81C \uD604\uC7A5\uC5D0\uC11C \uC5B4\uB5BB\uAC8C \uC774\uD574\uB418\uACE0 \uC124\uBA85\uB420 \uC218 \uC788\uB294\uC9C0\uB97C \uBCF4\uACE0\uC790 \uD569\uB2C8\uB2E4. " + toneLead + "\n\n" +
+                    "\uCD08 \uB2E8\uC704 \uB9B4\uC2A4 \uCF58\uD2F0:\n\n" +
+                    "0~2\uCD08:\n\uD654\uBA74:\n\uACE0\uAC1D\uC774 \uC0C1\uB2F4 \uB610\uB294 \uD3C9\uAC00 \uC804 \uAD81\uAE08\uD574\uD558\uB294 \uC7A5\uBA74\n\uC758\uB3C4:\n\uCCAB \uC21C\uAC04\uC5D0 \uBB38\uC81C\uC758\uC2DD\uACFC \uD638\uAE30\uC2EC\uC744 \uB9CC\uB4ED\uB2C8\uB2E4.\n\n" +
+                    "2~5\uCD08:\n\uD654\uBA74:\n" + context.product + "\uAC00 \uB370\uC774\uD130 \uAE30\uBC18 \uD3C9\uAC00 \uB9E5\uB77D\uC5D0\uC11C \uC790\uC5F0\uC2A4\uB7FD\uAC8C \uB178\uCD9C\uB418\uB294 \uC7A5\uBA74\n\uC758\uB3C4:\n\uC81C\uD488\uC744 \uACFC\uD55C \uAD11\uACE0\uAC00 \uC544\uB2CC \uD604\uC7A5 \uB3C4\uAD6C\uB85C \uC778\uC2DD\uC2DC\uD0B5\uB2C8\uB2E4.\n\n" +
+                    "5~8\uCD08:\n\uD654\uBA74:\n\uC804\uBB38\uAC00\uAC00 \uD654\uBA74\uC758 \uB370\uC774\uD130\uB97C \uBCF4\uBA70 \uC124\uBA85\uD558\uB294 \uC7A5\uBA74\n\uC758\uB3C4:\n\uB370\uC774\uD130 \uAE30\uBC18 \uC0C1\uB2F4\uC758 \uC124\uB4DD\uB825\uC744 \uBCF4\uC5EC\uC90D\uB2C8\uB2E4.\n\n" +
+                    fourthSceneEnd + ":\n\uD654\uBA74:\n\uBE0C\uB79C\uB4DC\uC640 \uC81C\uD488 \uBA54\uC2DC\uC9C0\uAC00 \uC815\uB9AC\uB418\uB294 \uB9C8\uBB34\uB9AC \uC7A5\uBA74\n\uC758\uB3C4:\n\uC2DC\uCCAD\uC790\uAC00 \uD575\uC2EC \uBA54\uC2DC\uC9C0\uB97C \uAE30\uC5B5\uD558\uACE0 CTA\uB85C \uC774\uB3D9\uD558\uAC8C \uD569\uB2C8\uB2E4." + fifthScene +
+                    "\n\n\uCD08 \uB2E8\uC704 \uC790\uB9C9 \uBC0F \uD14D\uC2A4\uD2B8 \uBAA8\uC158 \uC9C0\uC2DC:\n\n" +
+                    "0~2\uCD08:\n\uC790\uB9C9:\n\uC544\uC9C1\uB3C4 \uAC10\uC73C\uB85C\uB9CC \uC124\uBA85\uD558\uC138\uC694?\n\uD14D\uC2A4\uD2B8 \uBAA8\uC158:\n\uC9E7\uC740 \uD398\uC774\uB4DC \uC778 \uD6C4 \uD575\uC2EC \uB2E8\uC5B4\uB97C \uD655\uB300 \uAC15\uC870\n\n" +
+                    "2~5\uCD08:\n\uC790\uB9C9:\n\uC6C0\uC9C1\uC784\uACFC \uBC18\uC751\uC744 \uB370\uC774\uD130\uB85C \uD655\uC778\n\uD14D\uC2A4\uD2B8 \uBAA8\uC158:\n\uD558\uB2E8\uC5D0\uC11C \uC2AC\uB77C\uC774\uB4DC \uC5C5, \uD0A4\uC6CC\uB4DC\uB294 \uCEEC\uB7EC \uAC15\uC870\n\n" +
+                    "5~8\uCD08:\n\uC790\uB9C9:\n\uC0C1\uB2F4\uC774 \uB354 \uBA85\uD655\uD574\uC9D1\uB2C8\uB2E4\n\uD14D\uC2A4\uD2B8 \uBAA8\uC158:\n\uBD80\uB4DC\uB7EC\uC6B4 \uD398\uC774\uB4DC \uC778, \uC911\uC694 \uBB38\uAD6C\uB294 \uC9E7\uC740 \uAE5C\uBE61\uC784\n\n" +
+                    fourthSceneEnd + ":\n\uC790\uB9C9:\n" + keywordLine + "\uC744 \uB370\uC774\uD130\uB85C \uC124\uBA85\uD558\uC138\uC694\n\uD14D\uC2A4\uD2B8 \uBAA8\uC158:\n\uC911\uC559 \uD655\uB300 \uD6C4 CTA\uB294 \uD558\uB2E8\uC5D0 \uACE0\uC815" + fifthCaption +
+                    "\n\n\uAC15\uC870 \uD0A4\uC6CC\uB4DC:\n" + hashtagsText +
+                    "\n\n\uC601\uC0C1 \uC0DD\uC131 \uD504\uB86C\uD504\uD2B8:\n" + duration + "\uCD08 \uAE38\uC774\uC758 \uC138\uB85C\uD615 \uB9B4\uC2A4 \uC601\uC0C1. " + context.localizedTarget + "\uC774 \uBCF4\uACE0 \uC774\uD574\uD560 \uC218 \uC788\uB3C4\uB85D " + context.product + "\uC758 \uB370\uC774\uD130 \uAE30\uBC18 \uAC00\uCE58\uB97C \uD604\uC7A5 \uC0C1\uB2F4 \uC7A5\uBA74\uC73C\uB85C \uBCF4\uC5EC\uC900\uB2E4. \uCCAB \uC7A5\uBA74\uC740 \uBB38\uC81C\uC758\uC2DD, \uC911\uAC04\uC740 \uC81C\uD488 \uB178\uCD9C\uACFC \uB370\uC774\uD130 \uC124\uBA85, \uB9C8\uBB34\uB9AC\uB294 \uC790\uB8CC \uAC80\uD1A0 \uB610\uB294 \uB370\uBAA8 \uC0C1\uB2F4 CTA\uB85C \uAD6C\uC131\uD55C\uB2E4. \uC790\uB9C9\uC740 \uC9E7\uACE0 \uBA85\uD655\uD558\uAC8C \uBCF4\uC774\uBA70, \uD14D\uC2A4\uD2B8 \uBAA8\uC158\uC740 \uD398\uC774\uB4DC \uC778, \uC2AC\uB77C\uC774\uB4DC \uC5C5, \uD575\uC2EC \uB2E8\uC5B4 \uD655\uB300 \uAC15\uC870\uB97C \uC0AC\uC6A9\uD55C\uB2E4. \uCE58\uB8CC \uD6A8\uACFC \uBCF4\uC7A5, \uC9C4\uB2E8 \uD655\uC815, \uBCF4\uD5D8 \uBCF4\uC7A5 \uD45C\uD604\uC740 \uD3EC\uD568\uD558\uC9C0 \uC54A\uB294\uB2E4.";
             }
 
             if (context.type === 'strategyplan') {
@@ -3001,6 +3032,17 @@ Do not use Markdown syntax in the final output. Do not use **bold**, ### heading
                 const rules = kb.rules[currentLang] || kb.rules['ko'] || [];
                 const durationText = (type === 'reels' || type === 'reels_story') ? `\n- Required Video Duration: EXACTLY ${reelsDuration} seconds` : '';
                 let formatInstruction = `
+[Reels Story Fixed Output Rules]
+Apply only when Content Type ID is reels_story. The final output must contain exactly these 7 sections in order:
+1. \uCF58\uD150\uCE20 \uBAA9\uC801
+2. \uC804\uCCB4 \uD575\uC2EC \uBA54\uC2DC\uC9C0
+3. \uD0C0\uAC9F \uACE0\uAC1D\uC758 \uC2EC\uB9AC
+4. \uCD08 \uB2E8\uC704 \uB9B4\uC2A4 \uCF58\uD2F0
+5. \uCD08 \uB2E8\uC704 \uC790\uB9C9 \uBC0F \uD14D\uC2A4\uD2B8 \uBAA8\uC158 \uC9C0\uC2DC
+6. \uAC15\uC870 \uD0A4\uC6CC\uB4DC
+7. \uC601\uC0C1 \uC0DD\uC131 \uD504\uB86C\uD504\uD2B8
+Separate section 4 and section 5. In section 4, each time range must include \uD654\uBA74 and \uC758\uB3C4. In section 5, each time range must include \uC790\uB9C9 and \uD14D\uC2A4\uD2B8 \uBAA8\uC158. Section 6 must be hashtags only. Section 7 must be one complete copy-ready vertical reels video generation prompt.
+
 [Content Format Guide]
 - Content Type: ${formatGuide.label}
 - Required Format:
