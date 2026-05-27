@@ -334,7 +334,7 @@
                                 <i data-lucide="file-text" class="w-4 h-4 text-blue-600"></i>
                                 <span id="ui-sec-gen-content">상세 결과물</span>
                             </h4>
-                            <div id="output-generated-body" class="bg-white border-2 border-slate-200 rounded-xl p-5 sm:p-6 whitespace-pre-wrap font-sans text-[13px] sm:text-sm leading-7 text-slate-800"></div>
+                            <div id="output-generated-body" class="bg-white border-2 border-slate-200 rounded-xl p-6 whitespace-pre-wrap font-sans text-[14px] sm:text-sm leading-8 text-slate-800"></div>
                         </div>
 
                         <!-- SECTION 3: GENERATED IMAGE -->
@@ -544,7 +544,7 @@
 
                 <div class="space-y-2">
                     <h4 class="font-bold text-slate-900 border-b-2 border-slate-100 pb-1.5 text-[11px] sm:text-xs" id="ui-modal-content-lbl">문서 본문</h4>
-                    <div id="modal-generated-body" class="bg-white border-2 border-slate-200 rounded-xl p-5 font-sans text-[13px] sm:text-sm leading-7 text-slate-800 whitespace-pre-wrap"></div>
+                    <div id="modal-generated-body" class="bg-white border-2 border-slate-200 rounded-xl p-6 font-sans text-[14px] sm:text-sm leading-8 text-slate-800 whitespace-pre-wrap"></div>
                 </div>
 
                 <!-- GENERATED IMAGE IN MODAL -->
@@ -820,7 +820,7 @@
         }
 
         // --- SAFE CALL GEMINI HELPER WITH DETAILED ERROR INFO & LIGHTWEIGHT MODEL DEFAULT ---
-        async function safeCallGemini(prompt, systemInstruction = "", models = null) {
+        async function safeCallGemini(prompt, systemInstruction = "", models = null, generationConfig = null) {
             const modelsToTry = Array.isArray(models) && models.length ? models : ["gemini-2.5-flash-lite"];
             let lastError = null;
 
@@ -831,6 +831,9 @@
                         contents: [{ parts: [{ text: prompt }] }]
                     }
                 };
+                if (generationConfig) {
+                    payload.payload.generationConfig = generationConfig;
+                }
                 if (systemInstruction) {
                     payload.payload.systemInstruction = { parts: [{ text: systemInstruction }] };
                 }
@@ -2412,6 +2415,68 @@ ${sampleText}`;
             }
         }
 
+
+        function saveGeneratedContentToLearningHistory({ product, type, materialBody, keywords }) {
+            if (!materialBody || String(materialBody).trim().length < 30) return;
+
+            const cleanBody = sanitizeFinalOutput(materialBody);
+            if (!cleanBody || cleanBody.length < 30) return;
+
+            const extractedKeywords = Array.isArray(keywords) && keywords.length > 0
+                ? keywords.slice(0, 10)
+                : extractLocalKeywords(cleanBody, 10);
+
+            const sentences = cleanBody
+                .split(/[.!?\n\u3002\uff01\uff1f]/)
+                .map(sentence => sentence.trim())
+                .filter(sentence => sentence.length > 20);
+
+            const insights = sentences.slice(0, 5);
+            const sourceName = `Generated ${type} - ${product}`;
+            const cautionText = "\uC0DD\uC131 \uCF58\uD150\uCE20 \uAE30\uBC18 \uD559\uC2B5 \uB370\uC774\uD130\uC785\uB2C8\uB2E4. \uD655\uC778\uB418\uC9C0 \uC54A\uC740 \uB0B4\uC6A9\uC740 \uC7AC\uAC80\uC99D\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.";
+
+            const structuredContent = {
+                SOURCE: sourceName,
+                TYPE: "Generated Content",
+                SUMMARY: cleanBody.slice(0, 500),
+                KEYWORDS: extractedKeywords,
+                INSIGHTS: insights,
+                MARKETING_POINTS: insights,
+                CAUTIONS: [cautionText]
+            };
+
+            const record = {
+                id: `gen_${Date.now()}`,
+                name: sourceName,
+                type: "generated-content",
+                product,
+                date: new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+                sourceType: "generated-content",
+                sourceName,
+                summary: cleanBody.slice(0, 500),
+                keywords: extractedKeywords,
+                insights,
+                marketingPoints: insights,
+                cautions: [cautionText],
+                rawTextPreview: cleanBody.slice(0, 1000),
+                content: JSON.stringify(structuredContent, null, 2)
+            };
+
+            learningHistory.unshift(record);
+            if (learningHistory.length > 50) {
+                learningHistory = learningHistory.slice(0, 50);
+            }
+
+            localStorage.setItem("exosystems_learning_history", JSON.stringify(learningHistory));
+
+            if (typeof renderLearningHistory === "function") {
+                renderLearningHistory();
+            }
+            if (!document.getElementById('full-history-modal')?.classList.contains('hidden')) {
+                renderFullHistoryList();
+            }
+        }
+
         function buildLocalFallbackContent(context) {
             const kb = context.kb;
             const keywordLine = context.keywords.join(", ");
@@ -2489,7 +2554,7 @@ ${sampleText}`;
                 });
                 learningInsights = learningInsights
                     .map(item => sanitizeLearningInsightForPrompt(item))
-                    .filter(item => item.length > 20)
+                    .filter(item => item.length > 30)
                     .slice(0, 5);
             }
 
@@ -2565,16 +2630,17 @@ ${sampleText}`;
             let imgPromptToGenerate = "";
 
             try {
-                const sysPrompt = `You are a world-class management consultant and B2B healthcare/fitness-tech marketing strategist.
-Do not merely summarize. Redesign the message structure using only facts confirmed in the provided Product KB, target audience, keywords, email purpose, selected tone and manner, user memo, and sanitized learned context.
-Write with the logic and persuasion expected from a top-tier strategy and brand advisory team such as McKinsey, BCG, and Ogilvy.
-Never invent unsupported numbers, customer cases, certifications, effects, market share, contracts, clinical outcomes, or performance claims. Use only information that is explicitly provided.
-Use learned data internally only. Never show file names, analysis status, API errors, quota messages, learning-data lists, JSON keys, or internal logs in the final output.
-The final output must be copy-ready Korean business writing. For videoprompt, only the actual visual prompt body may be in English.
-Quality rules: adapt the opening, sentence rhythm, persuasion method, and CTA to the selected tone; start from the target customer's practical problem, translate product features into operational business value, reformulate learned product descriptions into stronger messaging, avoid exaggerated effect claims, and follow medical-device compliance rules when relevant.
-For email, make the subject, opening, core value, reason to review, and next action clear. For new-partner proposal emails, explain market relevance, differentiation, review value, and the need for a demo or meeting to an audience with no existing relationship.
-For strategy plans, provide concrete execution strategy, promotion direction, channel tactics, and target-specific approach. For card news, make each page's message clear.
-Do not use Markdown syntax in the final output. Do not use **bold**, ### headings, or code blocks. Use ordinary numbered lines and line breaks only when needed.`;
+                const sysPrompt = `You are a world-class management consultant, B2B marketing strategist, and sales strategy consultant for healthcare and fitness technology.
+Do not merely summarize input. Strategically design the message architecture using only the Product KB, target audience, content type, email purpose, selected tone and manner, keywords, user memo, uploaded materials, and sanitized learned context.
+Do not list learned data in the final result. Select only the core context that is relevant to the current product, target audience, content type, email purpose, and tone, then rebuild it into a story that serves the requested content goal.
+Translate product features into decision-making value, business value, sales value, customer-experience value, and practical adoption rationale for the target audience.
+Aim for the logic and persuasion expected from McKinsey, BCG, Ogilvy, and global B2B sales consulting.
+Never invent unsupported numbers, customer cases, clinical results, certifications, insurance coverage, revenue outcomes, market share, contracts, treatment effects, diagnostic certainty, or performance guarantees. If information is not provided or cannot be verified, omit it.
+Use only objective content confirmed in the provided information. Learned data is internal context only; never show file names, analysis status, API errors, quota messages, JSON keys, learning-data lists, source logs, or internal notes in the final output.
+The final output must be copy-ready Korean business content suitable for email, documents, proposals, card news, ad copy, strategy material, or video prompts. For videoprompt, only the actual visual prompt body may be in English.
+Adapt the opening, sentence rhythm, persuasion method, paragraphing, and CTA to the selected tone and content type.
+Keep paragraphs readable, normally 2 to 4 sentences. Use numbered structures only when they improve clarity. Avoid excessive bullets and special symbols.
+Do not use Markdown syntax in the final output. Do not use **bold**, ### headings, or code blocks.`;
 
                 const prohibitedWords = kb.prohibited[currentLang] || kb.prohibited['ko'] || [];
                 const rules = kb.rules[currentLang] || kb.rules['ko'] || [];
@@ -2628,16 +2694,21 @@ The entire narrative and strategic angle MUST revolve heavily around these Keywo
 콘텐츠는 단순 요약이 아니라 타겟의 현실적 문제, 제품의 실무적 가치, 다음 액션을 중심으로 재구성하세요.
 
 [CONTENT QUALITY AND STRUCTURE RULES]
-1. Design a fresh message structure according to the target audience and selected tone; do not repeat generic sentences.
-2. Naturally integrate only product characteristics and messages confirmed in learned data, Product KB, user memo, or uploaded material.
-3. Do not show source text, file names, URL lists, JSON, internal logs, quota information, or learning-data labels.
-4. Reframe product description around why the target audience should care and what practical decision value they receive.
-5. If information is unknown or unverified, omit it.
-6. Show only the final content.
-7. Use readable paragraph breaks.
-8. Use numbered structure when useful, but avoid excessive special symbols.
-9. Combine narrative and lists according to content type and selected tone.
-10. Write primarily in Korean.
+1. Treat learned data as internal reference only. Do not display source text, file names, keyword lists, summary logs, insight lists, URL lists, JSON, API logs, quota information, or learning-data labels.
+2. Select only context relevant to the current product, target audience, content type, email purpose, selected tone, and keywords. Ignore unrelated learned data.
+3. Design a fresh story structure for the content goal. Do not repeat generic template sentences.
+4. Convert product features into customer-facing value: decision-making evidence, consultation quality, sales conversion potential, service differentiation, customer experience, partnership potential, market validation, or operational efficiency only when grounded in provided facts.
+5. For medical-device products, use conservative wording such as evaluation support, diagnostic support, decision support, or expert judgment support when appropriate. Never promise treatment, confirmed diagnosis, insurance coverage, revenue, or guaranteed outcomes.
+6. For wellness products, emphasize exercise evaluation, data-based consultation, customer understanding, and service differentiation when supported by the Product KB or learned data.
+7. If information is unknown or unverified, omit it.
+8. Show only final content. Do not include process explanations or system notes.
+9. Use clear paragraph breaks and keep long paragraphs under control.
+10. Email structure should naturally cover subject, opening, customer problem, strategic product value, reason to review, next action, and closing.
+11. Strategy-plan structure should cover strategic direction, target-customer perspective, core message, channel usage, and execution proposal.
+12. Card-news structure should make each page's key message clear.
+13. Ad-copy structure should clearly separate main copy, sub copy, and CTA when useful.
+14. Video-prompt structure should clarify scene flow, emotion, product exposure, and key message.
+15. Write primarily in Korean and avoid AI-sounding generic wording.
 
 [TONE-SPECIFIC WRITING RULES]
 - professional: logical structure, problem framing, product value, adoption rationale, next action. Suitable for hospitals, pharma, distributors, and partners.
@@ -2647,7 +2718,7 @@ The entire narrative and strategic angle MUST revolve heavily around these Keywo
 - attention: strong opening that creates problem awareness and explains why the reader should review now. Suitable for new partner proposals, exhibition follow-up, and demo conversion.
 
 [CRITICAL INSTRUCTION: Consultant-Level Grounded Synthesis]
-Do not rely on generic templates. Reconstruct the message like a senior strategy consultant using only the provided Product KB, target context, keywords, additional memo, and sanitized learned context below. Create a sharper positioning angle and persuasive business logic, but do not invent market data, performance numbers, certifications, customer cases, clinical outcomes, contracts, or unverifiable claims.
+Even with identical inputs, design the message differently according to content type, tone and manner, email purpose, and target audience. Avoid simple template repetition. Use provided facts to create new expressions and persuasive logic, but never invent facts, numbers, outcomes, certifications, customer cases, clinical results, contracts, or unverifiable claims.
 ${isExtendedKBActive && learningInsights.length > 0 ? `
 [Internal Learned Context]
 Use the following structured summaries only as internal context. Do not expose source names, URLs, JSON, labels, logs, or the phrase Website Context Analysis in the final output:
@@ -2665,7 +2736,7 @@ ONLY if Content Type ID is 'imagegen' or 'reels', you MUST include a short Engli
 DO NOT include any introductory or concluding remarks (e.g., "Here is the content..."). Just output the raw requested content directly formatted cleanly.
 `;
 
-                const textResult = await safeCallGemini(userPrompt, sysPrompt, ["gemini-2.5-flash-lite"]);
+                const textResult = await safeCallGemini(userPrompt, sysPrompt, ["gemini-2.5-flash-lite"], { temperature: 0.7 });
                 materialBody = cleanGeneratedTextForCopy(textResult);
 
             } catch (error) {
@@ -2741,8 +2812,14 @@ DO NOT include any introductory or concluding remarks (e.g., "Here is the conten
             switchView('generator');
 
             if (!isAutoRefresh) {
+                saveGeneratedContentToLearningHistory({
+                    product,
+                    type,
+                    materialBody,
+                    keywords
+                });
                 saveCurrentToLibrary(true);
-                showToast(currentLang === 'ko' ? "생성이 완료되어 라이브러리에 자동 저장되었습니다." : "Generated and auto-saved to Library.");
+                showToast(currentLang === 'ko' ? "\uC0DD\uC131\uC774 \uC644\uB8CC\uB418\uC5B4 \uB77C\uC774\uBE0C\uB7EC\uB9AC\uC640 \uD559\uC2B5 \uB370\uC774\uD130\uC5D0 \uC790\uB3D9 \uBC18\uC601\uB418\uC5C8\uC2B5\uB2C8\uB2E4." : "Generated and auto-saved to Library and learning data.");
             }
 
             if (imgPromptToGenerate) {
@@ -3009,6 +3086,7 @@ DO NOT include any introductory or concluding remarks (e.g., "Here is the conten
         Object.assign(window, {
             EMAIL_PURPOSE_CONTEXT,
             TONE_CONTEXT,
+            saveGeneratedContentToLearningHistory,
             setLanguage,
             generateContent,
             switchView,
