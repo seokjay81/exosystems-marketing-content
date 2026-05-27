@@ -133,7 +133,7 @@
                         <option value="buyer">&#44396;&#47588;&#32;&#44256;&#44061;</option>
                     </select>
                     <p id="target-group-description" class="text-[11px] text-slate-500 leading-relaxed hidden"></p>
-                    <p class="text-[11px] text-slate-500 leading-relaxed">&#53440;&#44191;&#32;&#44256;&#44061;&#44400;&#32;&#8594;&#32;&#49464;&#48512;&#32;&#53440;&#44191;&#32;&#8594;&#32;&#53080;&#53584;&#52768;&#32;&#50976;&#54805;&#32;&#8594;&#32;&#53668;&#50532;&#47588;&#45320;&#32;&#49692;&#49436;&#47196;&#32;&#49440;&#53469;&#54644;&#32;&#51452;&#49464;&#50836;&#46;&#32;&#44053;&#51312;&#32;&#53412;&#50892;&#46300;&#45716;&#32;&#49440;&#53469;&#32;&#51077;&#47141;&#51077;&#45768;&#45796;&#46;</p>
+                    <p class="text-[11px] text-slate-500 leading-relaxed">&#53440;&#44191; &#44256;&#44061;&#44400;&#44284; &#53080;&#53584;&#52768; &#50976;&#54805;&#51008; &#54596;&#49688;&#51077;&#45768;&#45796;. &#49464;&#48512; &#53440;&#44191;, &#53668;&#50532;&#47588;&#45320;, &#44053;&#51312; &#53412;&#50892;&#46300;&#45716; &#49440;&#53469; &#51077;&#47141;&#51077;&#45768;&#45796;.</p>
                 </div>
 
                 <!-- Target Audience Selection -->
@@ -171,6 +171,15 @@
                         <option value="overseas_distributor">해외 유통사 제안</option>
                         <option value="product_newsletter">제품 News Letter</option>
                     </select>
+                </div>
+
+                <div id="reels-duration-box" class="hidden space-y-2">
+                    <label class="text-xs sm:text-sm font-bold text-slate-700 block">&#47540;&#49828;&#32;&#44600;&#51060;</label>
+                    <select id="reels-duration-select" class="w-full bg-slate-50 border-2 border-slate-300 rounded-xl px-4 py-2.5 sm:py-3 text-slate-900 font-bold focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none text-sm hover:border-blue-400">
+                        <option value="10">10&#52488;</option>
+                        <option value="15">15&#52488;</option>
+                    </select>
+                    <p class="text-[11px] text-slate-500 leading-relaxed">&#47540;&#49828; &#44396;&#49457;&#51008; &#49440;&#53469;&#54620; &#44600;&#51060;&#50640; &#47582;&#44172; &#51109;&#47732; &#55120;&#47492;&#44284; &#51088;&#47561; &#52488;&#50504;&#51012; &#49373;&#49457;&#54633;&#45768;&#45796;.</p>
                 </div>
 
                 <div id="tone-select-box" class="space-y-2">
@@ -951,19 +960,19 @@
                 label: "\uCD5C\uC885 \uC18C\uBE44\uC790",
                 description: "\uC81C\uD488 \uB610\uB294 \uC11C\uBE44\uC2A4\uB97C \uC9C1\uC811 \uACBD\uD5D8\uD558\uACE0 \uC0AC\uC6A9\uD558\uB294 \uACE0\uAC1D\uAD70\uC785\uB2C8\uB2E4.",
                 targets: ["\uC77C\uBC18 \uD68C\uC6D0", "\uBCD1\uC6D0", "\uBB3C\uB9AC\uCE58\uB8CC\uC0AC"],
-                allowedContentTypes: ["imagegen", "email", "cardnews", "adcopy", "videoprompt"]
+                allowedContentTypes: ["imagegen", "email", "cardnews", "adcopy", "videoprompt", "reels_story"]
             },
             distributor: {
                 label: "\uC720\uD1B5\uC0AC",
                 description: "\uC81C\uD488\uC744 \uD310\uB9E4\u00B7\uC720\uD1B5\u00B7\uD30C\uD2B8\uB108\uC2ED \uAD00\uC810\uC5D0\uC11C \uAC80\uD1A0\uD558\uB294 \uACE0\uAC1D\uAD70\uC785\uB2C8\uB2E4.",
                 targets: ["\uAD6D\uB0B4 \uC720\uD1B5\uC0AC", "\uD574\uC678 \uC720\uD1B5\uC0AC", "\uC81C\uC57D\uC0AC"],
-                allowedContentTypes: ["strategyplan", "email"]
+                allowedContentTypes: ["strategyplan", "email", "reels_story"]
             },
             buyer: {
                 label: "\uAD6C\uB9E4 \uACE0\uAC1D",
                 description: "\uC81C\uD488 \uB3C4\uC785\uACFC \uAD6C\uB9E4\uB97C \uAC80\uD1A0\uD558\uB294 \uAE30\uAD00\u00B7\uC0AC\uC5C5\uC790 \uACE0\uAC1D\uAD70\uC785\uB2C8\uB2E4.",
                 targets: ["\uD2B8\uB808\uC774\uB108", "\uD53C\uD2B8\uB2C8\uC2A4 \uC13C\uD130 \uB300\uD45C", "\uBA54\uB514\uCEEC \uD53C\uD2B8\uB2C8\uC2A4 \uC13C\uD130", "\uC7AC\uD65C\uC13C\uD130", "\uC5F0\uAD6C\uAE30\uAD00", "\uAC80\uC9C4\uC13C\uD130"],
-                allowedContentTypes: ["imagegen", "email", "cardnews", "adcopy", "videoprompt"]
+                allowedContentTypes: ["imagegen", "email", "cardnews", "adcopy", "videoprompt", "reels_story"]
             }
         };
         window.TARGET_GROUPS = TARGET_GROUPS;
@@ -1021,7 +1030,8 @@
             "cardnews": { ko: "카드뉴스", en: "Card News", zh: "图文卡片", ja: "カードニュース" },
             "reels": { ko: "숏폼/릴스 (클린)", en: "Shorts/Reels (Clean)", zh: "短视频/Reels (Clean)", ja: "ショート/リール (クリーン)" },
             "adcopy": { ko: "광고 카피", en: "Ad Copy", zh: "广告文案", ja: "広告コピー" },
-            "videoprompt": { ko: "영상 프롬프트", en: "Video Prompt", zh: "视频提示词", ja: "動画プロンプト" }
+            "videoprompt": { ko: "영상 프롬프트", en: "Video Prompt", zh: "视频提示词", ja: "動画プロンプト" },
+            "reels_story": { ko: "\uB9B4\uC2A4 \uAD6C\uC131", en: "Reels Story", zh: "Reels Story", ja: "Reels Story" }
         };
 
 
@@ -1163,7 +1173,34 @@ Writing standard:
 - The final prompt must be specific enough for a video-generation tool.
 - Clarify scene flow, emotion, product exposure, and message.
 - Avoid scenes or wording that guarantee medical treatment effects.
+`,
+            reels_story: {
+                label: "\uB9B4\uC2A4 \uAD6C\uC131",
+                formatInstruction: `
+Write as a Korean short-form reels storyboard for either 10 or 15 seconds.
+Required structure:
+1. \uB9B4\uC2A4 \uBAA9\uC801
+2. \uD0C0\uAC9F \uACE0\uAC1D
+3. \uC120\uD0DD \uD0A4\uC6CC\uB4DC
+4. \uC804\uCCB4 \uCF58\uC149\uD2B8
+5. \uC7A5\uBA74\uBCC4 \uAD6C\uC131
+6. \uC790\uB9C9 \uCD08\uC548
+7. \uD654\uBA74 \uC5F0\uCD9C \uBC29\uD5A5
+8. \uC81C\uD488 \uB178\uCD9C \uBC29\uC2DD
+9. CTA
+10. \uCD5C\uC885 \uB9B4\uC2A4 \uC81C\uC791 \uD504\uB86C\uD504\uD2B8
+
+Writing standard:
+- Adjust scene count and caption length to the selected duration.
+- For 10 seconds, use 3 to 4 short, strong scenes.
+- For 15 seconds, use 4 to 5 scenes covering problem, product value, and action.
+- Each scene must include time range, screen content, caption draft, product exposure, and intent/emotion.
+- Differentiate opening, caption language, emotional flow, and CTA by the selected tone and manner.
+- Learned data and Product KB are internal only. Do not show file names or learning logs.
+- Do not invent unsupported numbers, effects, cases, diagnosis, treatment guarantees, insurance coverage, or revenue guarantees.
+- Make it concrete enough for a video producer or Gemini video-generation workflow.
 `
+            }
             }
         };
         window.CONTENT_FORMAT_GUIDE = CONTENT_FORMAT_GUIDE;
@@ -1684,6 +1721,7 @@ Writing standard:
             const videoBox = document.getElementById('video-duration-box');
             const durationSelect = document.getElementById('reels-duration');
             const emailPurposeBox = document.getElementById('email-purpose-box');
+            const reelsDurationBox = document.getElementById('reels-duration-box');
             const btnLabel = document.getElementById('ui-btn-generate');
             const dict = TRANSLATIONS[currentLang];
 
@@ -1705,6 +1743,16 @@ Writing standard:
             } else {
                 durationSelect.classList.add('hidden');
                 videoBox.classList.add('hidden');
+            }
+
+
+
+            if (reelsDurationBox) {
+                if (type === 'reels_story') {
+                    reelsDurationBox.classList.remove('hidden');
+                } else {
+                    reelsDurationBox.classList.add('hidden');
+                }
             }
 
             if (emailPurposeBox) {
@@ -2710,6 +2758,25 @@ ${sampleText}`;
             const toneLead = toneLeadMap[localToneKey] || toneLeadMap.professional;
 
 
+
+            if (context.type === 'reels_story') {
+                const duration = context.reelsDuration || '10';
+                const finalSceneTime = duration === '15' ? '8~15\uCD08' : '8~10\uCD08';
+                const optionalScene = duration === '15' ? "\n\n\uC7A5\uBA74 5. 12~15\uCD08\n\uD654\uBA74:\n\uC81C\uD488 \uAC80\uD1A0\uB97C \uC704\uD55C \uB370\uBAA8 \uB610\uB294 \uC790\uB8CC \uD655\uC778 \uC7A5\uBA74\n\uC790\uB9C9:\n\uB370\uC774\uD130\uB85C \uC124\uBA85\uD558\uB294 \uACBD\uD5D8\uC744 \uD655\uC778\uD574 \uBCF4\uC138\uC694\n\uC758\uB3C4:\n\uD589\uB3D9 \uC720\uB3C4\uB97C \uBA85\uD655\uD788 \uC804\uB2EC" : "";
+                return "\uB9B4\uC2A4 \uBAA9\uC801:\n" + context.product + "\uC758 \uD575\uC2EC \uAC00\uCE58\uB97C " + context.localizedTarget + "\uC5D0\uAC8C \uC9E7\uACE0 \uC124\uB4DD\uB825 \uC788\uAC8C \uC804\uB2EC\n\n" +
+                    "\uD0C0\uAC9F \uACE0\uAC1D:\n" + context.localizedTarget + "\n\n" +
+                    "\uAC15\uC870 \uD0A4\uC6CC\uB4DC:\n" + keywordLine + "\n\n" +
+                    "\uC804\uCCB4 \uCF58\uC149\uD2B8:\n" + toneLead + " " + context.product + "\uB97C \uB2E8\uC21C \uAE30\uB2A5 \uC18C\uAC1C\uAC00 \uC544\uB2C8\uB77C \uD604\uC7A5\uC5D0\uC11C \uAC80\uD1A0\uD560 \uB9CC\uD55C \uB370\uC774\uD130 \uAE30\uBC18 \uC194\uB8E8\uC158\uC73C\uB85C \uBCF4\uC5EC\uC90D\uB2C8\uB2E4.\n\n" +
+                    "\uC7A5\uBA74\uBCC4 \uAD6C\uC131:\n\n" +
+                    "\uC7A5\uBA74 1. 0~2\uCD08\n\uD654\uBA74:\n\uACE0\uAC1D\uC774 \uC790\uC2E0\uC758 \uC0C1\uD0DC\uB97C \uC124\uBA85\uBC1B\uAE30 \uC804 \uAD81\uAE08\uD574\uD558\uB294 \uC7A5\uBA74\n\uC790\uB9C9:\n\uC9C1\uAD00\uB9CC\uC73C\uB85C \uC124\uBA85\uD558\uACE0 \uC788\uC9C0 \uC54A\uB098\uC694?\n\uC758\uB3C4:\n\uCCAB 1\uCD08\uC5D0 \uBB38\uC81C\uC758\uC2DD\uC744 \uD615\uC131\n\n" +
+                    "\uC7A5\uBA74 2. 2~5\uCD08\n\uD654\uBA74:\n" + context.product + "\uAC00 \uC790\uC5F0\uC2A4\uB7FD\uAC8C \uB178\uCD9C\uB418\uACE0 \uB370\uC774\uD130 \uD654\uBA74\uC774 \uBCF4\uC774\uB294 \uC7A5\uBA74\n\uC790\uB9C9:\n\uC6C0\uC9C1\uC784\uACFC \uBC18\uC751\uC744 \uB370\uC774\uD130\uB85C \uD655\uC778\n\uC758\uB3C4:\n\uC81C\uD488 \uAC00\uCE58\uB97C \uC9E7\uAC8C \uC804\uB2EC\n\n" +
+                    "\uC7A5\uBA74 3. 5~8\uCD08\n\uD654\uBA74:\n\uC804\uBB38\uAC00\uAC00 \uD654\uBA74\uC744 \uBCF4\uBA70 \uACE0\uAC1D\uC5D0\uAC8C \uC124\uBA85\uD558\uB294 \uC7A5\uBA74\n\uC790\uB9C9:\n\uC0C1\uB2F4\uC774 \uB354 \uBA85\uD655\uD574\uC9D1\uB2C8\uB2E4\n\uC758\uB3C4:\n\uB370\uC774\uD130 \uAE30\uBC18 \uC0C1\uB2F4 \uACBD\uD5D8\uC744 \uBD80\uAC01\n\n" +
+                    "\uC7A5\uBA74 4. " + finalSceneTime + "\n\uD654\uBA74:\n\uBE0C\uB79C\uB4DC\uC640 \uC81C\uD488 \uBA54\uC2DC\uC9C0\uAC00 \uC815\uB9AC\uB418\uB294 \uB9C8\uBB34\uB9AC \uC7A5\uBA74\n\uC790\uB9C9:\n" + keywordLine + "\uC744 \uB370\uC774\uD130\uB85C \uC124\uBA85\uD558\uC138\uC694\n\uC758\uB3C4:\n\uD575\uC2EC \uBA54\uC2DC\uC9C0\uC640 CTA\uB97C \uC5F0\uACB0" + optionalScene +
+                    "\n\n\uC81C\uD488 \uB178\uCD9C \uBC29\uC2DD:\n\uC81C\uD488\uC740 \uACFC\uD55C \uAD11\uACE0 \uC5F0\uCD9C\uBCF4\uB2E4 \uC0C1\uB2F4 \uD750\uB984 \uC18D\uC5D0\uC11C \uC790\uC5F0\uC2A4\uB7FD\uAC8C \uB4F1\uC7A5\uD569\uB2C8\uB2E4.\n\n" +
+                    "CTA:\n\uC81C\uD488 \uC790\uB8CC \uD655\uC778 \uB610\uB294 \uB370\uBAA8 \uC0C1\uB2F4\uC73C\uB85C \uC5F0\uACB0\uD569\uB2C8\uB2E4.\n\n" +
+                    "\uCD5C\uC885 \uB9B4\uC2A4 \uC81C\uC791 \uD504\uB86C\uD504\uD2B8:\n" + duration + "\uCD08 \uAE38\uC774\uC758 \uC138\uB85C\uD615 \uB9B4\uC2A4. " + context.localizedTarget + "\uC774 \uAC80\uD1A0\uD560 \uB9CC\uD55C \uB370\uC774\uD130 \uAE30\uBC18 \uC0C1\uB2F4 \uACBD\uD5D8\uC744 \uC9E7\uACE0 \uBA85\uD655\uD558\uAC8C \uBCF4\uC5EC\uC900\uB2E4. \uCCAB \uC7A5\uBA74\uC740 \uBB38\uC81C\uC758\uC2DD, \uC911\uAC04\uC740 " + context.product + "\uC758 \uB370\uC774\uD130 \uAE30\uBC18 \uAC00\uCE58, \uB9C8\uBB34\uB9AC\uB294 \uB370\uBAA8 \uB610\uB294 \uC790\uB8CC \uAC80\uD1A0 CTA\uB85C \uAD6C\uC131\uD55C\uB2E4. \uCE58\uB8CC \uD6A8\uACFC \uBCF4\uC7A5\uC774\uB098 \uC9C4\uB2E8 \uD655\uC815 \uD45C\uD604\uC740 \uD3EC\uD568\uD558\uC9C0 \uC54A\uB294\uB2E4.";
+            }
+
             if (context.type === 'strategyplan') {
                 return "\uB9C8\uCF00\uD305 \uC804\uB7B5 \uACC4\uD68D\n\n" +
                     "1. \uC804\uB7B5 \uBAA9\uD45C\n" + context.localizedTarget + "\uC774 \uC81C\uD488\uC744 \uAC80\uD1A0\uD574\uC57C \uD558\uB294 \uC2E4\uBB34\uC801 \uC774\uC720\uB97C \uBA85\uD655\uD788 \uC81C\uC2DC\uD569\uB2C8\uB2E4.\n\n" +
@@ -2789,7 +2856,9 @@ ${sampleText}`;
             const target = document.getElementById('target-select')?.value || getDefaultTargetByGroup(targetGroupKey);
             let type = document.getElementById('type-select')?.value || "";
             const keywordString = document.getElementById('keywords-input')?.value || "";
-            const reelsDuration = document.getElementById('reels-duration')?.value || "10";
+            const reelsDuration = type === 'reels_story'
+                ? (document.getElementById('reels-duration-select')?.value || "10")
+                : (document.getElementById('reels-duration')?.value || "10");
             const emailPurpose = document.getElementById('email-purpose-select')?.value || 'new_partner_proposal';
             const emailPurposeContext = EMAIL_PURPOSE_CONTEXT[emailPurpose] || EMAIL_PURPOSE_CONTEXT.new_partner_proposal;
             const selectedTone = document.getElementById('tone-select')?.value || 'professional';
@@ -2803,6 +2872,12 @@ ${sampleText}`;
                 showErrorModal("\uC785\uB825 \uD544\uC694", "\uCF58\uD150\uCE20 \uC720\uD615\uC744 \uC120\uD0DD\uD574 \uC8FC\uC138\uC694.", "\uC0DD\uC131\uD558\uB824\uB294 \uCF58\uD150\uCE20 \uC720\uD615\uC744 \uC120\uD0DD\uD574\uC57C \uD569\uB2C8\uB2E4.");
                 return;
             }
+
+            if (type === 'reels_story' && !keywordString.trim()) {
+                showErrorModal("\uC785\uB825 \uD544\uC694", "\uB9B4\uC2A4 \uAD6C\uC131\uC5D0\uC11C\uB294 \uAC15\uC870 \uD0A4\uC6CC\uB4DC\uAC00 \uD544\uC694\uD569\uB2C8\uB2E4.", "\uB9B4\uC2A4 \uC2A4\uD1A0\uB9AC\uC640 \uC790\uB9C9 \uD750\uB984\uC744 \uB9CC\uB4E4\uAE30 \uC704\uD574 \uD575\uC2EC \uD0A4\uC6CC\uB4DC\uB97C 1\uAC1C \uC774\uC0C1 \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
+                return;
+            }
+
             const allowedTypes = targetGroupContext.allowedContentTypes || [];
             if (!allowedTypes.includes(type)) {
                 showErrorModal("\uCF58\uD150\uCE20 \uC720\uD615 \uC120\uD0DD \uC624\uB958", "\uD604\uC7AC \uD0C0\uAC9F \uACE0\uAC1D\uAD70\uC5D0\uC11C\uB294 \uC120\uD0DD\uD560 \uC218 \uC5C6\uB294 \uCF58\uD150\uCE20 \uC720\uD615\uC785\uB2C8\uB2E4.", "\uD0C0\uAC9F \uACE0\uAC1D\uAD70\uC5D0 \uB9DE\uB294 \uCF58\uD150\uCE20 \uC720\uD615\uC744 \uB2E4\uC2DC \uC120\uD0DD\uD574 \uC8FC\uC138\uC694.");
@@ -2922,7 +2997,7 @@ Do not use Markdown syntax in the final output. Do not use **bold**, ### heading
 
                 const prohibitedWords = kb.prohibited[currentLang] || kb.prohibited['ko'] || [];
                 const rules = kb.rules[currentLang] || kb.rules['ko'] || [];
-                const durationText = type === 'reels' ? `\n- Required Video Duration: EXACTLY ${reelsDuration} seconds` : '';
+                const durationText = (type === 'reels' || type === 'reels_story') ? `\n- Required Video Duration: EXACTLY ${reelsDuration} seconds` : '';
                 let formatInstruction = `
 [Content Format Guide]
 - Content Type: ${formatGuide.label}
@@ -2958,6 +3033,7 @@ ${targetGroupStrategy?.strategy || ""}
 [Content Type]
 - Type Label: ${translatedType}
 - Type ID: ${type}${durationText}
+${type === 'reels_story' ? `\n[Reels Duration]\n- Duration: ${reelsDuration}\uCD08\n- For 10 seconds, create 3 to 4 scenes. For 15 seconds, create 4 to 5 scenes. Each scene must include time range, screen content, caption draft, product exposure, and intent/emotion.\n` : ''}
 
 [Content Format Guide]
 - Content Type: ${formatGuide.label}
@@ -2987,6 +3063,16 @@ ${keywords.length ? keywords.join(', ') : 'No emphasis keywords were provided. B
 ${isExtendedKBActive && learningInsights.length > 0 ? learningInsights.map(item => `- ${item}`).join('\n') : 'No additional learned context is available.'}
 ${docReflectActive && fileMemoText ? `\n[Additional Strategy Memo]\n${fileMemoText}` : ''}
 
+
+
+[Reels Story Tone Rules]
+Apply these rules only when Content Type ID is reels_story:
+- professional: Center the story on data-based evaluation, trust, objective consultation, and professional credibility. Captions should be short and informational.
+- soft: Center the story on user understanding, empathy, and natural experience. Captions should feel approachable and low-pressure.
+- premium: Emphasize premium fitness, professional consultation, and refined data experience. Captions should be restrained and polished.
+- fun: Create curiosity in the first scene and keep the flow lively and easy. Captions should be short and rhythmic, while respecting medical-device expression boundaries.
+- attention: Build a problem or question in the first second. Captions should hook attention without exaggeration.
+For distributor targets, reels_story should be B2B product/partner introduction, not consumer emotional advertising.
 
 [Mandatory Writing Rules]
 1. Only the target group and content type are required. If product, detailed target, tone, email purpose, or keywords are not selected, use the provided defaults naturally without mentioning that defaults were used.
@@ -3025,7 +3111,8 @@ ONLY if Content Type ID is 'imagegen' or 'reels', include a short English prompt
                     emailPurposeContext,
                     selectedTone,
                     toneContext,
-                    formatGuide
+                    formatGuide,
+                    reelsDuration
                 };
                 if (isQuotaExceededError(error)) {
                     showToast(getQuotaFallbackMessage(error));
