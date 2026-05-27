@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -1695,22 +1695,83 @@
             return ["[Document beginning]", head, "\n[Document middle]", middle, "\n[Document end]", tail].join("\n\n");
         }
 
-        function cleanGeneratedTextForCopy(text) {
+        function sanitizeFinalOutput(text) {
             if (!text) return "";
-            return String(text)
-                .replace(/`{3}[\s\S]*?`{3}/g, match => match.replace(/`{3}[a-zA-Z]*\n?/g, "").replace(/`{3}/g, ""))
+
+            let output = String(text);
+
+            output = output
+                .replace(/\[Local Summary Mode\][\s\S]*?(?=\n[A-Z가-힣0-9]|$)/gi, "")
+                .replace(/\[Learned Data Applied\][\s\S]*?(?=\n\[|$)/gi, "")
+                .replace(/\[Compliance Check\][\s\S]*?(?=\n\[|$)/gi, "")
+                .replace(/Learned Data Applied[\s\S]*?(?=\n\n|$)/gi, "")
+                .replace(/Compliance Check[\s\S]*?(?=\n\n|$)/gi, "");
+
+            output = output
+                .replace(/API 호출 중 오류가 발생했습니다:[\s\S]*?(?=\n\n|$)/gi, "")
+                .replace(/Gemini 무료 API 사용량 한도를 초과했습니다[\s\S]*?(?=\n\n|$)/gi, "")
+                .replace(/Gemini API quota[\s\S]*?(?=\n\n|$)/gi, "")
+                .replace(/Quota exceeded[\s\S]*?(?=\n\n|$)/gi, "")
+                .replace(/QUOTA_EXCEEDED[\s\S]*?(?=\n\n|$)/gi, "")
+                .replace(/Please retry[\s\S]*?(?=\n\n|$)/gi, "")
+                .replace(/Retry-After:[^\n]*/gi, "")
+                .replace(/https:\/\/ai\.google\.dev[^\s]*/gi, "")
+                .replace(/https:\/\/ai\.dev[^\s]*/gi, "")
+                .replace(/rate-limits?[^\n]*/gi, "");
+
+            output = output
+                .replace(/요약:\s*File name:[\s\S]*?(?=\n요약:|\n제목:|\n안녕하세요|\n[0-9]\.|$)/gi, "")
+                .replace(/File name:[^\n]*(\n|$)/gi, "")
+                .replace(/Applied product:[^\n]*(\n|$)/gi, "")
+                .replace(/Analysis status:[\s\S]*?(?=\n요약:|\n키워드:|\n인사이트:|\n주의사항:|\n제목:|\n안녕하세요|\n\n|$)/gi, "")
+                .replace(/Extracted document preview:[\s\S]*?(?=\n요약:|\n키워드:|\n인사이트:|\n주의사항:|\n제목:|\n안녕하세요|\n\n|$)/gi, "")
+                .replace(/Local learning data generated[\s\S]*?(?=\n\n|$)/gi, "")
+                .replace(/Use as supporting context for content generation\.?/gi, "");
+
+            output = output
+                .replace(/"SOURCE"\s*:\s*"[^"]*",?/gi, "")
+                .replace(/"TYPE"\s*:\s*"[^"]*",?/gi, "")
+                .replace(/"SUMMARY"\s*:\s*"[\s\S]*?",?/gi, "")
+                .replace(/"INSIGHTS"\s*:\s*\[[\s\S]*?\],?/gi, "")
+                .replace(/"KEYWORDS"\s*:\s*\[[\s\S]*?\],?/gi, "")
+                .replace(/"MARKETING_POINTS"\s*:\s*\[[\s\S]*?\],?/gi, "")
+                .replace(/"CAUTIONS"\s*:\s*\[[\s\S]*?\],?/gi, "")
+                .replace(/^\s*(SOURCE|TYPE|INSIGHTS|KEYWORDS|MARKETING_POINTS|CAUTIONS|SUMMARY|EXECUTIVE_SUMMARY|RAW_TEXT_PREVIEW|NOTICE)\s*[:=].*$/gmi, "");
+
+            output = output
+                .replace(/```[\s\S]*?```/g, match => match.replace(/```[a-zA-Z]*\n?/g, "").replace(/```/g, ""))
                 .replace(/\*\*(.*?)\*\*/g, "$1")
                 .replace(/__(.*?)__/g, "$1")
                 .replace(/^#{1,6}\s*/gm, "")
-                .replace(/\[Learned Data Applied\]|\[Compliance Check\]|\[Local Summary Mode\]/gi, "")
-                .replace(/Website Context Analysis/gi, "")
-                .replace(/API Error[^\n]*/gi, "")
-                .replace(/Quota exceeded[^\n]*/gi, "")
-                .replace(/Retry-After[^\n]*/gi, "")
-                .replace(/^\s*(SUMMARY|EXECUTIVE_SUMMARY|RAW_TEXT_PREVIEW|NOTICE)\s*[:=].*$/gmi, "")
-                .replace(/\b(SUMMARY|EXECUTIVE_SUMMARY|RAW_TEXT_PREVIEW|NOTICE)\b/gi, "")
                 .replace(/\n{3,}/g, "\n\n")
                 .trim();
+
+            return output;
+        }
+
+        function cleanGeneratedTextForCopy(text) {
+            return sanitizeFinalOutput(text);
+        }
+
+        function sanitizeLearningInsightForPrompt(text) {
+            if (!text) return "";
+            return String(text)
+                .replace(/File name:[^\n]*(\n|$)/gi, "")
+                .replace(/Applied product:[^\n]*(\n|$)/gi, "")
+                .replace(/Analysis status:[\s\S]*?(?=\n|$)/gi, "")
+                .replace(/QUOTA_EXCEEDED[\s\S]*?(?=\n|$)/gi, "")
+                .replace(/Quota exceeded[\s\S]*?(?=\n|$)/gi, "")
+                .replace(/Please retry[\s\S]*?(?=\n|$)/gi, "")
+                .replace(/Retry-After:[^\n]*/gi, "")
+                .replace(/Local learning data generated[\s\S]*?(?=\n|$)/gi, "")
+                .replace(/Use as supporting context for content generation\.?/gi, "")
+                .replace(/Extracted document preview:[\s\S]*?(?=\n|$)/gi, "")
+                .replace(/https:\/\/ai\.google\.dev[^\s]*/gi, "")
+                .replace(/https:\/\/ai\.dev[^\s]*/gi, "")
+                .replace(/\b(SOURCE|TYPE|INSIGHTS|KEYWORDS|MARKETING_POINTS|CAUTIONS|RAW_TEXT_PREVIEW|NOTICE)\b:?/gi, "")
+                .replace(/\s+/g, " ")
+                .trim()
+                .slice(0, 400);
         }
 
         function buildFallbackLearningJSON(sourceName, product, rawText, reason) {
@@ -2355,6 +2416,10 @@ ${sampleText}`;
                     const contextText = buildLearningPromptContext(h);
                     if (contextText) learningInsights.push(contextText);
                 });
+                learningInsights = learningInsights
+                    .map(item => sanitizeLearningInsightForPrompt(item))
+                    .filter(item => item.length > 20)
+                    .slice(0, 5);
             }
 
             const hashtags = keywords.map(k => `#${k.replace(/#/g, '').replace(/\s+/g, '')}`);
@@ -2429,14 +2494,14 @@ ${sampleText}`;
             let imgPromptToGenerate = "";
 
             try {
-                const sysPrompt = `You are a top-tier global marketing consultant (e.g., McKinsey, Ogilvy level) specializing in B2B and B2C healthcare and fitness tech.
-Your task is to generate a strategic marketing content artifact or answer a custom product-related query.
-CRITICAL: You MUST actively combine and synthesize the provided [Learned AI Data] with your own advanced, real-time market intelligence, industry trends, and creative copywriting skills. Do not just blindly repeat the data; fuse it into a compelling, modern narrative.
-Always strictly follow the requested structure.
-NEVER use the prohibited words provided in the prompt.
-Write the final output exclusively in the target language requested by the user. If 'videoprompt' is requested, write the prompt itself in English.
-Maintain a highly professional, trustworthy, persuasive, and data-driven tone.
-Do not use Markdown syntax in the final output. Do not use **bold**, ### headings, or code blocks. Write plain text that can be pasted directly into an email or document. Use ordinary numbered lines and line breaks only when needed.`;
+                const sysPrompt = `당신은 세계 최고 수준의 B2B 헬스케어·피트니스 테크 마케팅 컨설턴트입니다.
+단순 요약이 아니라, 제공된 제품 KB, 타겟 고객, 핵심 키워드, 학습 데이터에서 확인 가능한 사실을 바탕으로 메시지 구조를 재설계해야 합니다.
+다만 확인되지 않은 수치, 고객 사례, 인증, 효과, 시장 점유율, 계약, 임상 결과는 절대 추론하거나 만들어내지 마세요. 제공된 정보에서 확인 가능한 내용만 사용하세요.
+학습 데이터는 내부적으로만 반영하고, 파일명·분석 상태·API 오류·quota 정보는 결과물에 표시하지 마세요.
+최종 결과물은 바로 복사해 사용할 수 있는 한국어 중심의 비즈니스 문장으로 작성하세요. videoprompt 유형의 실제 프롬프트 본문만 필요한 경우 영어로 작성할 수 있습니다.
+콘텐츠 품질 기준: 타겟 고객의 현실적 문제를 먼저 짚고, 제품 기능을 실무적 가치로 전환하며, 학습 데이터의 제품 설명을 핵심 메시지로 재구성하세요. 과장된 효과 표현은 피하고, 의료기기 제품은 규제 표현 기준을 지키며, 확인되지 않은 수치나 성과는 만들지 마세요.
+이메일이면 제목, 도입, 핵심 가치, 제안 이유, 다음 액션이 명확해야 합니다. 전략 계획이면 실행 전략, 홍보 채널, 프로모션 방향, 타겟별 접근 방식이 구체적이어야 합니다. 카드뉴스면 페이지별 메시지가 명확해야 합니다.
+Do not use Markdown syntax in the final output. Do not use **bold**, ### headings, or code blocks. Use ordinary numbered lines and line breaks only when needed.`;
 
                 const prohibitedWords = kb.prohibited[currentLang] || kb.prohibited['ko'] || [];
                 const rules = kb.rules[currentLang] || kb.rules['ko'] || [];
@@ -2478,6 +2543,10 @@ ${type === 'email' ? `
 ` : ''}
 [CORE REQUIREMENT: KEYWORD CENTRIC]
 The entire narrative and strategic angle MUST revolve heavily around these Keywords: ${keywords.join(', ')}. Make them the central theme of your output.
+
+[GROUNDING AND PRIVACY RULES]
+아래 학습 데이터는 내부 참고용입니다. 결과물에 파일명, 요약 로그, API 오류, quota 메시지, 학습 데이터 목록을 표시하지 마세요. 학습 데이터에서 확인 가능한 핵심 메시지만 콘텐츠 문장에 자연스럽게 반영하세요. 모르는 내용은 추정하지 말고 생략하세요.
+콘텐츠는 단순 요약이 아니라 타겟의 현실적 문제, 제품의 실무적 가치, 다음 액션을 중심으로 재구성하세요.
 
 [CRITICAL INSTRUCTION: Combine Data & Real-time AI Insight]
 You must NOT just rely on generic templates. You MUST synthesize your own up-to-date industry knowledge and real-time market intelligence regarding "${product}" and "${localizedTarget}" WITH the specific learned data below (which includes market analysis, JSON exports, or competitor insights). Provide fresh, persuasive angles that emphasize differentiation.
@@ -2529,7 +2598,8 @@ DO NOT include any introductory or concluding remarks (e.g., "Here is the conten
                 createIconsSafe();
             }
 
-            materialBody = cleanGeneratedTextForCopy(metaPrefix + materialBody);
+            materialBody = sanitizeFinalOutput(materialBody);
+            materialBody = cleanGeneratedTextForCopy(materialBody);
 
             document.getElementById('output-generated-body').textContent = materialBody;
 
@@ -2864,7 +2934,9 @@ DO NOT include any introductory or concluding remarks (e.g., "Here is the conten
             openFullHistoryModal,
             closeFullHistoryModal,
             openLearningDetailModal,
-            closeLearningDetailModal
+            closeLearningDetailModal,
+            sanitizeFinalOutput,
+            sanitizeLearningInsightForPrompt
         });
 
         window.addEventListener('DOMContentLoaded', () => {
