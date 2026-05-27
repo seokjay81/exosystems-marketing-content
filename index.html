@@ -124,11 +124,23 @@
                     </div>
                 </div>
 
+                <div id="target-group-box" class="space-y-2">
+                    <label class="text-xs sm:text-sm font-bold text-slate-700 block">&#53440;&#44191;&#32;&#44256;&#44061;&#44400;</label>
+                    <select id="target-group-select" onchange="handleTargetGroupChange()" class="w-full bg-slate-50 border-2 border-slate-300 rounded-xl px-4 py-2.5 sm:py-3 text-slate-900 font-bold focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none text-sm hover:border-blue-400">
+                        <option value="">&#53440;&#44191;&#32;&#44256;&#44061;&#44400;&#51012;&#32;&#47676;&#51200;&#32;&#49440;&#53469;&#54616;&#49464;&#50836;</option>
+                        <option value="end_consumer">&#52572;&#51333;&#32;&#49548;&#48708;&#51088;</option>
+                        <option value="distributor">&#50976;&#53685;&#49324;</option>
+                        <option value="buyer">&#44396;&#47588;&#32;&#44256;&#44061;</option>
+                    </select>
+                    <p id="target-group-description" class="text-[11px] text-slate-500 leading-relaxed hidden"></p>
+                    <p class="text-[11px] text-slate-500 leading-relaxed">&#53440;&#44191;&#32;&#44256;&#44061;&#44400;&#32;&#8594;&#32;&#49464;&#48512;&#32;&#53440;&#44191;&#32;&#8594;&#32;&#53080;&#53584;&#52768;&#32;&#50976;&#54805;&#32;&#8594;&#32;&#53668;&#50532;&#47588;&#45320;&#32;&#49692;&#49436;&#47196;&#32;&#49440;&#53469;&#54644;&#32;&#51452;&#49464;&#50836;&#46;&#32;&#44053;&#51312;&#32;&#53412;&#50892;&#46300;&#45716;&#32;&#49440;&#53469;&#32;&#51077;&#47141;&#51077;&#45768;&#45796;&#46;</p>
+                </div>
+
                 <!-- Target Audience Selection -->
                 <div class="space-y-2">
                     <label class="text-xs sm:text-sm font-bold text-slate-700 block" id="ui-label-target">타겟 고객군</label>
-                    <select id="target-select" class="w-full bg-slate-50 border-2 border-slate-300 rounded-xl px-4 py-2.5 sm:py-3 text-slate-900 font-bold focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none text-sm hover:border-blue-400">
-                        <!-- Dynamically filled -->
+                    <select id="target-select" disabled onchange="handleTargetAudienceChange()" class="w-full bg-slate-50 border-2 border-slate-300 rounded-xl px-4 py-2.5 sm:py-3 text-slate-900 font-bold focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none text-sm hover:border-blue-400 disabled:opacity-60 disabled:cursor-not-allowed">
+                        <option value="">&#53440;&#44191;&#32;&#44256;&#44061;&#44400;&#51012;&#32;&#47676;&#51200;&#32;&#49440;&#53469;&#54616;&#49464;&#50836;</option>
                     </select>
                 </div>
 
@@ -136,14 +148,8 @@
                 <div class="space-y-2">
                     <label class="text-xs sm:text-sm font-bold text-slate-700 block" id="ui-label-content-type">콘텐츠 유형</label>
                     <div class="flex space-x-2">
-                        <select id="type-select" onchange="handleContentTypeChange()" class="flex-1 bg-slate-50 border-2 border-slate-300 rounded-xl px-4 py-2.5 sm:py-3 text-slate-900 font-bold focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none text-sm hover:border-blue-400">
-                            <option value="strategyplan" id="ui-opt-type-strategy">마케팅 전략 계획</option>
-                            <option value="imagegen" id="ui-opt-type-imagegen">이미지 생성 프롬프트</option>
-                            <option value="email" id="ui-opt-type-email">이메일</option>
-                            <option value="cardnews" id="ui-opt-type-cardnews">카드뉴스</option>
-                            <option value="reels" id="ui-opt-type-reels">숏폼/릴스 (클린)</option>
-                            <option value="adcopy" id="ui-opt-type-adcopy">광고 카피</option>
-                            <option value="videoprompt" id="ui-opt-type-videoprompt">영상 프롬프트</option>
+                        <select id="type-select" disabled onchange="handleContentTypeChange()" class="flex-1 bg-slate-50 border-2 border-slate-300 rounded-xl px-4 py-2.5 sm:py-3 text-slate-900 font-bold focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none text-sm hover:border-blue-400 disabled:opacity-60 disabled:cursor-not-allowed">
+                            <option value="">&#49464;&#48512;&#32;&#53440;&#44191;&#32;&#44256;&#44061;&#51012;&#32;&#47676;&#51200;&#32;&#49440;&#53469;&#54616;&#49464;&#50836;</option>
                         </select>
                         <select id="reels-duration" class="hidden w-24 sm:w-28 bg-blue-50 border-2 border-blue-300 rounded-xl px-2 py-2.5 sm:py-3 text-blue-900 font-extrabold focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none text-sm hover:border-blue-400">
                             <option value="10">10초</option>
@@ -169,7 +175,8 @@
 
                 <div id="tone-select-box" class="space-y-2">
                     <label class="text-xs sm:text-sm font-bold text-slate-700 block">&#53668;&#50532;&#47588;&#45320;</label>
-                    <select id="tone-select" class="w-full bg-slate-50 border-2 border-slate-300 rounded-xl px-4 py-2.5 sm:py-3 text-slate-900 font-bold focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none text-sm hover:border-blue-400">
+                    <select id="tone-select" disabled class="w-full bg-slate-50 border-2 border-slate-300 rounded-xl px-4 py-2.5 sm:py-3 text-slate-900 font-bold focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none text-sm hover:border-blue-400 disabled:opacity-60 disabled:cursor-not-allowed">
+                        <option value="">&#53080;&#53584;&#52768;&#32;&#50976;&#54805;&#51012;&#32;&#47676;&#51200;&#32;&#49440;&#53469;&#54616;&#49464;&#50836;</option>
                         <option value="professional">&#51204;&#47928;&#51201;&#51064;&#32;&#53668;</option>
                         <option value="soft">&#48512;&#46300;&#47084;&#50868;&#32;&#53668;</option>
                         <option value="premium">&#54532;&#47532;&#48120;&#50628;&#32;&#53668;</option>
@@ -956,6 +963,46 @@
             }
         };
 
+
+
+        const TARGET_GROUPS = {
+            end_consumer: {
+                label: "\uCD5C\uC885 \uC18C\uBE44\uC790",
+                description: "\uC81C\uD488 \uB610\uB294 \uC11C\uBE44\uC2A4\uB97C \uC9C1\uC811 \uACBD\uD5D8\uD558\uACE0 \uC0AC\uC6A9\uD558\uB294 \uACE0\uAC1D\uAD70\uC785\uB2C8\uB2E4.",
+                targets: ["\uC77C\uBC18 \uD68C\uC6D0", "\uBCD1\uC6D0", "\uBB3C\uB9AC\uCE58\uB8CC\uC0AC"],
+                allowedContentTypes: ["imagegen", "email", "cardnews", "adcopy", "videoprompt"]
+            },
+            distributor: {
+                label: "\uC720\uD1B5\uC0AC",
+                description: "\uC81C\uD488\uC744 \uD310\uB9E4\u00B7\uC720\uD1B5\u00B7\uD30C\uD2B8\uB108\uC2ED \uAD00\uC810\uC5D0\uC11C \uAC80\uD1A0\uD558\uB294 \uACE0\uAC1D\uAD70\uC785\uB2C8\uB2E4.",
+                targets: ["\uAD6D\uB0B4 \uC720\uD1B5\uC0AC", "\uD574\uC678 \uC720\uD1B5\uC0AC", "\uC81C\uC57D\uC0AC"],
+                allowedContentTypes: ["strategyplan", "email"]
+            },
+            buyer: {
+                label: "\uAD6C\uB9E4 \uACE0\uAC1D",
+                description: "\uC81C\uD488 \uB3C4\uC785\uACFC \uAD6C\uB9E4\uB97C \uAC80\uD1A0\uD558\uB294 \uAE30\uAD00\u00B7\uC0AC\uC5C5\uC790 \uACE0\uAC1D\uAD70\uC785\uB2C8\uB2E4.",
+                targets: ["\uD2B8\uB808\uC774\uB108", "\uD53C\uD2B8\uB2C8\uC2A4 \uC13C\uD130 \uB300\uD45C", "\uBA54\uB514\uCEEC \uD53C\uD2B8\uB2C8\uC2A4 \uC13C\uD130", "\uC7AC\uD65C\uC13C\uD130", "\uC5F0\uAD6C\uAE30\uAD00", "\uAC80\uC9C4\uC13C\uD130"],
+                allowedContentTypes: ["imagegen", "email", "cardnews", "adcopy", "videoprompt"]
+            }
+        };
+        window.TARGET_GROUPS = TARGET_GROUPS;
+
+        const TARGET_GROUP_MESSAGE_STRATEGY = {
+            end_consumer: {
+                label: "\uCD5C\uC885 \uC18C\uBE44\uC790",
+                strategy: "\uC0AC\uC6A9\uC790\uAC00 \uC9C1\uC811 \uCCB4\uAC10\uD560 \uC218 \uC788\uB294 \uACBD\uD5D8, \uC774\uD574\uD558\uAE30 \uC26C\uC6B4 \uAC00\uCE58, \uC2E0\uB8B0\uAC10 \uC788\uB294 \uC124\uBA85\uC744 \uC911\uC2EC\uC73C\uB85C \uBA54\uC2DC\uC9C0\uB97C \uAD6C\uC131\uD569\uB2C8\uB2E4. \uC81C\uD488 \uAE30\uB2A5\uBCF4\uB2E4 \uB0B4 \uC0C1\uD0DC\uB97C \uC774\uD574\uD558\uACE0 \uBCC0\uD654 \uBC29\uD5A5\uC744 \uD655\uC778\uD558\uB294 \uACBD\uD5D8\uC744 \uAC15\uC870\uD569\uB2C8\uB2E4."
+            },
+            distributor: {
+                label: "\uC720\uD1B5\uC0AC",
+                strategy: "\uC2DC\uC7A5\uC131, \uC601\uC5C5 \uAC00\uB2A5\uC131, \uC81C\uD488 \uCC28\uBCC4\uD654, \uB370\uBAA8 \uC6B4\uC601, \uD30C\uD2B8\uB108\uC2ED \uAD6C\uC870, \uD310\uB9E4 \uB17C\uB9AC \uC911\uC2EC\uC73C\uB85C \uBA54\uC2DC\uC9C0\uB97C \uAD6C\uC131\uD569\uB2C8\uB2E4. \uC81C\uD488 \uAE30\uB2A5\uBCF4\uB2E4 \uC65C \uC774 \uC81C\uD488\uC744 \uCDE8\uAE09\uD558\uAC70\uB098 \uC81C\uC548\uD574\uC57C \uD558\uB294\uAC00\uB97C \uAC15\uC870\uD569\uB2C8\uB2E4."
+            },
+            buyer: {
+                label: "\uAD6C\uB9E4 \uACE0\uAC1D",
+                strategy: "\uB3C4\uC785 \uD544\uC694\uC131, \uC6B4\uC601 \uD6A8\uC728, \uC11C\uBE44\uC2A4 \uCC28\uBCC4\uD654, \uACE0\uAC1D \uC0C1\uB2F4 \uD488\uC9C8, \uC7AC\uBC29\uBB38\u00B7\uC804\uD658 \uAC00\uB2A5\uC131 \uB4F1 \uAD6C\uB9E4 \uC758\uC0AC\uACB0\uC815\uC5D0 \uD544\uC694\uD55C \uAC00\uCE58\uB97C \uC911\uC2EC\uC73C\uB85C \uBA54\uC2DC\uC9C0\uB97C \uAD6C\uC131\uD569\uB2C8\uB2E4."
+            }
+        };
+        window.TARGET_GROUP_MESSAGE_STRATEGY = TARGET_GROUP_MESSAGE_STRATEGY;
+
         const STRATEGIC_AUDIENCE_INSIGHTS = {
             "일반 회원": { ko: "개인 맞춤형 피드백 부재에 대한 불안감 해결, 즉각적이고 가시적인 성과 확인", en: "Resolving anxiety over lack of personalized feedback, instant visible progress.", zh: "解决对缺乏个性化反馈的焦虑，确认即时可见的成果", ja: "パーソナライズされたフィードバックの欠如に対する不安を解消し, 즉각적이고 눈에 보이는 성과를 확인" },
             "트레이너": { ko: "주관적 지도 방식의 한계 극복, 회원 재등록을 유도할 수 있는 데이터 기반의 전문성 확보(권위 상승)", en: "Overcoming subjective guidance, securing data-backed authority to drive client retention.", zh: "克服主观指导方式的局限，确保基于数据的专业性以引导会员续费（提升权威）", ja: "주관적 지도 방식의 한계 극복, 회원 재등록을 유도할 수 있는 데이터 기반 전문성 확보" },
@@ -1324,29 +1371,117 @@
         }
 
         function populateTargetAudienceOptions() {
+            const groupSelect = document.getElementById('target-group-select');
             const targetSelect = document.getElementById('target-select');
-            const previousValue = targetSelect.value;
-            targetSelect.innerHTML = '';
+            const typeSelect = document.getElementById('type-select');
+            const toneSelect = document.getElementById('tone-select');
+            const descriptionEl = document.getElementById('target-group-description');
+            if (!targetSelect || !typeSelect || !toneSelect) return;
+            if (groupSelect) groupSelect.value = "";
 
-            const allTargets = [
-                "일반 회원", "트레이너", "피트니스 센터 대표", "메디컬 피트니스 센터",
-                "병원", "제약사", "국내 유통사", "해외 유통사", "재활센터", "연구기관", "검진센터", "물리치료사"
-            ];
+            targetSelect.disabled = true;
+            targetSelect.innerHTML = `<option value="">\uD0C0\uAC9F \uACE0\uAC1D\uAD70\uC744 \uBA3C\uC800 \uC120\uD0DD\uD558\uC138\uC694</option>`;
 
-            allTargets.forEach(target => {
-                if (currentLang !== 'ko' && ["국내 유통사", "해외 유통사", "제약사"].includes(target)) return;
-                const opt = document.createElement('option');
-                opt.value = target;
-                opt.textContent = TARGET_NAMES[target]?.[currentLang] || target;
-                targetSelect.appendChild(opt);
-            });
+            typeSelect.disabled = true;
+            typeSelect.innerHTML = `<option value="">\uC138\uBD80 \uD0C0\uAC9F \uACE0\uAC1D\uC744 \uBA3C\uC800 \uC120\uD0DD\uD558\uC138\uC694</option>`;
 
-            if (previousValue && [...targetSelect.options].some(o => o.value === previousValue)) {
-                targetSelect.value = previousValue;
-            } else if (targetSelect.options.length > 0) {
-                targetSelect.value = targetSelect.options[0].value;
+            toneSelect.disabled = true;
+            toneSelect.value = "";
+
+            if (descriptionEl) {
+                descriptionEl.textContent = "";
+                descriptionEl.classList.add('hidden');
             }
         }
+
+        function handleTargetGroupChange() {
+            const groupSelect = document.getElementById('target-group-select');
+            const targetSelect = document.getElementById('target-select');
+            const typeSelect = document.getElementById('type-select');
+            const toneSelect = document.getElementById('tone-select');
+            const descriptionEl = document.getElementById('target-group-description');
+
+            const groupKey = groupSelect ? groupSelect.value : "";
+            const group = TARGET_GROUPS[groupKey];
+
+            if (!targetSelect || !typeSelect || !toneSelect) return;
+
+            targetSelect.innerHTML = "";
+            typeSelect.innerHTML = "";
+            toneSelect.value = "";
+
+            if (!group) {
+                targetSelect.disabled = true;
+                targetSelect.innerHTML = `<option value="">\uD0C0\uAC9F \uACE0\uAC1D\uAD70\uC744 \uBA3C\uC800 \uC120\uD0DD\uD558\uC138\uC694</option>`;
+                typeSelect.disabled = true;
+                typeSelect.innerHTML = `<option value="">\uC138\uBD80 \uD0C0\uAC9F \uACE0\uAC1D\uC744 \uBA3C\uC800 \uC120\uD0DD\uD558\uC138\uC694</option>`;
+                toneSelect.disabled = true;
+                if (descriptionEl) {
+                    descriptionEl.textContent = "";
+                    descriptionEl.classList.add('hidden');
+                }
+                if (typeof handleContentTypeChange === "function") handleContentTypeChange();
+                return;
+            }
+
+            targetSelect.disabled = false;
+            targetSelect.innerHTML = `<option value="">\uC138\uBD80 \uD0C0\uAC9F \uACE0\uAC1D\uC744 \uC120\uD0DD\uD558\uC138\uC694</option>`;
+            group.targets.forEach(target => {
+                const option = document.createElement('option');
+                option.value = target;
+                option.textContent = TARGET_NAMES[target]?.[currentLang] || target;
+                targetSelect.appendChild(option);
+            });
+
+            typeSelect.disabled = true;
+            typeSelect.innerHTML = `<option value="">\uC138\uBD80 \uD0C0\uAC9F \uACE0\uAC1D\uC744 \uBA3C\uC800 \uC120\uD0DD\uD558\uC138\uC694</option>`;
+            toneSelect.disabled = true;
+
+            if (descriptionEl) {
+                descriptionEl.textContent = group.description || "";
+                descriptionEl.classList.remove('hidden');
+            }
+            if (typeof handleContentTypeChange === "function") handleContentTypeChange();
+            if (typeof createIconsSafe === "function") createIconsSafe();
+        }
+
+        function handleTargetAudienceChange() {
+            const groupSelect = document.getElementById('target-group-select');
+            const targetSelect = document.getElementById('target-select');
+            const typeSelect = document.getElementById('type-select');
+            const toneSelect = document.getElementById('tone-select');
+
+            const groupKey = groupSelect ? groupSelect.value : "";
+            const group = TARGET_GROUPS[groupKey];
+            const selectedTarget = targetSelect ? targetSelect.value : "";
+
+            if (!typeSelect || !toneSelect) return;
+            typeSelect.innerHTML = "";
+
+            if (!group || !selectedTarget) {
+                typeSelect.disabled = true;
+                typeSelect.innerHTML = `<option value="">\uC138\uBD80 \uD0C0\uAC9F \uACE0\uAC1D\uC744 \uBA3C\uC800 \uC120\uD0DD\uD558\uC138\uC694</option>`;
+                toneSelect.disabled = true;
+                toneSelect.value = "";
+                if (typeof handleContentTypeChange === "function") handleContentTypeChange();
+                return;
+            }
+
+            typeSelect.disabled = false;
+            typeSelect.innerHTML = `<option value="">\uCF58\uD150\uCE20 \uC720\uD615\uC744 \uC120\uD0DD\uD558\uC138\uC694</option>`;
+            group.allowedContentTypes.forEach(typeKey => {
+                const option = document.createElement('option');
+                option.value = typeKey;
+                option.textContent = CONTENT_TYPE_NAMES[typeKey]?.[currentLang] || typeKey;
+                typeSelect.appendChild(option);
+            });
+
+            toneSelect.disabled = true;
+            toneSelect.value = "";
+            if (typeof handleContentTypeChange === "function") handleContentTypeChange();
+            if (typeof createIconsSafe === "function") createIconsSafe();
+        }
+
 
         function handleProductChange() {
             const prodKey = document.getElementById('product-select').value;
@@ -1427,15 +1562,24 @@
         }
 
         function handleContentTypeChange() {
-            let type = document.getElementById('type-select').value;
-            if (!CONTENT_TYPE_NAMES[type]) type = 'strategyplan';
+            const typeSelect = document.getElementById('type-select');
+            const toneSelect = document.getElementById('tone-select');
+            const type = typeSelect ? typeSelect.value : "";
             const videoBox = document.getElementById('video-duration-box');
             const durationSelect = document.getElementById('reels-duration');
             const emailPurposeBox = document.getElementById('email-purpose-box');
             const btnLabel = document.getElementById('ui-btn-generate');
             const dict = TRANSLATIONS[currentLang];
 
-            // 릴스 조건부 시간 활성화
+            if (toneSelect) {
+                if (type) {
+                    toneSelect.disabled = false;
+                } else {
+                    toneSelect.disabled = true;
+                    toneSelect.value = "";
+                }
+            }
+
             if (type === 'reels') {
                 durationSelect.classList.remove('hidden');
                 videoBox.classList.remove('hidden');
@@ -1457,13 +1601,14 @@
 
             if (btnLabel) {
                 if (type === 'imagegen') {
-                    btnLabel.innerHTML = `<i data-lucide="image" class="w-4 h-4 sm:w-5 sm:h-5"></i><span id="ui-btn-generate-text">${dict.btnGenerateImage || "이미지 생성"}</span>`;
+                    btnLabel.innerHTML = `<i data-lucide="image" class="w-4 h-4 sm:w-5 sm:h-5"></i><span id="ui-btn-generate-text">${dict.btnGenerateImage || "\uC774\uBBF8\uC9C0 \uC0DD\uC131"}</span>`;
                 } else {
-                    btnLabel.innerHTML = `<i data-lucide="zap" class="w-4 h-4 sm:w-5 sm:h-5"></i><span id="ui-btn-generate-text">${dict.btnGenerate || "전략 마케팅 콘텐츠 생성"}</span>`;
+                    btnLabel.innerHTML = `<i data-lucide="zap" class="w-4 h-4 sm:w-5 sm:h-5"></i><span id="ui-btn-generate-text">${dict.btnGenerate || "\uC804\uB7B5 \uB9C8\uCF00\uD305 \uCF58\uD150\uCE20 \uC0DD\uC131"}</span>`;
                 }
                 createIconsSafe();
             }
         }
+
 
         function handleImageUpload(event) {
             const files = event.target.files;
@@ -2523,17 +2668,42 @@ ${sampleText}`;
 
         async function generateContent(isAutoRefresh = false) {
             const product = document.getElementById('product-select').value;
+            const targetGroupKey = document.getElementById('target-group-select')?.value || "";
+            const targetGroupContext = TARGET_GROUPS[targetGroupKey] || null;
+            const targetGroupStrategy = TARGET_GROUP_MESSAGE_STRATEGY[targetGroupKey] || null;
             const target = document.getElementById('target-select').value;
             let type = document.getElementById('type-select').value;
-            if (!CONTENT_TYPE_NAMES[type]) type = 'strategyplan';
             const keywordString = document.getElementById('keywords-input').value;
             const reelsDuration = document.getElementById('reels-duration').value;
             const emailPurpose = document.getElementById('email-purpose-select')?.value || 'new_partner_proposal';
             const emailPurposeContext = EMAIL_PURPOSE_CONTEXT[emailPurpose] || EMAIL_PURPOSE_CONTEXT.new_partner_proposal;
-            const selectedTone = document.getElementById('tone-select')?.value || 'professional';
-            const toneContext = TONE_CONTEXT[selectedTone] || TONE_CONTEXT.professional;
+            const selectedTone = document.getElementById('tone-select')?.value || "";
+            const toneContext = TONE_CONTEXT[selectedTone] || null;
+
+            if (!targetGroupKey || !targetGroupContext) {
+                showErrorModal("\uC785\uB825 \uD544\uC694", "\uD0C0\uAC9F \uACE0\uAC1D\uAD70\uC744 \uC120\uD0DD\uD574 \uC8FC\uC138\uC694.", "\uCD5C\uC885 \uC18C\uBE44\uC790, \uC720\uD1B5\uC0AC, \uAD6C\uB9E4 \uACE0\uAC1D \uC911 \uD558\uB098\uB97C \uBA3C\uC800 \uC120\uD0DD\uD574\uC57C \uD569\uB2C8\uB2E4.");
+                return;
+            }
+            if (!target) {
+                showErrorModal("\uC785\uB825 \uD544\uC694", "\uC138\uBD80 \uD0C0\uAC9F \uACE0\uAC1D\uC744 \uC120\uD0DD\uD574 \uC8FC\uC138\uC694.", "\uC120\uD0DD\uD55C \uD0C0\uAC9F \uACE0\uAC1D\uAD70\uC5D0 \uB9DE\uB294 \uC138\uBD80 \uB300\uC0C1\uC744 \uC120\uD0DD\uD574\uC57C \uD569\uB2C8\uB2E4.");
+                return;
+            }
+            if (!type || !CONTENT_TYPE_NAMES[type]) {
+                showErrorModal("\uC785\uB825 \uD544\uC694", "\uCF58\uD150\uCE20 \uC720\uD615\uC744 \uC120\uD0DD\uD574 \uC8FC\uC138\uC694.", "\uC138\uBD80 \uD0C0\uAC9F \uACE0\uAC1D \uC120\uD0DD \uD6C4 \uCF58\uD150\uCE20 \uC720\uD615\uC744 \uC120\uD0DD\uD574\uC57C \uD569\uB2C8\uB2E4.");
+                return;
+            }
+            if (!selectedTone || !toneContext) {
+                showErrorModal("\uC785\uB825 \uD544\uC694", "\uD1A4\uC564\uB9E4\uB108\uB97C \uC120\uD0DD\uD574 \uC8FC\uC138\uC694.", "\uCF58\uD150\uCE20 \uC720\uD615 \uC120\uD0DD \uD6C4 \uACB0\uACFC\uBB3C\uC758 \uD1A4\uC564\uB9E4\uB108\uB97C \uC120\uD0DD\uD574\uC57C \uD569\uB2C8\uB2E4.");
+                return;
+            }
+            const allowedTypes = targetGroupContext.allowedContentTypes || [];
+            if (!allowedTypes.includes(type)) {
+                showErrorModal("\uCF58\uD150\uCE20 \uC720\uD615 \uC120\uD0DD \uC624\uB958", "\uD604\uC7AC \uD0C0\uAC9F \uACE0\uAC1D\uAD70\uC5D0\uC11C\uB294 \uC120\uD0DD\uD560 \uC218 \uC5C6\uB294 \uCF58\uD150\uCE20 \uC720\uD615\uC785\uB2C8\uB2E4.", "\uD0C0\uAC9F \uACE0\uAC1D\uAD70\uC5D0 \uB9DE\uB294 \uCF58\uD150\uCE20 \uC720\uD615\uC744 \uB2E4\uC2DC \uC120\uD0DD\uD574 \uC8FC\uC138\uC694.");
+                return;
+            }
+
             const rawKeywords = keywordString.split(',').map(k => k.trim()).filter(k => k.length > 0);
-            const keywords = rawKeywords.length > 0 ? rawKeywords : ["Innovation", "Exosystems", "Data"];
+            const keywords = rawKeywords;
 
             const kb = PRODUCT_KB[product];
             const strategicInsight = STRATEGIC_AUDIENCE_INSIGHTS[target]?.[currentLang] || STRATEGIC_AUDIENCE_INSIGHTS[target]?.['en'] || "Strategic optimization goals";
@@ -2571,9 +2741,9 @@ ${sampleText}`;
             const L = labels[currentLang] || labels['en'];
 
             briefHTML = `
-                <li><strong class="text-blue-700">${L.target}:</strong> ${product} ➔ ${localizedTarget}</li>
+                <li><strong class="text-blue-700">${L.target}:</strong> ${targetGroupContext?.label || ''} / ${product} ? ${localizedTarget}</li>
                 <li><strong class="text-blue-700">${L.pain}:</strong> ${strategicInsight}</li>
-                <li><strong class="text-blue-700">${L.key}:</strong> ${keywords.join(' \u00B7 ')}</li>
+                ${keywords.length ? `<li><strong class="text-blue-700">${L.key}:</strong> ${keywords.join(' \u00B7 ')}</li>` : ''}
             `;
             if (isExtendedKBActive && learningInsights.length > 0) {
                 // Too many insights might clutter the UI, just show a summary count
@@ -2660,10 +2830,19 @@ Generate marketing content with the following parameters:
 - Product Name: ${product}
 - Product Definition: ${kb.definition[currentLang] || kb.definition['ko']}
 - Product Positioning: ${kb.positioning[currentLang] || kb.positioning['ko']}
+
+[Target Group]
+- Group Label: ${targetGroupContext?.label || ""}
+- Group Description: ${targetGroupContext?.description || ""}
+- Specific Target: ${localizedTarget}
+
+[Target Group Message Strategy]
+${targetGroupStrategy?.strategy || ""}
+
 - Target Audience: ${localizedTarget}
 - Target Audience Pain Point: ${strategicInsight}
 - Content Type: ${translatedType} (ID: ${type})${durationText}
-- Keywords to Emphasize: ${keywords.join(', ')}
+- Keywords to Emphasize: ${keywords.length ? keywords.join(', ') : 'None provided. Use Product KB and learned context to derive the core message.'}
 - Prohibited Expressions (DO NOT USE THESE): ${prohibitedWords.join(', ')}
 - Required Rules: ${rules.join(', ')}
 
@@ -2686,8 +2865,15 @@ ${type === 'email' ? `
 - Do not expose learning data file names, internal logs, API status, quota information, or compliance check logs.
 - Do not use Markdown symbols such as **, ###, or code blocks.
 ` : ''}
-[CORE REQUIREMENT: KEYWORD CENTRIC]
-The entire narrative and strategic angle MUST revolve heavily around these Keywords: ${keywords.join(', ')}. Make them the central theme of your output.
+[CORE REQUIREMENT: KEYWORD HANDLING]
+${keywords.length ? `The narrative and strategic angle should clearly reflect these user keywords: ${keywords.join(', ')}.` : 'No emphasis keywords were provided. Build the core message from the Product KB, target group strategy, selected target, content type, tone and manner, and learned context only.'}
+
+[TARGET GROUP APPROACH]
+1. Adapt the message approach to the selected target group.
+2. For end consumers, focus on direct experience, understandable value, trust, and personal relevance.
+3. For distributors, focus on marketability, sales logic, demo operation, partnership structure, and why they should carry or propose the product.
+4. For buyers, focus on adoption need, operational value, service differentiation, customer consultation quality, and purchase review rationale.
+5. Respect the content-type restrictions implied by the target group.
 
 [GROUNDING AND PRIVACY RULES]
 아래 학습 데이터는 내부 참고용입니다. 결과물에 파일명, 요약 로그, API 오류, quota 메시지, 학습 데이터 목록을 표시하지 마세요. 학습 데이터에서 확인 가능한 핵심 메시지만 콘텐츠 문장에 자연스럽게 반영하세요. 모르는 내용은 추정하지 말고 생략하세요.
@@ -3086,7 +3272,11 @@ DO NOT include any introductory or concluding remarks (e.g., "Here is the conten
         Object.assign(window, {
             EMAIL_PURPOSE_CONTEXT,
             TONE_CONTEXT,
+            TARGET_GROUPS,
+            TARGET_GROUP_MESSAGE_STRATEGY,
             saveGeneratedContentToLearningHistory,
+            handleTargetGroupChange,
+            handleTargetAudienceChange,
             setLanguage,
             generateContent,
             switchView,
