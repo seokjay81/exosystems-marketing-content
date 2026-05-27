@@ -166,6 +166,17 @@
                         <option value="product_newsletter">제품 News Letter</option>
                     </select>
                 </div>
+
+                <div id="tone-select-box" class="space-y-2">
+                    <label class="text-xs sm:text-sm font-bold text-slate-700 block">&#53668;&#50532;&#47588;&#45320;</label>
+                    <select id="tone-select" class="w-full bg-slate-50 border-2 border-slate-300 rounded-xl px-4 py-2.5 sm:py-3 text-slate-900 font-bold focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none text-sm hover:border-blue-400">
+                        <option value="professional">&#51204;&#47928;&#51201;&#51064;&#32;&#53668;</option>
+                        <option value="soft">&#48512;&#46300;&#47084;&#50868;&#32;&#53668;</option>
+                        <option value="premium">&#54532;&#47532;&#48120;&#50628;&#32;&#53668;</option>
+                        <option value="fun">&#51116;&#48120;&#183;&#55141;&#48120;&#32;&#50948;&#51452;&#51032;&#32;&#53668;</option>
+                        <option value="attention">&#44288;&#49900;&#51012;&#32;&#50976;&#46020;&#54616;&#45716;&#32;&#53668;</option>
+                    </select>
+                </div>
 <!-- Video Duration Context Tooltip (Dynamic) -->
                 <div id="video-duration-box" class="hidden p-3 bg-blue-50 border-2 border-blue-200 rounded-xl text-xs text-blue-800 flex items-start space-x-2 font-medium">
                     <i data-lucide="info" class="w-4 h-4 mt-0.5 flex-shrink-0"></i>
@@ -1033,6 +1044,41 @@
             }
         };
         window.EMAIL_PURPOSE_CONTEXT = EMAIL_PURPOSE_CONTEXT;
+
+
+        const TONE_CONTEXT = {
+            professional: {
+                label: "\uC804\uBB38\uC801\uC778 \uD1A4",
+                direction: "Write with logical, credible business structure. Convert product features into customer value, adoption rationale, and decision-making evidence.",
+                style: "Refined sentences, clear structure, no exaggeration, B2B proposal tone",
+                avoid: "Casual wording, inflated modifiers, unsupported performance claims"
+            },
+            soft: {
+                label: "\uBD80\uB4DC\uB7EC\uC6B4 \uD1A4",
+                direction: "Write naturally and warmly so the reader can review without pressure while preserving business trust.",
+                style: "Gentle wording, comfortable flow, soft proposal, relationship-building focus",
+                avoid: "High-pressure sales language or overly forceful CTA"
+            },
+            premium: {
+                label: "\uD504\uB9AC\uBBF8\uC5C4 \uD1A4",
+                direction: "Express technical credibility and differentiation with a restrained premium feel. Emphasize brand value, expertise, and refined customer experience.",
+                style: "Elegant and restrained sentences, premium service proposal tone, differentiation-first structure",
+                avoid: "Discount-promotion feel, excessive exclamation, exaggerated effects"
+            },
+            fun: {
+                label: "\uC7AC\uBBF8\u00B7\uD765\uBBF8 \uC704\uC8FC\uC758 \uD1A4",
+                direction: "Make the content lively and easy to read while maintaining product professionalism and compliance boundaries.",
+                style: "Light rhythm, simple wording, curiosity, SNS/card-news friendly copy",
+                avoid: "Medical exaggeration, unverified humor, overly casual wording"
+            },
+            attention: {
+                label: "\uAD00\uC2EC\uC744 \uC720\uB3C4\uD558\uB294 \uD1A4",
+                direction: "Create curiosity and problem awareness from the first sentence, then clearly explain why the product deserves review now.",
+                style: "Strong opening, problem framing, differentiation emphasis, meeting/demo conversion focus",
+                avoid: "Clickbait, provocative exaggeration, unsupported numbers"
+            }
+        };
+        window.TONE_CONTEXT = TONE_CONTEXT;
 
         const STATUS_NAMES = {
             "Draft": { ko: "작성중 (Draft)", en: "Draft", zh: "草稿 (Draft)", ja: "下書き (Draft)" },
@@ -2374,6 +2420,15 @@ ${sampleText}`;
             const learnedPointText = context.learningInsights && context.learningInsights.length
                 ? context.learningInsights.slice(0, 3).map(item => sanitizeLearningInsightForPrompt(String(item).replace(/\[[^\]]+\]/g, ""))).filter(Boolean).join("\n")
                 : "\uC81C\uD488\uC758 \uD575\uC2EC \uAE30\uB2A5\uACFC \uD0C0\uAC9F \uACE0\uAC1D\uC758 \uB2C8\uC988\uB97C \uAE30\uC900\uC73C\uB85C \uBA54\uC2DC\uC9C0\uB97C \uAD6C\uC131\uD588\uC2B5\uB2C8\uB2E4.";
+            const localToneKey = context.selectedTone || 'professional';
+            const toneLeadMap = {
+                professional: "\uD575\uC2EC\uC740 \uC2E0\uB8B0\uD560 \uC218 \uC788\uB294 \uC758\uC0AC\uACB0\uC815 \uADFC\uAC70\uB97C \uBD84\uBA85\uD558\uAC8C \uC81C\uC2DC\uD558\uB294 \uAC83\uC785\uB2C8\uB2E4.",
+                soft: "\uBD80\uB2F4\uC744 \uC904\uC774\uB418 \uAC80\uD1A0\uD574\uC57C \uD560 \uC774\uC720\uB97C \uC790\uC5F0\uC2A4\uB7FD\uAC8C \uC804\uB2EC\uD558\uB294 \uAD6C\uC131\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.",
+                premium: "\uAE30\uC220\uC801 \uC2E0\uB8B0\uB3C4\uC640 \uCC28\uBCC4\uD654\uB41C \uACE0\uAC1D \uACBD\uD5D8\uC744 \uC808\uC81C\uB41C \uBC29\uC2DD\uC73C\uB85C \uC804\uB2EC\uD558\uB294 \uAC83\uC774 \uC911\uC694\uD569\uB2C8\uB2E4.",
+                fun: "\uC5B4\uB835\uC9C0 \uC54A\uAC8C \uC774\uD574\uB418\uBA74\uC11C\uB3C4 \uAE30\uC5B5\uC5D0 \uB0A8\uB294 \uBA54\uC2DC\uC9C0\uB85C \uAD6C\uC131\uD558\uB294 \uAC83\uC774 \uC88B\uC2B5\uB2C8\uB2E4.",
+                attention: "\uCCAB \uAC80\uD1A0 \uB2E8\uACC4\uC5D0\uC11C \uBB38\uC81C\uC758\uC2DD\uACFC \uB2E4\uC74C \uD589\uB3D9\uC774 \uBC14\uB85C \uBCF4\uC774\uB3C4\uB85D \uAD6C\uC131\uD558\uB294 \uAC83\uC774 \uC801\uD569\uD569\uB2C8\uB2E4."
+            };
+            const toneLead = toneLeadMap[localToneKey] || toneLeadMap.professional;
 
             if (context.type === 'email') {
                 const emailPurposeContext = context.emailPurposeContext || EMAIL_PURPOSE_CONTEXT.new_partner_proposal;
@@ -2382,7 +2437,8 @@ ${sampleText}`;
                 const purposeCTA = emailPurposeContext.cta || "\uB370\uBAA8 \uB610\uB294 \uBBF8\uD305 \uC77C\uC815 \uB17C\uC758";
                 return "\uC81C\uBAA9: " + context.product + " " + purposeLabel + " \uAD00\uB828 \uAC80\uD1A0 \uC81C\uC548\uB4DC\uB9BD\uB2C8\uB2E4\n\n" +
                     "\uC548\uB155\uD558\uC138\uC694 \uB2F4\uB2F9\uC790\uB2D8,\n\n" +
-                    context.localizedTarget + " \uAD00\uC810\uC5D0\uC11C\uB294 \uB2E8\uC21C\uD55C \uC81C\uD488 \uC18C\uAC1C\uBCF4\uB2E4 \uC2E4\uC81C \uC6B4\uC601\uC5D0\uC11C \uD655\uC778\uD560 \uC218 \uC788\uB294 \uAC80\uD1A0 \uAC00\uCE58\uAC00 \uC911\uC694\uD569\uB2C8\uB2E4.\n\n" +
+                    context.localizedTarget + " \uAD00\uC810\uC5D0\uC11C\uB294 \uB2E8\uC21C\uD55C \uC81C\uD488 \uC18C\uAC1C\uBCF4\uB2E4 \uC2E4\uC81C \uC6B4\uC601\uC5D0\uC11C \uD655\uC778\uD560 \uC218 \uC788\uB294 \uAC80\uD1A0 \uAC00\uCE58\uAC00 \uC911\uC694\uD569\uB2C8\uB2E4.\n" +
+                    toneLead + "\n\n" +
                     purposeDirection + "\n\n" +
                     context.product + "\uB294 " + productDef + "\uC785\uB2C8\uB2E4. " + productPos + "\n\n" +
                     "\uC774\uBC88 \uC81C\uC548\uC758 \uD575\uC2EC\uC740 " + keywordLine + "\uC785\uB2C8\uB2E4. \uAE30\uB2A5 \uB098\uC5F4\uBCF4\uB2E4 \uD604\uC7A5\uC758 \uD65C\uC6A9 \uAC00\uCE58\uC5D0 \uCD08\uC810\uC744 \uB450\uC5C8\uC2B5\uB2C8\uB2E4.\n\n" +
@@ -2395,9 +2451,9 @@ ${sampleText}`;
                     "\uAC10\uC0AC\uD569\uB2C8\uB2E4.\n\uD55C\uAD11\uC11D \uB4DC\uB9BC";
             }
             if (context.type === 'cardnews') {
-                return "\uCE74\uB4DC\uB274\uC2A4 \uAD6C\uC131\uC548\n\n1\uD398\uC774\uC9C0\n\uB370\uC774\uD130 \uC5C6\uC774 \uC124\uBA85\uD558\uB294 \uC2DC\uB300\uB294 \uC9C0\uB098\uAC00\uACE0 \uC788\uC2B5\uB2C8\uB2E4.\n\n2\uD398\uC774\uC9C0\n\uACE0\uAC1D\uC740 \uAC1D\uAD00\uC801\uC778 \uAE30\uC900\uACFC \uC774\uD574\uD558\uAE30 \uC26C\uC6B4 \uBCC0\uD654\uB97C \uC6D0\uD569\uB2C8\uB2E4.\n\n3\uD398\uC774\uC9C0\n" + context.product + "\uB294 " + productDef + "\uB85C, " + productPos + "\n\n4\uD398\uC774\uC9C0\n\uD575\uC2EC \uD0A4\uC6CC\uB4DC\uB294 " + keywordLine + "\uC785\uB2C8\uB2E4.\n\n5\uD398\uC774\uC9C0\n" + context.product + "\uB97C \uD1B5\uD574 \uB354 \uC124\uB4DD\uB825 \uC788\uB294 \uACE0\uAC1D \uACBD\uD5D8\uC744 \uC81C\uC548\uD558\uC138\uC694.";
+                return "\uCE74\uB4DC\uB274\uC2A4 \uAD6C\uC131\uC548\n\n1\uD398\uC774\uC9C0\n\uB370\uC774\uD130 \uC5C6\uC774 \uC124\uBA85\uD558\uB294 \uC2DC\uB300\uB294 \uC9C0\uB098\uAC00\uACE0 \uC788\uC2B5\uB2C8\uB2E4.\n\n2\uD398\uC774\uC9C0\n" + toneLead + "\n\n3\uD398\uC774\uC9C0\n" + context.product + "\uB294 " + productDef + "\uB85C, " + productPos + "\n\n4\uD398\uC774\uC9C0\n\uD575\uC2EC \uD0A4\uC6CC\uB4DC\uB294 " + keywordLine + "\uC785\uB2C8\uB2E4.\n\n5\uD398\uC774\uC9C0\n" + context.product + "\uB97C \uD1B5\uD574 \uB354 \uC124\uB4DD\uB825 \uC788\uB294 \uACE0\uAC1D \uACBD\uD5D8\uC744 \uC81C\uC548\uD558\uC138\uC694.";
             }
-            return context.product + " \uCF58\uD150\uCE20 \uCD08\uC548\n\n" + context.product + "\uB294 " + productDef + "\uC785\uB2C8\uB2E4.\n" + productPos + "\n\n\uD575\uC2EC \uD0A4\uC6CC\uB4DC\uB294 " + keywordLine + "\uC785\uB2C8\uB2E4.\n\n1. \uC81C\uD488 \uAE30\uB2A5\uBCF4\uB2E4 \uACE0\uAC1D\uC774 \uC5BB\uB294 \uBCC0\uD654\uB97C \uBA3C\uC800 \uC124\uBA85\uD569\uB2C8\uB2E4.\n2. \uB370\uC774\uD130 \uAE30\uBC18 \uC0C1\uB2F4\uACFC \uAC1D\uAD00\uC801 \uC124\uBA85\uC758 \uAC00\uCE58\uB97C \uAC15\uC870\uD569\uB2C8\uB2E4.\n3. \uACFC\uC7A5\uB41C \uD6A8\uACFC \uD45C\uD604\uC740 \uD53C\uD558\uACE0 \uCC38\uACE0 \uB370\uC774\uD130\uC640 \uC758\uC0AC\uACB0\uC815 \uBCF4\uC870 \uAD00\uC810\uC73C\uB85C \uC124\uBA85\uD569\uB2C8\uB2E4.\n\n" + learnedPointText;
+            return context.product + " \uCF58\uD150\uCE20 \uCD08\uC548\n\n" + context.product + "\uB294 " + productDef + "\uC785\uB2C8\uB2E4.\n" + productPos + "\n\n" + toneLead + "\n\n\uD575\uC2EC \uD0A4\uC6CC\uB4DC\uB294 " + keywordLine + "\uC785\uB2C8\uB2E4.\n\n1. \uC81C\uD488 \uAE30\uB2A5\uBCF4\uB2E4 \uACE0\uAC1D\uC774 \uC5BB\uB294 \uBCC0\uD654\uB97C \uBA3C\uC800 \uC124\uBA85\uD569\uB2C8\uB2E4.\n2. \uB370\uC774\uD130 \uAE30\uBC18 \uC0C1\uB2F4\uACFC \uAC1D\uAD00\uC801 \uC124\uBA85\uC758 \uAC00\uCE58\uB97C \uAC15\uC870\uD569\uB2C8\uB2E4.\n3. \uACFC\uC7A5\uB41C \uD6A8\uACFC \uD45C\uD604\uC740 \uD53C\uD558\uACE0 \uCC38\uACE0 \uB370\uC774\uD130\uC640 \uC758\uC0AC\uACB0\uC815 \uBCF4\uC870 \uAD00\uC810\uC73C\uB85C \uC124\uBA85\uD569\uB2C8\uB2E4.\n\n" + learnedPointText;
         }
 
         async function generateContent(isAutoRefresh = false) {
@@ -2409,6 +2465,8 @@ ${sampleText}`;
             const reelsDuration = document.getElementById('reels-duration').value;
             const emailPurpose = document.getElementById('email-purpose-select')?.value || 'new_partner_proposal';
             const emailPurposeContext = EMAIL_PURPOSE_CONTEXT[emailPurpose] || EMAIL_PURPOSE_CONTEXT.new_partner_proposal;
+            const selectedTone = document.getElementById('tone-select')?.value || 'professional';
+            const toneContext = TONE_CONTEXT[selectedTone] || TONE_CONTEXT.professional;
             const rawKeywords = keywordString.split(',').map(k => k.trim()).filter(k => k.length > 0);
             const keywords = rawKeywords.length > 0 ? rawKeywords : ["Innovation", "Exosystems", "Data"];
 
@@ -2508,12 +2566,12 @@ ${sampleText}`;
 
             try {
                 const sysPrompt = `You are a world-class management consultant and B2B healthcare/fitness-tech marketing strategist.
-Do not merely summarize. Redesign the message structure using only facts confirmed in the provided Product KB, target audience, keywords, email purpose, user memo, and sanitized learned context.
+Do not merely summarize. Redesign the message structure using only facts confirmed in the provided Product KB, target audience, keywords, email purpose, selected tone and manner, user memo, and sanitized learned context.
 Write with the logic and persuasion expected from a top-tier strategy and brand advisory team such as McKinsey, BCG, and Ogilvy.
 Never invent unsupported numbers, customer cases, certifications, effects, market share, contracts, clinical outcomes, or performance claims. Use only information that is explicitly provided.
 Use learned data internally only. Never show file names, analysis status, API errors, quota messages, learning-data lists, JSON keys, or internal logs in the final output.
 The final output must be copy-ready Korean business writing. For videoprompt, only the actual visual prompt body may be in English.
-Quality rules: start from the target customer's practical problem, translate product features into operational business value, reformulate learned product descriptions into stronger messaging, avoid exaggerated effect claims, and follow medical-device compliance rules when relevant.
+Quality rules: adapt the opening, sentence rhythm, persuasion method, and CTA to the selected tone; start from the target customer's practical problem, translate product features into operational business value, reformulate learned product descriptions into stronger messaging, avoid exaggerated effect claims, and follow medical-device compliance rules when relevant.
 For email, make the subject, opening, core value, reason to review, and next action clear. For new-partner proposal emails, explain market relevance, differentiation, review value, and the need for a demo or meeting to an audience with no existing relationship.
 For strategy plans, provide concrete execution strategy, promotion direction, channel tactics, and target-specific approach. For card news, make each page's message clear.
 Do not use Markdown syntax in the final output. Do not use **bold**, ### headings, or code blocks. Use ordinary numbered lines and line breaks only when needed.`;
@@ -2542,6 +2600,12 @@ Generate marketing content with the following parameters:
 - Keywords to Emphasize: ${keywords.join(', ')}
 - Prohibited Expressions (DO NOT USE THESE): ${prohibitedWords.join(', ')}
 - Required Rules: ${rules.join(', ')}
+
+[Tone & Manner]
+- Tone Label: ${toneContext.label}
+- Direction: ${toneContext.direction}
+- Writing Style: ${toneContext.style}
+- Avoid: ${toneContext.avoid}
 ${type === 'email' ? `
 [Email Purpose]
 - Purpose Label: ${emailPurposeContext.label}
@@ -2562,6 +2626,25 @@ The entire narrative and strategic angle MUST revolve heavily around these Keywo
 [GROUNDING AND PRIVACY RULES]
 아래 학습 데이터는 내부 참고용입니다. 결과물에 파일명, 요약 로그, API 오류, quota 메시지, 학습 데이터 목록을 표시하지 마세요. 학습 데이터에서 확인 가능한 핵심 메시지만 콘텐츠 문장에 자연스럽게 반영하세요. 모르는 내용은 추정하지 말고 생략하세요.
 콘텐츠는 단순 요약이 아니라 타겟의 현실적 문제, 제품의 실무적 가치, 다음 액션을 중심으로 재구성하세요.
+
+[CONTENT QUALITY AND STRUCTURE RULES]
+1. Design a fresh message structure according to the target audience and selected tone; do not repeat generic sentences.
+2. Naturally integrate only product characteristics and messages confirmed in learned data, Product KB, user memo, or uploaded material.
+3. Do not show source text, file names, URL lists, JSON, internal logs, quota information, or learning-data labels.
+4. Reframe product description around why the target audience should care and what practical decision value they receive.
+5. If information is unknown or unverified, omit it.
+6. Show only the final content.
+7. Use readable paragraph breaks.
+8. Use numbered structure when useful, but avoid excessive special symbols.
+9. Combine narrative and lists according to content type and selected tone.
+10. Write primarily in Korean.
+
+[TONE-SPECIFIC WRITING RULES]
+- professional: logical structure, problem framing, product value, adoption rationale, next action. Suitable for hospitals, pharma, distributors, and partners.
+- soft: natural and low-pressure wording focused on relationship building and review. Suitable for follow-up and material sharing.
+- premium: restrained premium language emphasizing technical credibility and differentiated customer experience. Suitable for premium fitness, medical fitness, and overseas partners.
+- fun: easy, lively, memorable wording for card news, SNS, reels, and newsletters while preserving medical-device expression boundaries.
+- attention: strong opening that creates problem awareness and explains why the reader should review now. Suitable for new partner proposals, exhibition follow-up, and demo conversion.
 
 [CRITICAL INSTRUCTION: Consultant-Level Grounded Synthesis]
 Do not rely on generic templates. Reconstruct the message like a senior strategy consultant using only the provided Product KB, target context, keywords, additional memo, and sanitized learned context below. Create a sharper positioning angle and persuasive business logic, but do not invent market data, performance numbers, certifications, customer cases, clinical outcomes, contracts, or unverifiable claims.
@@ -2598,7 +2681,9 @@ DO NOT include any introductory or concluding remarks (e.g., "Here is the conten
                     localizedTarget,
                     learningInsights,
                     fileMemoText,
-                    emailPurposeContext
+                    emailPurposeContext,
+                    selectedTone,
+                    toneContext
                 };
                 if (isQuotaExceededError(error)) {
                     showToast(getQuotaFallbackMessage(error));
@@ -2923,6 +3008,7 @@ DO NOT include any introductory or concluding remarks (e.g., "Here is the conten
 
         Object.assign(window, {
             EMAIL_PURPOSE_CONTEXT,
+            TONE_CONTEXT,
             setLanguage,
             generateContent,
             switchView,
