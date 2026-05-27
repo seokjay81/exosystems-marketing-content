@@ -196,25 +196,6 @@
                     <input type="text" id="keywords-input" class="w-full bg-slate-50 border-2 border-slate-300 rounded-xl px-4 py-2.5 sm:py-3 text-slate-900 font-medium placeholder-slate-400 focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none text-sm hover:border-blue-400" placeholder="쉼표(,)로 구분 (예: 데이터 기반, 차별화, 프리미엄)">
                 </div>
 
-                <!-- FILE UPLOADER 1: IMAGES -->
-                <div class="space-y-2 pt-2 border-t-2 border-slate-100">
-                    <label class="text-xs sm:text-sm font-bold text-slate-700 block" id="ui-label-img-upload">제품 / 시각 참고 이미지 업로드</label>
-                    <div class="flex items-center space-x-3">
-                        <button onclick="document.getElementById('img-file-input').click()" class="bg-white hover:bg-slate-50 text-slate-800 border-2 border-slate-300 rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 text-xs font-bold flex items-center space-x-1.5 transition-all outline-none hover:border-slate-400">
-                            <i data-lucide="image" class="w-4 h-4"></i>
-                            <span id="ui-btn-select-img">이미지 선택</span>
-                        </button>
-                        <span id="img-upload-status" class="text-xs text-slate-500 font-medium">선택된 파일 없음</span>
-                        <input type="file" id="img-file-input" accept="image/*" multiple class="hidden" onchange="handleImageUpload(event)">
-                    </div>
-                    <p class="text-[10px] text-slate-400 font-medium" id="ui-img-help-text">*업로드된 이미지는 이미지 생성 및 영상 기획의 컨텍스트로 우선 활용됩니다.</p>
-                    <div id="image-previews" class="grid grid-cols-3 sm:grid-cols-4 gap-2 pt-1"></div>
-                    <button onclick="analyzeImagesAsLearning()" id="ui-btn-analyze-images" class="mt-3 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-2.5 px-4 rounded-xl text-xs transition-all shadow-md flex items-center justify-center space-x-1.5 outline-none border-2 border-indigo-800">
-                        <i data-lucide="brain" class="w-4 h-4"></i>
-                        <span>이미지를 마케팅 학습 데이터로 분석 및 저장</span>
-                    </button>
-                </div>
-
                 <!-- ADDITIONAL STRATEGY MEMO -->
                 <div class="space-y-2 pt-2 border-t-2 border-slate-100">
                     <label class="text-[11px] sm:text-xs font-bold text-slate-700 block" id="ui-label-add-memo">추가 전략 메모 (선택)</label>
@@ -1375,8 +1356,6 @@ Writing standard:
 
         let currentLang = 'ko';
         let activeView = 'generator';
-        let currentUploadedImages = [];
-
         let pendingGeneralData = null;
         let pendingGeneralSource = null;
         let pendingGeneralName = "";
@@ -1508,8 +1487,6 @@ Writing standard:
             }
 
             document.getElementById('library-search').placeholder = currentLang === 'ko' ? "키워드 검색..." : "Search...";
-
-            if (currentUploadedImages.length === 0) document.getElementById('img-upload-status').textContent = dict.noFile;
             if (!pendingGeneralSource) document.getElementById('general-file-status').textContent = dict.noFile;
             createIconsSafe();
         }
@@ -1746,53 +1723,6 @@ Writing standard:
                 }
                 createIconsSafe();
             }
-        }
-
-
-        function handleImageUpload(event) {
-            const files = event.target.files;
-            const previewContainer = document.getElementById('image-previews');
-
-            for(let i = 0; i < files.length; i++) {
-                const file = files[i];
-                const reader = new FileReader();
-
-                reader.onload = function(e) {
-                    const base64Data = e.target.result;
-                    const imageObj = {
-                        name: file.name,
-                        base64: base64Data,
-                        type: file.type,
-                        size: file.size
-                    };
-                    currentUploadedImages.push(imageObj);
-
-                    const div = document.createElement('div');
-                    div.className = "relative group bg-slate-50 border-2 border-slate-200 rounded-xl p-2 flex flex-col items-center justify-center text-[10px] text-slate-500 text-center truncate h-14 sm:h-16 overflow-hidden";
-                    div.setAttribute('data-img-name', file.name);
-                    div.innerHTML = `
-                        <img src="${base64Data}" class="w-full h-full object-cover rounded-lg" alt="${file.name}">
-                        <button onclick="removeUploadedImageByName('${file.name}')" class="absolute -top-1.5 -right-1.5 bg-red-600 text-white rounded-full p-0.5 shadow-sm hover:bg-red-700 transition-all outline-none">
-                            <i data-lucide="x" class="w-3.5 h-3.5"></i>
-                        </button>
-                    `;
-                    previewContainer.appendChild(div);
-                    createIconsSafe();
-                };
-
-                reader.readAsDataURL(file);
-            }
-
-            document.getElementById('img-upload-status').textContent = `${currentUploadedImages.length} 개 이미지`;
-        }
-
-        function removeUploadedImageByName(name) {
-            currentUploadedImages = currentUploadedImages.filter(img => img.name !== name);
-            const elem = document.querySelector(`[data-img-name="${name}"]`);
-            if (elem) elem.remove();
-
-            const dict = TRANSLATIONS[currentLang];
-            document.getElementById('img-upload-status').textContent = currentUploadedImages.length > 0 ? `${currentUploadedImages.length} 개 이미지` : dict.noFile;
         }
 
         // ==========================================
@@ -3057,8 +2987,6 @@ ${keywords.length ? keywords.join(', ') : 'No emphasis keywords were provided. B
 ${isExtendedKBActive && learningInsights.length > 0 ? learningInsights.map(item => `- ${item}`).join('\n') : 'No additional learned context is available.'}
 ${docReflectActive && fileMemoText ? `\n[Additional Strategy Memo]\n${fileMemoText}` : ''}
 
-[Reference Images]
-${currentUploadedImages.length > 0 && (type === 'videoprompt' || type === 'cardnews' || type === 'reels' || type === 'adcopy' || type === 'imagegen') ? `User uploaded reference image files: ${currentUploadedImages.join(', ')}. Use them only as visual context.` : 'None'}
 
 [Mandatory Writing Rules]
 1. Only the target group and content type are required. If product, detailed target, tone, email purpose, or keywords are not selected, use the provided defaults naturally without mentioning that defaults were used.
@@ -3145,7 +3073,6 @@ ONLY if Content Type ID is 'imagegen' or 'reels', include a short English prompt
                 keywords: keywords,
                 strategicDirection: document.getElementById('output-strategic-brief').innerHTML,
                 generatedContent: materialBody,
-                uploadedFiles: currentUploadedImages,
                 fileMemos: docReflectActive ? fileMemoText : "",
                 hashtags: hashtags,
                 isMedicalDevice: kb.isMedical,
@@ -3441,7 +3368,6 @@ ONLY if Content Type ID is 'imagegen' or 'reels', include a short English prompt
             switchView,
             handleProductChange,
             handleContentTypeChange,
-            handleImageUpload,
             handleLearningFileSelect,
             handleLearningUrlInput,
             handleLearningTextInput,
