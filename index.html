@@ -207,8 +207,8 @@
 
                 <!-- ADDITIONAL STRATEGY MEMO -->
                 <div class="space-y-2 pt-2 border-t-2 border-slate-100">
-                    <label class="text-[11px] sm:text-xs font-bold text-slate-700 block" id="ui-label-add-memo">추가 전략 메모 (선택)</label>
-                    <textarea id="doc-memo" rows="2" class="w-full bg-slate-50 border-2 border-slate-300 rounded-lg p-3 text-xs text-slate-900 outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder-slate-400 font-medium hover:border-blue-400" placeholder="콘텐츠 생성 시 추가로 반영할 특별한 전략이나 상황을 간략히 적어주세요."></textarea>
+                    <label class="text-[11px] sm:text-xs font-bold text-slate-700 block" id="ui-label-add-memo">추가 요청 사항 (선택)</label>
+                    <textarea id="doc-memo" rows="2" class="w-full bg-slate-50 border-2 border-slate-300 rounded-lg p-3 text-xs text-slate-900 outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder-slate-400 font-medium hover:border-blue-400" placeholder="콘텐츠에 추가로 반영하고 싶은 요청 사항을 입력하세요. 예: 더 전문적인 톤, 데모 유도 중심, 해외 유통사 관점, 짧은 문장 중심 등"></textarea>
                     <label class="flex items-center space-x-2 pt-1 cursor-pointer select-none">
                         <input type="checkbox" id="doc-reflect-check" checked class="rounded border-slate-300 text-blue-600 focus:ring-blue-500 w-4 h-4" onchange="toggleKBBadge()">
                         <span class="text-[11px] sm:text-xs text-slate-700 font-bold" id="ui-check-reflect-memo">위 메모 및 제품 학습 데이터를 최우선 반영</span>
@@ -452,27 +452,22 @@
                 </div>
 
                 <!-- LIBRARY SEARCH & FILTER -->
-                <div class="bg-white p-3 sm:p-4 rounded-2xl border-2 border-slate-200 shadow-sm grid grid-cols-1 sm:grid-cols-12 gap-2 sm:gap-3 items-center shrink-0">
-                    <div class="sm:col-span-5 lg:col-span-4 relative">
+                <div class="bg-white p-3 sm:p-4 rounded-2xl border-2 border-slate-200 shadow-sm grid grid-cols-1 md:grid-cols-[1fr_180px_auto] gap-3 items-center shrink-0">
+                    <div class="relative">
                         <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 transform -translate-y-1/2"></i>
                         <input type="text" id="library-search" oninput="renderLibrary()" class="w-full bg-slate-50 border-2 border-slate-200 rounded-xl pl-8 pr-3 py-2.5 text-xs outline-none focus:bg-white focus:border-blue-500 transition-all placeholder-slate-400 font-bold" placeholder="키워드 검색...">
                     </div>
-                    <div class="sm:col-span-4 lg:col-span-3 flex space-x-2">
-                        <select id="library-filter-status" onchange="renderLibrary()" class="flex-1 bg-slate-50 border-2 border-slate-200 rounded-xl px-2 py-2.5 text-xs font-bold outline-none focus:bg-white focus:border-blue-500 transition-all text-slate-700">
-                            <option value="ALL" id="ui-opt-all-status">모든 상태보기</option>
-                            <option value="Draft" id="ui-opt-status-draft">Draft</option>
-                            <option value="Reviewed" id="ui-opt-status-reviewed">Reviewed</option>
-                            <option value="Used" id="ui-opt-status-used">Used</option>
-                            <option value="Archived" id="ui-opt-status-archived">Archived</option>
-                        </select>
-                    </div>
-                    <div class="sm:col-span-12 lg:col-span-5 flex flex-wrap items-center justify-start lg:justify-end gap-2 min-w-0">
-                        <span id="library-scope-label" class="inline-flex items-center px-2.5 py-1 rounded-full bg-slate-100 text-slate-500 text-[11px] font-medium whitespace-nowrap border border-slate-200 shrink-0"></span>
-                        <button onclick="clearAllLibraryItems()" class="bg-white hover:bg-red-50 text-red-600 border-2 border-red-200 hover:border-red-400 px-3 py-2.5 rounded-xl text-xs font-extrabold flex items-center justify-center space-x-1 transition-all outline-none whitespace-nowrap shrink-0">
-                            <i data-lucide="trash-2" class="w-4 h-4"></i>
-                            <span>콘텐츠 라이브러리 전체 삭제</span>
-                        </button>
-                    </div>
+                    <select id="library-filter-status" onchange="renderLibrary()" class="w-full bg-slate-50 border-2 border-slate-200 rounded-xl px-2 py-2.5 text-xs font-bold outline-none focus:bg-white focus:border-blue-500 transition-all text-slate-700">
+                        <option value="ALL" id="ui-opt-all-status">모든 상태보기</option>
+                        <option value="Draft" id="ui-opt-status-draft">Draft</option>
+                        <option value="Reviewed" id="ui-opt-status-reviewed">Reviewed</option>
+                        <option value="Used" id="ui-opt-status-used">Used</option>
+                        <option value="Archived" id="ui-opt-status-archived">Archived</option>
+                    </select>
+                    <button onclick="clearAllLibraryItems()" class="bg-white hover:bg-red-50 text-red-600 border-2 border-red-200 hover:border-red-400 px-3 py-2.5 rounded-xl text-xs font-extrabold flex items-center justify-center space-x-1 transition-all outline-none whitespace-nowrap">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        <span>콘텐츠 라이브러리 전체 삭제</span>
+                    </button>
                 </div>
 
                 <!-- CLEAN LIST VIEW FOR GENERATED ITEMS -->
@@ -1347,7 +1342,7 @@ Writing standard:
                 labelImgUpload: "제품 / 시각 참고 이미지 업로드",
                 btnSelectImg: "이미지 선택",
                 imgHelpText: "*업로드된 이미지는 이미지 생성 및 영상 기획의 컨텍스트로 우선 활용됩니다.",
-                labelAddMemo: "추가 마케팅 전략 메모 (선택)",
+                labelAddMemo: "추가 요청 사항 (선택)",
                 checkReflectMemo: "메모 및 학습 데이터를 최우선 반영",
                 btnGenerate: "전략 마케팅 콘텐츠 생성",
                 btnGenerateImage: "마케팅 이미지 생성",
@@ -1422,6 +1417,7 @@ Writing standard:
         let pendingGeneralName = "";
 
         let libraryItems = [];
+        let adminServerLibraryItems = [];
         let learningHistory = []; // 통합 관리 배열 (리스트 표시용)
 
         let activeModalItemId = null;
@@ -2159,11 +2155,17 @@ Writing standard:
                 TYPE: "Local File Analysis",
                 SUMMARY: preview ? preview.slice(0, 500) : sourceName + " could not be parsed deeply, so the file name and user memo were stored as learning context.",
                 INSIGHTS: [
-                    preview ? "Extracted document preview: " + preview.slice(0, 180) + "..." : "Text extraction was limited; file-name based context was saved.",
-                    "Applied product: " + product,
-                    "Analysis status: " + (reason || "local fallback analysis")
+                    preview ? "문서에서 확인된 핵심 맥락: " + preview.slice(0, 220) + "..." : "본문 추출이 제한되어 파일명과 사용자 입력 정보를 기준으로 우선 반영되었습니다.",
+                    "적용 제품: " + product,
+                    "분석 상태: " + (reason || "로컬 fallback 분석")
                 ],
                 KEYWORDS: keywords,
+                MARKETING_POINTS: keywords.slice(0, 8).map(keyword => keyword + " 관점의 콘텐츠 메시지로 활용할 수 있습니다."),
+                TARGET_CUSTOMER_INSIGHTS: ["타겟 고객의 관심사와 문서에서 확인된 메시지를 연결해 콘텐츠 방향에 반영합니다."],
+                POSITIONING_INSIGHTS: ["제품의 데이터 기반 가치와 차별화 포인트를 보조 맥락으로 활용합니다."],
+                SALES_MESSAGE_ANGLES: ["제안 메시지는 제품 기능보다 검토 가치와 현장 활용 장면 중심으로 구성합니다."],
+                CAUTIONS: ["로컬 fallback 학습 데이터입니다. 확인되지 않은 내용은 콘텐츠 생성 시 재검증이 필요합니다."],
+                RAW_TEXT_PREVIEW: preview,
                 NOTICE: "Local learning data generated when AI analysis or document parsing was limited. Use as supporting context for content generation."
             }, null, 2);
         }
@@ -2197,6 +2199,9 @@ Writing standard:
                 INSIGHTS: [preview ? `사이트에서 확인된 핵심 맥락 일부: ${preview.slice(0, 220)}...` : "사이트 본문 수집이 제한되어 URL 기반으로 우선 반영되었습니다.", `적용 제품: ${product}`, `분석 상태: ${reason || "사이트 fallback 분석"}`],
                 KEYWORDS: keywords,
                 MARKETING_POINTS: ["사이트의 메시지, 이미지 설명, 영상 정보를 참고하여 콘텐츠 방향성에 반영합니다.", "타겟 고객의 관심사와 제품 포지셔닝을 연결하는 보조 데이터로 활용합니다."],
+                TARGET_CUSTOMER_INSIGHTS: ["사이트 방문자가 확인하려는 정보와 제품 검토 맥락을 연결합니다."],
+                POSITIONING_INSIGHTS: ["사이트의 핵심 표현과 제품 차별화 메시지를 연결해 포지셔닝에 활용합니다."],
+                SALES_MESSAGE_ANGLES: ["사이트 맥락을 바탕으로 제안 이유, 검토 가치, 다음 액션을 구성합니다."],
                 CAUTIONS: ["사이트 본문 수집이 제한된 경우, 실제 원문 전체가 아닌 일부 맥락만 반영될 수 있습니다."],
                 RAW_TEXT_PREVIEW: preview
             }, null, 2);
@@ -2210,12 +2215,15 @@ Writing standard:
             const obj = typeof dataString === 'string' ? (extractJSON(dataString) || {}) : (dataString || {});
             const arr = value => Array.isArray(value) ? value.filter(Boolean).map(String) : (value ? [String(value)] : []);
             const summary = obj.SUMMARY || obj.EXECUTIVE_SUMMARY || obj.summary || obj.executiveSummary || "";
-            const keywords = arr(obj.KEYWORDS || obj.keywords).slice(0, 10);
-            const insights = arr(obj.INSIGHTS || obj.insights).slice(0, 5);
-            const marketingPoints = arr(obj.MARKETING_POINTS || obj.marketingPoints || obj.marketing_points).slice(0, 5);
-            const cautions = arr(obj.CAUTIONS || obj.cautions || obj.NOTICE || obj.notice).slice(0, 3);
+            const keywords = arr(obj.KEYWORDS || obj.keywords).slice(0, 15);
+            const insights = arr(obj.INSIGHTS || obj.insights).slice(0, 8);
+            const marketingPoints = arr(obj.MARKETING_POINTS || obj.marketingPoints || obj.marketing_points).slice(0, 8);
+            const targetCustomerInsights = arr(obj.TARGET_CUSTOMER_INSIGHTS || obj.targetCustomerInsights || obj.target_customer_insights).slice(0, 5);
+            const positioningInsights = arr(obj.POSITIONING_INSIGHTS || obj.positioningInsights || obj.positioning_insights).slice(0, 5);
+            const salesMessageAngles = arr(obj.SALES_MESSAGE_ANGLES || obj.salesMessageAngles || obj.sales_message_angles).slice(0, 5);
+            const cautions = arr(obj.CAUTIONS || obj.cautions || obj.NOTICE || obj.notice).slice(0, 5);
             const rawTextPreview = String(obj.RAW_TEXT_PREVIEW || obj.rawTextPreview || summary || dataString || "").slice(0, 1500);
-            return { source: obj.SOURCE || obj.source || fallbackName, type: obj.TYPE || obj.type || fallbackType, product: obj.PRODUCT || obj.product || fallbackProduct, summary, keywords, insights, marketingPoints, cautions, rawTextPreview };
+            return { source: obj.SOURCE || obj.source || fallbackName, type: obj.TYPE || obj.type || fallbackType, product: obj.PRODUCT || obj.product || fallbackProduct, summary, keywords, insights, marketingPoints, targetCustomerInsights, positioningInsights, salesMessageAngles, cautions, rawTextPreview };
         }
 
         function buildLearningPromptContext(historyItem) {
@@ -2225,8 +2233,11 @@ Writing standard:
             if (data.keywords.length) parts.push(`키워드: ${data.keywords.join(", ")}`);
             if (data.insights.length) parts.push(`인사이트: ${data.insights.join(" / ")}`);
             if (data.marketingPoints.length) parts.push(`마케팅 포인트: ${data.marketingPoints.join(" / ")}`);
+            if (data.targetCustomerInsights.length) parts.push(`타겟 고객 인사이트: ${data.targetCustomerInsights.join(" / ")}`);
+            if (data.positioningInsights.length) parts.push(`포지셔닝 인사이트: ${data.positioningInsights.join(" / ")}`);
+            if (data.salesMessageAngles.length) parts.push(`영업 메시지 관점: ${data.salesMessageAngles.join(" / ")}`);
             if (data.cautions.length) parts.push(`주의사항: ${data.cautions.join(" / ")}`);
-            return parts.join("\n").slice(0, 1800);
+            return parts.join("\n").slice(0, 2200);
         }
 
         function buildLocalLearningSummary(sourceType, sourceName, targetProduct, rawText, memo = "") {
@@ -2292,10 +2303,10 @@ Writing standard:
                         console.warn("사이트 본문 수집 실패:", fetchError);
                         rawText = [`URL: ${url}`, memo ? `사용자 메모: ${memo}` : "", `사이트 본문 수집 실패: ${fetchError.message}`, "사이트 제목, 본문, 이미지, 영상 정보 수집이 제한되어 fallback 학습으로 처리합니다."].filter(Boolean).join("\n\n");
                     }
-                    const sampleText = buildLearningSampleText(rawText, 30000);
+                    const sampleText = buildLearningSampleText(rawText, 45000);
                     if (btn) btn.innerHTML = '<i data-lucide="loader-2" class="w-3.5 h-3.5 mr-1 animate-spin"></i> 사이트 핵심 맥락 분석 중...';
                     createIconsSafe();
-                    const prompt = `당신은 EXOSYSTEMS Marketing Content Agent의 전문 마케팅 데이터 분석가입니다.
+                    const prompt = `당신은 EXOSYSTEMS Marketing Content Agent의 제품·시장·고객 맥락 분석가입니다. 업로드된 문서 또는 사이트 내용을 단순 요약하지 말고, 향후 콘텐츠 생성에 활용할 수 있는 구조화된 학습 데이터로 변환하세요. 단, 확인되지 않은 내용은 추론하지 마세요. 문서에서 확인 가능한 내용만 기반으로 정리하세요.
 
 아래 사이트에서 수집된 텍스트, 이미지 alt, 영상/iframe 정보, 링크 맥락을 분석하여 제품별 마케팅 콘텐츠 생성에 활용 가능한 학습 데이터로 변환하세요.
 
@@ -2313,10 +2324,13 @@ Writing standard:
   "SOURCE": "${url}",
   "TYPE": "Website Context Analysis",
   "SUMMARY": "사이트 핵심 맥락 요약 500~900자",
-  "INSIGHTS": ["핵심 학습 내용 5개 이내"],
-  "KEYWORDS": ["주요 키워드 10개 이내"],
-  "MARKETING_POINTS": ["콘텐츠 생성에 활용할 마케팅 포인트 5개 이내"],
-  "CAUTIONS": ["주의 표현 또는 규제 관련 메모 3개 이내"],
+  "INSIGHTS": ["핵심 학습 내용 5~8개"],
+  "KEYWORDS": ["주요 키워드 10~15개"],
+  "MARKETING_POINTS": ["콘텐츠 생성에 활용할 마케팅 포인트 5~8개"],
+  "TARGET_CUSTOMER_INSIGHTS": ["타겟 고객 관점 인사이트 3~5개"],
+  "POSITIONING_INSIGHTS": ["제품 포지셔닝 인사이트 3~5개"],
+  "SALES_MESSAGE_ANGLES": ["영업 메시지 또는 제안 논리 3~5개"],
+  "CAUTIONS": ["주의 표현 또는 규제 관련 메모 3~5개"],
   "RAW_TEXT_PREVIEW": "원문 미리보기 1500자 이내"
 }
 
@@ -2346,8 +2360,8 @@ ${sampleText}`;
                     showErrorModal("Learning data not saved", "There is not enough text to analyze.", "Please add key content to the file or direct text field.");
                     return;
                 }
-                const sampleText = buildLearningSampleText(rawText, 30000);
-                const prompt = `You are a professional marketing data analyst for EXOSYSTEMS Marketing Content Agent.
+                const sampleText = buildLearningSampleText(rawText, 45000);
+                const prompt = `You are a product, market, and customer-context analyst for EXOSYSTEMS Marketing Content Agent. Do not merely summarize the uploaded document or text. Convert it into structured learning data that can improve future content generation. Do not speculate; use only what can be confirmed from the provided source.
 
 Analyze the document/text below and convert it into learning data that can be used for product-specific marketing content generation.
 
@@ -2364,10 +2378,13 @@ Output JSON format:
   "SOURCE": "${sourceName}",
   "TYPE": "File/Text Analysis",
   "SUMMARY": "500 to 900 character Korean summary of the source",
-  "INSIGHTS": ["up to 5 core learning insights in Korean"],
-  "KEYWORDS": ["up to 10 important keywords"],
-  "MARKETING_POINTS": ["up to 5 marketing points for content generation"],
-  "CAUTIONS": ["up to 3 compliance or expression cautions"]
+  "INSIGHTS": ["5 to 8 core learning insights in Korean"],
+  "KEYWORDS": ["10 to 15 important keywords"],
+  "MARKETING_POINTS": ["5 to 8 marketing points for content generation"],
+  "TARGET_CUSTOMER_INSIGHTS": ["3 to 5 target-customer insights in Korean"],
+  "POSITIONING_INSIGHTS": ["3 to 5 positioning insights in Korean"],
+  "SALES_MESSAGE_ANGLES": ["3 to 5 sales message angles in Korean"],
+  "CAUTIONS": ["3 to 5 compliance or expression cautions"]
 }
 
 Applied product: ${targetProduct}
@@ -2416,6 +2433,9 @@ ${sampleText}`;
                 keywords: parsedLearningData.keywords,
                 insights: parsedLearningData.insights,
                 marketingPoints: parsedLearningData.marketingPoints,
+                targetCustomerInsights: parsedLearningData.targetCustomerInsights,
+                positioningInsights: parsedLearningData.positioningInsights,
+                salesMessageAngles: parsedLearningData.salesMessageAngles,
                 cautions: parsedLearningData.cautions,
                 rawTextPreview: parsedLearningData.rawTextPreview,
                 content: dataString
@@ -2581,6 +2601,16 @@ ${sampleText}`;
         }
 
         // --- 요약 정보 파싱 및 팝업 모달 상세 표시 로직 ---
+
+        function renderLearningDetailSection(title, values, isPreview = false) {
+            const list = Array.isArray(values) ? values.filter(Boolean) : (values ? [values] : []);
+            if (list.length === 0) return "";
+            if (isPreview) {
+                return `<div class="bg-white border border-slate-200 rounded-lg p-4"><p class="font-extrabold text-slate-900 mb-2">${escapeHTML(title)}</p><p class="text-slate-600 whitespace-pre-wrap">${escapeHTML(String(list[0]).slice(0, 1500))}</p></div>`;
+            }
+            return `<div class="bg-white border border-slate-200 rounded-lg p-4"><p class="font-extrabold text-slate-900 mb-2">${escapeHTML(title)}</p><ul class="space-y-1.5 list-disc pl-4 text-slate-700">${list.map(item => `<li>${escapeHTML(item)}</li>`).join("")}</ul></div>`;
+        }
+
         function openLearningDetailModal(id) {
             activeLearningModalId = id;
             const item = learningHistory.find(i => i.id === id);
@@ -2589,15 +2619,17 @@ ${sampleText}`;
             document.getElementById('ld-modal-name').textContent = item.name;
             document.getElementById('ld-modal-meta').textContent = `${item.date} | Source: ${String(item.type || '').toUpperCase()}`;
             document.getElementById('ld-modal-product').textContent = item.product;
-            document.getElementById('ld-modal-content').innerHTML = `<div class="space-y-4 font-sans text-[12px] leading-6">
-                <div class="bg-white border border-slate-200 rounded-lg p-4">
-                    <p class="font-extrabold text-slate-900 mb-2">학습 데이터 정보</p>
-                    <p class="text-slate-700">이 항목은 내부 학습 데이터로 저장된 기록입니다. 학습 원본 및 세부 내용은 공개되지 않으며, 마케팅 콘텐츠 생성 시 AI 모델과 안전하게 결합되어 활용됩니다.</p>
-                </div>
-                <div class="bg-slate-50 border border-slate-200 rounded-lg p-4 text-slate-600 text-[11px]">
-                    <p class="font-bold text-slate-900 mb-1">보안 안내</p>
-                    <p>원본 학습 데이터는 이 UI에서 표시되지 않습니다. 이 모달은 메타 기록 확인용입니다.</p>
-                </div>
+            const detailData = normalizeLearningData(item.content, item.name, item.type, item.product);
+            document.getElementById('ld-modal-content').innerHTML = `<div class="space-y-3 font-sans text-[12px] leading-6">
+                ${renderLearningDetailSection("핵심 요약", detailData.summary)}
+                ${renderLearningDetailSection("주요 키워드", detailData.keywords)}
+                ${renderLearningDetailSection("핵심 학습 내용", detailData.insights)}
+                ${renderLearningDetailSection("마케팅 활용 포인트", detailData.marketingPoints)}
+                ${renderLearningDetailSection("타겟 고객 인사이트", detailData.targetCustomerInsights)}
+                ${renderLearningDetailSection("포지셔닝 인사이트", detailData.positioningInsights)}
+                ${renderLearningDetailSection("영업 메시지 관점", detailData.salesMessageAngles)}
+                ${renderLearningDetailSection("주의 표현 및 규제 메모", detailData.cautions)}
+                ${renderLearningDetailSection("원문 미리보기", detailData.rawTextPreview, true)}
             </div>`;
 
             // 핵심 인사이트 요약 정보 렌더링
@@ -2956,6 +2988,7 @@ ${sampleText}`;
 
             const docReflectActive = document.getElementById('doc-reflect-check').checked;
             const fileMemoText = document.getElementById('doc-memo').value;
+            const additionalRequest = String(fileMemoText || "").trim();
 
             // 해당 제품의 최신 학습 이력 중 핵심 구조화 정보만 내부 프롬프트에 반영
             const productHistory = learningHistory.filter(h => h.product === product).slice(0, 5);
@@ -2978,10 +3011,10 @@ ${sampleText}`;
             const briefContainer = document.getElementById('output-strategic-brief');
             let briefHTML = "";
             const labels = {
-                ko: { target: "🎯 포지셔닝 타겟", pain: "🧠 심층 페인포인트 분석", key: "🔑 차별화 키워드", json: "📊 AI 학습 DB 융합", memo: "📝 추가 전략 메모" },
-                en: { target: "🎯 Target Matrix", pain: "🧠 Deep Pain Point", key: "🔑 Core Pillars", json: "📊 AI Data Applied", memo: "📝 Memo Reflected" },
-                zh: { target: "🎯 定位目标", pain: "🧠 深度痛点分析", key: "🔑 差异化关键词", json: "📊 AI学习数据融合", memo: "📝 附加战略摘要" },
-                ja: { target: "🎯 ターゲットマトリックス", pain: "🧠 深層ペ인포인트 분석", key: "🔑 差別화 키워드", json: "📊 AI学習데이터 적용", memo: "📝 추가 전략 메모" }
+                ko: { target: "🎯 포지셔닝 타겟", pain: "🧠 심층 페인포인트 분석", key: "🔑 차별화 키워드", json: "📊 AI 학습 DB 융합", memo: "📝 추가 요청 사항" },
+                en: { target: "🎯 Target Matrix", pain: "🧠 Deep Pain Point", key: "🔑 Core Pillars", json: "📊 AI Data Applied", memo: "📝 Additional Request" },
+                zh: { target: "🎯 定位目标", pain: "🧠 深度痛点分析", key: "🔑 差异化关键词", json: "📊 AI学习数据融合", memo: "📝 附加请求" },
+                ja: { target: "🎯 ターゲットマトリックス", pain: "🧠 深層ペ인포인트 분석", key: "🔑 差別화 키워드", json: "📊 AI学習데이터 적용", memo: "📝 추가 요청 사항" }
             };
             const L = labels[currentLang] || labels['en'];
 
@@ -2994,8 +3027,8 @@ ${sampleText}`;
                 // Too many insights might clutter the UI, just show a summary count
                 briefHTML += `<li><strong class="text-emerald-600">${L.json}:</strong> 총 ${learningInsights.length}개의 심층 학습 인사이트가 동적 반영되었습니다.</li>`;
             }
-            if (docReflectActive && fileMemoText) {
-                briefHTML += `<li><strong class="text-emerald-600">${L.memo}:</strong> ${fileMemoText}</li>`;
+            if (additionalRequest) {
+                briefHTML += `<li><strong class="text-emerald-600">${L.memo}:</strong> ${escapeHTML(additionalRequest)}</li>`;
             }
             briefContainer.innerHTML = briefHTML;
 
@@ -3139,7 +3172,7 @@ ${keywords.length ? keywords.join(', ') : 'No emphasis keywords were provided. B
 [Grounded Learned Context]
 The following learned context is internal reference only. Do not include all of it in the final result. Select only the parts most relevant to the product, target group, content type, tone, and keywords.
 ${isExtendedKBActive && learningInsights.length > 0 ? learningInsights.map(item => `- ${item}`).join('\n') : 'No additional learned context is available.'}
-${docReflectActive && fileMemoText ? `\n[Additional Strategy Memo]\n${fileMemoText}` : ''}
+${additionalRequest ? `\n[Additional User Request]\n${additionalRequest}\n\nInstruction: If an additional request is provided, reflect it in the structure, expression, message direction, CTA, tone, and content composition. Do not expose the additional request as a separate final-output section.` : ''}
 
 
 
@@ -3304,6 +3337,9 @@ ONLY if Content Type ID is 'imagegen' or 'reels', include a short English prompt
                 productName: product,
                 productDef: kb.definition[currentLang] || kb.definition['ko'],
                 targetAudience: target,
+                targetGroup: targetGroupKey,
+                tone: selectedTone,
+                additionalRequest: additionalRequest,
                 contentType: type,
                 keywords: keywords,
                 strategicDirection: document.getElementById('output-strategic-brief').innerHTML,
@@ -3376,9 +3412,72 @@ ONLY if Content Type ID is 'imagegen' or 'reels', include a short English prompt
 
         // 현재 구조는 localStorage 기반이므로 관리자 전체 확인은 현재 브라우저에 저장된 콘텐츠 전체 확인을 의미합니다.
         // 여러 사용자 전체 콘텐츠를 중앙에서 확인하려면 서버 DB 저장 구조가 필요합니다.
+
+        function getOrCreateLocalUserId() {
+            let userId = localStorage.getItem("exosystems_local_user_id");
+            if (!userId) {
+                userId = `user_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+                localStorage.setItem("exosystems_local_user_id", userId);
+            }
+            return userId;
+        }
+
+        async function saveLibraryItemToServer(item) {
+            try {
+                await fetch("/api/library", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        ...item,
+                        userId: getOrCreateLocalUserId(),
+                        userEmail: localStorage.getItem("exosystems_user_email") || "anonymous",
+                        product: item.productName || item.product || "",
+                        targetGroup: item.targetGroup || "",
+                        target: item.targetAudience || item.target || "",
+                        contentType: item.contentType || "",
+                        tone: item.tone || "",
+                        title: `${item.productName || item.product || "Content"} - ${item.contentType || ""}`,
+                        body: String(item.generatedContent || item.body || "").slice(0, 5000),
+                        source: "generated-content"
+                    })
+                });
+            } catch (error) {
+                console.warn("Server library save failed:", error);
+            }
+        }
+
+        async function fetchAdminLibraryItems() {
+            if (!isAdminUnlocked) return [];
+            try {
+                const response = await fetch("/api/library");
+                if (!response.ok) throw new Error("Admin library fetch failed");
+                const data = await response.json();
+                return Array.isArray(data.items) ? data.items.map(item => ({
+                    id: item.id,
+                    createdAt: item.createdAt || "",
+                    language: item.language || "ko",
+                    status: item.status || "Draft",
+                    productName: item.productName || item.product || "",
+                    targetAudience: item.targetAudience || item.target || "",
+                    contentType: item.contentType || "",
+                    keywords: Array.isArray(item.keywords) ? item.keywords : [],
+                    hashtags: Array.isArray(item.hashtags) ? item.hashtags : [],
+                    strategicDirection: item.strategicDirection || "",
+                    generatedContent: item.generatedContent || item.body || "",
+                    generatedImage: item.generatedImage || "",
+                    userId: item.userId || "",
+                    userEmail: item.userEmail || "anonymous"
+                })) : [];
+            } catch (error) {
+                console.warn("Admin library fetch failed:", error);
+                return [];
+            }
+        }
+
         function getVisibleLibraryItems() {
             if (!Array.isArray(libraryItems)) libraryItems = [];
-            return isAdminUnlocked ? libraryItems : libraryItems.slice(0, 5);
+            if (!Array.isArray(adminServerLibraryItems)) adminServerLibraryItems = [];
+            return isAdminUnlocked && adminServerLibraryItems.length > 0 ? adminServerLibraryItems : libraryItems.slice(0, 5);
         }
 
         function saveCurrentToLibrary(isSilent = false) {
@@ -3402,6 +3501,8 @@ ONLY if Content Type ID is 'imagegen' or 'reels', include a short English prompt
 
             localStorage.setItem('exosystems_library', JSON.stringify(libraryItems));
 
+            saveLibraryItemToServer(newItem);
+
             if (typeof updateLibraryCounterBadge === "function") updateLibraryCounterBadge();
             if (typeof renderLibrary === "function") renderLibrary();
 
@@ -3416,19 +3517,17 @@ ONLY if Content Type ID is 'imagegen' or 'reels', include a short English prompt
             if (badge) badge.textContent = visibleItems.length;
         }
 
-        function renderLibrary() {
+        async function renderLibrary() {
             const container = document.getElementById('library-items-list');
             if (!container) return;
             container.innerHTML = '';
 
             const searchTerm = document.getElementById('library-search').value.toLowerCase();
             const filterStatus = document.getElementById('library-filter-status').value;
-            const scopeLabel = document.getElementById('library-scope-label');
-            if (scopeLabel) {
-                scopeLabel.textContent = isAdminUnlocked ? "관리자 모드: 전체 콘텐츠를 확인 중입니다." : "최근 5개 콘텐츠만 표시됩니다.";
-                scopeLabel.className = isAdminUnlocked
-                    ? "inline-flex items-center px-2.5 py-1 rounded-full bg-blue-50 text-blue-600 text-[11px] font-medium whitespace-nowrap border border-blue-100 shrink-0"
-                    : "inline-flex items-center px-2.5 py-1 rounded-full bg-slate-100 text-slate-500 text-[11px] font-medium whitespace-nowrap border border-slate-200 shrink-0";
+
+            if (isAdminUnlocked) {
+                const serverItems = await fetchAdminLibraryItems();
+                adminServerLibraryItems = serverItems.length > 0 ? serverItems : [];
             }
 
             const visibleLibraryItems = getVisibleLibraryItems();
@@ -3499,7 +3598,8 @@ ONLY if Content Type ID is 'imagegen' or 'reels', include a short English prompt
 
         function openLibraryModal(id) {
             activeModalItemId = id;
-            const item = libraryItems.find(i => i.id === id);
+            const itemPool = isAdminUnlocked ? adminServerLibraryItems.concat(libraryItems) : libraryItems;
+            const item = itemPool.find(i => i.id === id);
             if (!item) return;
 
             const translatedType = CONTENT_TYPE_NAMES[item.contentType]?.[currentLang] || item.contentType;
@@ -3625,7 +3725,9 @@ ONLY if Content Type ID is 'imagegen' or 'reels', include a short English prompt
             openLearningDetailModal,
             closeLearningDetailModal,
             sanitizeFinalOutput,
-            sanitizeLearningInsightForPrompt
+            sanitizeLearningInsightForPrompt,
+            saveLibraryItemToServer,
+            fetchAdminLibraryItems
         });
 
         window.addEventListener('DOMContentLoaded', () => {
