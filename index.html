@@ -2764,7 +2764,17 @@ ${sampleText}`;
         }
 
 
-        function saveGeneratedContentToLearningHistory({ product, type, materialBody, keywords }) {
+
+        function hasKeywordReflection(text, keywordList) {
+            if (!text || !Array.isArray(keywordList) || keywordList.length === 0) return true;
+            const normalizedText = String(text).replace(/\s+/g, "").toLowerCase();
+            return keywordList.some(keyword => {
+                const normalizedKeyword = String(keyword).replace(/^#/, "").replace(/\s+/g, "").toLowerCase();
+                return normalizedKeyword && normalizedText.includes(normalizedKeyword);
+            });
+        }
+
+        function saveGeneratedContentToLearningHistory({ product, type, materialBody, keywords, additionalRequest = "" }) {
             if (!materialBody || String(materialBody).trim().length < 30) return;
 
             const cleanBody = sanitizeFinalOutput(materialBody);
@@ -2790,7 +2800,9 @@ ${sampleText}`;
                 KEYWORDS: extractedKeywords,
                 INSIGHTS: insights,
                 MARKETING_POINTS: insights,
-                CAUTIONS: [cautionText]
+                CAUTIONS: [cautionText],
+                EMPHASIS_KEYWORDS: extractedKeywords,
+                ADDITIONAL_REQUEST: additionalRequest || ""
             };
 
             const record = {
@@ -2805,6 +2817,8 @@ ${sampleText}`;
                 keywords: extractedKeywords,
                 insights,
                 marketingPoints: insights,
+                emphasisKeywords: extractedKeywords,
+                additionalRequest: additionalRequest || "",
                 cautions: [cautionText],
                 rawTextPreview: cleanBody.slice(0, 1000),
                 content: JSON.stringify(structuredContent, null, 2)
@@ -2827,7 +2841,9 @@ ${sampleText}`;
 
         function buildLocalFallbackContent(context) {
             const kb = context.kb;
-            const keywordLine = context.keywords && context.keywords.length ? context.keywords.join(", ") : "\uC81C\uD488 KB\uC640 \uD559\uC2B5 \uB370\uC774\uD130 \uAE30\uBC18";
+            const keywordBaseLine = context.keywords && context.keywords.length ? context.keywords.join(", ") : "\uC81C\uD488 KB\uC640 \uD559\uC2B5 \uB370\uC774\uD130 \uAE30\uBC18";
+            const additionalRequestLine = context.additionalRequest ? "\uCD94\uAC00 \uC694\uCCAD \uBC18\uC601: " + String(context.additionalRequest).replace(/\s+/g, " ").trim().slice(0, 160) : "";
+            const keywordLine = additionalRequestLine ? keywordBaseLine + " / " + additionalRequestLine : keywordBaseLine;
             const productDef = kb.definition[currentLang] || kb.definition.ko;
             const productPos = kb.positioning[currentLang] || kb.positioning.ko;
             const learnedPointText = context.learningInsights && context.learningInsights.length
@@ -2950,7 +2966,11 @@ ${sampleText}`;
             const targetGroupStrategy = TARGET_GROUP_MESSAGE_STRATEGY[targetGroupKey] || null;
             const target = document.getElementById('target-select')?.value || getDefaultTargetByGroup(targetGroupKey);
             let type = document.getElementById('type-select')?.value || "";
-            const keywordString = document.getElementById('keywords-input')?.value || document.getElementById('keyword-input')?.value || "";
+            const keywordInput = (document.getElementById('keyword-input')?.value || document.getElementById('keywords-input')?.value || "").trim();
+            const keywordList = keywordInput
+                ? keywordInput.split(/,|，|\n|;/).map(k => k.trim()).filter(Boolean)
+                : [];
+            const keywordString = keywordInput;
             const reelsDuration = type === 'reels_story'
                 ? (document.getElementById('reels-duration-select')?.value || "10")
                 : (document.getElementById('reels-duration')?.value || "10");
@@ -2968,7 +2988,7 @@ ${sampleText}`;
                 return;
             }
 
-            if (type === 'reels_story' && !keywordString.trim()) {
+            if (type === 'reels_story' && keywordList.length === 0) {
                 showErrorModal("\uC785\uB825 \uD544\uC694", "\uB9B4\uC2A4 \uAD6C\uC131\uC5D0\uC11C\uB294 \uAC15\uC870 \uD0A4\uC6CC\uB4DC\uAC00 \uD544\uC694\uD569\uB2C8\uB2E4.", "\uB9B4\uC2A4 \uC2A4\uD1A0\uB9AC\uC640 \uC790\uB9C9 \uD750\uB984\uC744 \uB9CC\uB4E4\uAE30 \uC704\uD574 \uD575\uC2EC \uD0A4\uC6CC\uB4DC\uB97C 1\uAC1C \uC774\uC0C1 \uC785\uB825\uD574 \uC8FC\uC138\uC694.");
                 return;
             }
@@ -2979,8 +2999,8 @@ ${sampleText}`;
                 return;
             }
 
-            const rawKeywords = keywordString.split(',').map(k => k.trim()).filter(k => k.length > 0);
-            const keywords = rawKeywords;
+            const rawKeywords = keywordList;
+            const keywords = keywordList;
 
             const kb = PRODUCT_KB[product];
             const strategicInsight = STRATEGIC_AUDIENCE_INSIGHTS[target]?.[currentLang] || STRATEGIC_AUDIENCE_INSIGHTS[target]?.['en'] || "Strategic optimization goals";
@@ -2988,7 +3008,13 @@ ${sampleText}`;
 
             const docReflectActive = document.getElementById('doc-reflect-check').checked;
             const fileMemoText = document.getElementById('doc-memo').value;
-            const additionalRequest = String(fileMemoText || "").trim();
+            const additionalRequest = (
+                document.getElementById('additional-request-input')?.value ||
+                document.getElementById('strategy-memo-input')?.value ||
+                document.getElementById('additional-memo-input')?.value ||
+                fileMemoText ||
+                ""
+            ).trim();
 
             // 해당 제품의 최신 학습 이력 중 핵심 구조화 정보만 내부 프롬프트에 반영
             const productHistory = learningHistory.filter(h => h.product === product).slice(0, 5);
@@ -3162,6 +3188,9 @@ ${type === 'email' ? `
 - Recommended Tone: ${emailPurposeContext.tone}
 - Recommended CTA: ${emailPurposeContext.cta}
 ` : ''}
+[User Emphasis Keywords]
+${keywordList.length > 0 ? keywordList.join(', ') : '없음'}
+
 [Keywords]
 ${keywords.length ? keywords.join(', ') : 'No emphasis keywords were provided. Build the core message from Product KB, target group, content type, tone, and learned context.'}
 
@@ -3175,6 +3204,25 @@ ${isExtendedKBActive && learningInsights.length > 0 ? learningInsights.map(item 
 ${additionalRequest ? `\n[Additional User Request]\n${additionalRequest}\n\nInstruction: If an additional request is provided, reflect it in the structure, expression, message direction, CTA, tone, and content composition. Do not expose the additional request as a separate final-output section.` : ''}
 
 
+
+
+[Keyword and Additional Request Reflection Rules]
+1. If User Emphasis Keywords are provided, reflect them naturally in the core message, story, copy, captions, CTA, and prompt body.
+2. Do not merely list keywords at the end. Integrate them into the content logic, scene flow, and persuasive message.
+3. If Additional User Request is provided, apply it to the structure, sentence style, emphasis direction, CTA, and content format.
+4. Do not show "Additional User Request", "User Emphasis Keywords", "추가 요청 사항:", or "강조 키워드 입력값:" as final-output section labels.
+5. Treat keywords and additional requests as internal creative direction, then express them naturally inside the final content.
+6. If keywords or additional requests conflict with Product KB, learned context, compliance rules, or confirmed facts, prioritize Product KB, learned context, and compliance.
+7. Never invent unsupported effects, numbers, certifications, cases, treatment effects, insurance coverage, or performance claims.
+
+[Content Type Reflection Guide]
+- Email: Reflect emphasis keywords in at least two of subject, opening, core proposal sentence, and CTA. Reflect additional request in the email purpose and tone.
+- Card news: Reflect emphasis keywords in page titles or core page copy. Reflect additional request in page sequence and message direction.
+- Reels story: Keywords are mandatory. Reflect them in story direction, captions, text motion, hashtags, and final video prompt. Reflect additional request in scene flow, caption tone, visual mood, and CTA.
+- Ad copy: Reflect emphasis keywords in at least two of main copy, sub copy, and CTA. Reflect additional request in hook style and expression intensity.
+- Strategy plan: Reflect emphasis keywords in strategy goal, core message strategy, and channel execution. Reflect additional request in strategic direction, priorities, and action plan.
+- Image prompt: Reflect emphasis keywords in scene composition, atmosphere, visual style, and final image prompt. Reflect additional request in tone, background, people composition, and product exposure.
+- Video prompt: Reflect emphasis keywords in scene flow, caption feel, mood, and final video prompt. Reflect additional request in camera movement, emotional arc, product exposure, and CTA.
 
 [Content Enrichment Rules]
 1. The result must not be a short summary. Build sufficient depth and structure for the selected content type.
@@ -3280,6 +3328,9 @@ ONLY if Content Type ID is 'imagegen' or 'reels', include a short English prompt
                     localizedTarget,
                     learningInsights,
                     fileMemoText,
+                    additionalRequest,
+                    targetGroup: targetGroupKey,
+                    keywordList,
                     emailPurposeContext,
                     selectedTone,
                     toneContext,
@@ -3304,6 +3355,10 @@ ONLY if Content Type ID is 'imagegen' or 'reels', include a short English prompt
             }
             materialBody = sanitizeFinalOutput(materialBody);
             materialBody = cleanGeneratedTextForCopy(materialBody);
+
+            if (keywordList.length > 0 && !hasKeywordReflection(materialBody, keywordList)) {
+                console.warn("Emphasis keywords may not be reflected in output:", keywordList);
+            }
 
             if (!materialBody || materialBody.trim().length < 20) {
                 console.warn("Generated content is empty. type:", type);
@@ -3357,7 +3412,8 @@ ONLY if Content Type ID is 'imagegen' or 'reels', include a short English prompt
                     product,
                     type,
                     materialBody,
-                    keywords
+                    keywords: keywordList,
+                    additionalRequest
                 });
                 saveCurrentToLibrary(true);
                 showToast(currentLang === 'ko' ? "\uC0DD\uC131\uC774 \uC644\uB8CC\uB418\uC5B4 \uB77C\uC774\uBE0C\uB7EC\uB9AC\uC640 \uD559\uC2B5 \uB370\uC774\uD130\uC5D0 \uC790\uB3D9 \uBC18\uC601\uB418\uC5C8\uC2B5\uB2C8\uB2E4." : "Generated and auto-saved to Library and learning data.");
@@ -3726,6 +3782,7 @@ ONLY if Content Type ID is 'imagegen' or 'reels', include a short English prompt
             closeLearningDetailModal,
             sanitizeFinalOutput,
             sanitizeLearningInsightForPrompt,
+            hasKeywordReflection,
             saveLibraryItemToServer,
             fetchAdminLibraryItems
         });
