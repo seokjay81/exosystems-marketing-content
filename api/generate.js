@@ -5,31 +5,40 @@ export default async function handler(req, res) {
   }
 
   const body = req.body || {};
-  const model = body.model || 'gemini-2.5-flash-lite';
-  const payload = body.payload || body;
+  const model = body.model || 'claude-sonnet-4-6';
+  const messages = body.messages;
+  const system = body.system;
+  const temperature = body.temperature;
+  const top_p = body.top_p;
+  const max_tokens = body.max_tokens || 4096;
 
-  if (!payload || typeof payload !== 'object') {
-    return res.status(400).json({ error: 'Request body must contain a valid payload object.' });
+  if (!messages || !Array.isArray(messages) || messages.length === 0) {
+    return res.status(400).json({ error: 'Request body must contain a messages array.' });
   }
 
-  const apiKey = process.env.GEMINI_API_KEY;
-  const bearerToken = process.env.GEMINI_BEARER_TOKEN;
+  const apiKey = process.env.ANTHROPIC_API_KEY;
 
-  if (!apiKey && !bearerToken) {
-    return res.status(500).json({ error: 'Server is missing GEMINI_API_KEY or GEMINI_BEARER_TOKEN.' });
+  if (!apiKey) {
+    return res.status(500).json({ error: 'Server is missing ANTHROPIC_API_KEY.' });
   }
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent${apiKey && !bearerToken ? `?key=${encodeURIComponent(apiKey)}` : ''}`;
-  const headers = { 'Content-Type': 'application/json' };
-  if (bearerToken) {
-    headers['Authorization'] = `Bearer ${bearerToken}`;
-  }
+  const claudeBody = { model, max_tokens, messages };
+  if (system) claudeBody.system = system;
+  if (temperature !== undefined) claudeBody.temperature = temperature;
+  if (top_p !== undefined) claudeBody.top_p = top_p;
+
+  const url = 'https://api.anthropic.com/v1/messages';
+  const headers = {
+    'Content-Type': 'application/json',
+    'x-api-key': apiKey,
+    'anthropic-version': '2023-06-01'
+  };
 
   try {
     const response = await fetch(url, {
       method: 'POST',
       headers,
-      body: JSON.stringify(payload)
+      body: JSON.stringify(claudeBody)
     });
 
     const text = await response.text();
@@ -38,16 +47,16 @@ export default async function handler(req, res) {
     try {
       data = JSON.parse(text);
     } catch (error) {
-      return res.status(502).json({ error: 'Invalid JSON received from Gemini API.', rawResponse: text });
+      return res.status(502).json({ error: 'Invalid JSON received from Claude API.', rawResponse: text });
     }
 
     if (!response.ok) {
-      const retryAfter = response.headers.get('retry-after') || data?.error?.details?.find?.(detail => detail?.['@type']?.includes('RetryInfo'))?.retryDelay || null;
+      const retryAfter = response.headers.get('retry-after') || null;
       return res.status(response.status).json({ error: data.error || data, retryAfter, model });
     }
 
     return res.status(200).json(data);
   } catch (error) {
-    return res.status(502).json({ error: 'Gemini proxy request failed.', message: error.message });
+    return res.status(502).json({ error: 'Claude proxy request failed.', message: error.message });
   }
 }

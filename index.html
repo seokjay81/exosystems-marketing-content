@@ -684,7 +684,7 @@
 
     <!-- SCRIPT LOGIC -->
     <script>
-        // Gemini proxy mode: the client calls our server endpoint, and the server authenticates to Gemini.
+        // Claude proxy mode: the client calls our server endpoint, and the server authenticates to Claude API.
         // This avoids storing the API key in the browser or exposing it to end users.
         let apiKey = "";
 
@@ -692,7 +692,7 @@
             const modal = document.getElementById('api-key-modal');
             const input = document.getElementById('api-key-input');
             if (!modal || !input) {
-                showToast(currentLang === 'ko' ? '\uC774 \uC0AC\uC774\uD2B8\uB294 \uC11C\uBC84 \uD504\uB85D\uC2DC\uB85C Gemini API\uB97C \uD638\uCD9C\uD569\uB2C8\uB2E4.' : 'This site uses the server proxy for Gemini API.');
+                showToast(currentLang === 'ko' ? '\uC774 \uC0AC\uC774\uD2B8\uB294 \uC11C\uBC84 \uD504\uB85D\uC2DC\uB85C Claude API\uB97C \uD638\uCD9C\uD569\uB2C8\uB2E4.' : 'This site uses the server proxy for Claude API.');
                 return;
             }
             modal.classList.remove('hidden');
@@ -802,81 +802,68 @@
 
         function isQuotaExceededError(error) {
             const message = String(error?.message || error || "").toLowerCase();
-            return message.includes("429") || message.includes("quota") || message.includes("resource_exhausted") || message.includes("free_tier");
+            return message.includes("429") || message.includes("quota") || message.includes("rate_limit") || message.includes("overloaded");
         }
 
         function getQuotaFallbackMessage(error) {
             const seconds = getRetrySecondsFromErrorText(error?.message || error);
-            const base = "Gemini 무료 API 사용량 한도를 초과했습니다. 잠시 후 다시 시도하거나, API 사용량을 줄이기 위해 로컬 요약 모드로 전환합니다.";
+            const base = "AI API 사용량 한도를 초과했습니다. 잠시 후 다시 시도하거나, API 사용량을 줄이기 위해 로컬 요약 모드로 전환합니다.";
             return seconds ? base + " 예상 대기 시간: " + seconds + "초." : base;
         }
 
-        // --- SAFE CALL GEMINI HELPER WITH DETAILED ERROR INFO & LIGHTWEIGHT MODEL DEFAULT ---
+        // --- SAFE CALL CLAUDE HELPER WITH DETAILED ERROR INFO ---
         async function safeCallGemini(prompt, systemInstruction = "", models = null, generationConfig = null) {
-            const modelsToTry = Array.isArray(models) && models.length ? models : ["gemini-2.5-flash-lite"];
-            let lastError = null;
-
-            for (const model of modelsToTry) {
-                const payload = {
-                    model,
-                    payload: {
-                        contents: [{ parts: [{ text: prompt }] }]
-                    }
-                };
-                if (generationConfig) {
-                    payload.payload.generationConfig = generationConfig;
-                }
-                if (systemInstruction) {
-                    payload.payload.systemInstruction = { parts: [{ text: systemInstruction }] };
-                }
-
-                try {
-                    const response = await fetch('/api/generate', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-
-                    const resultText = await response.text();
-                    let result;
-                    try {
-                        result = JSON.parse(resultText);
-                    } catch (parseError) {
-                        throw new Error("Server returned a non-JSON response: " + resultText.substring(0, 180));
-                    }
-
-                    if (!response.ok) {
-                        const rawError = result.error || result;
-                        const errorMessage = typeof rawError === 'string' ? rawError : (rawError.message || JSON.stringify(rawError));
-                        const retryAfter = result.retryAfter || response.headers.get('Retry-After') || '';
-                        if (response.status === 429 || /quota|RESOURCE_EXHAUSTED|free_tier/i.test(errorMessage)) {
-                            const quotaError = new Error("QUOTA_EXCEEDED: " + errorMessage + " Retry-After: " + retryAfter);
-                            quotaError.code = 429;
-                            quotaError.retryAfter = retryAfter;
-                            throw quotaError;
-                        }
-                        if (response.status === 404 || rawError.code === 404) {
-                            throw new Error("MODEL_NOT_FOUND: " + errorMessage);
-                        }
-                        throw new Error("[API Error " + response.status + "]: " + errorMessage);
-                    }
-
-                    if (result.candidates && result.candidates[0]?.content?.parts?.[0]?.text) {
-                        return result.candidates[0].content.parts[0].text;
-                    }
-                    if (result.promptFeedback?.blockReason) {
-                        throw new Error("Content blocked: " + result.promptFeedback.blockReason);
-                    }
-                    throw new Error("API response is empty or invalid.");
-                } catch (error) {
-                    lastError = error;
-                    if (isQuotaExceededError(error)) throw error;
-                    if (error.message?.startsWith("MODEL_NOT_FOUND") || error.message?.includes("API_KEY_INVALID") || error.message?.includes("Content blocked")) {
-                        break;
-                    }
-                }
+            const requestBody = {
+                model: "claude-sonnet-4-6",
+                messages: [{ role: "user", content: prompt }],
+                max_tokens: 4096
+            };
+            if (systemInstruction) {
+                requestBody.system = systemInstruction;
             }
-            throw lastError;
+            if (generationConfig) {
+                if (generationConfig.temperature !== undefined) requestBody.temperature = generationConfig.temperature;
+                if (generationConfig.topP !== undefined) requestBody.top_p = generationConfig.topP;
+            }
+
+            try {
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const resultText = await response.text();
+                let result;
+                try {
+                    result = JSON.parse(resultText);
+                } catch (parseError) {
+                    throw new Error("Server returned a non-JSON response: " + resultText.substring(0, 180));
+                }
+
+                if (!response.ok) {
+                    const rawError = result.error || result;
+                    const errorMessage = typeof rawError === 'string' ? rawError : (rawError.message || JSON.stringify(rawError));
+                    const retryAfter = result.retryAfter || response.headers.get('Retry-After') || '';
+                    if (response.status === 429 || /rate.?limit|overloaded|quota/i.test(errorMessage)) {
+                        const quotaError = new Error("QUOTA_EXCEEDED: " + errorMessage + " Retry-After: " + retryAfter);
+                        quotaError.code = 429;
+                        quotaError.retryAfter = retryAfter;
+                        throw quotaError;
+                    }
+                    if (response.status === 404 || rawError.code === 404) {
+                        throw new Error("MODEL_NOT_FOUND: " + errorMessage);
+                    }
+                    throw new Error("[API Error " + response.status + "]: " + errorMessage);
+                }
+
+                if (result.content && result.content[0]?.text) {
+                    return result.content[0].text;
+                }
+                throw new Error("API response is empty or invalid.");
+            } catch (error) {
+                throw error;
+            }
         }
 
         const PRODUCT_KB = {
@@ -1131,7 +1118,7 @@ Writing standard:
             imagegen: {
                 label: "\uC774\uBBF8\uC9C0 \uC0DD\uC131 \uD504\uB86C\uD504\uD2B8",
                 formatInstruction: `
-Write as prompt-engineering output for Gemini or image-generation tools.
+Write as prompt-engineering output for AI image-generation tools.
 Required structure:
 \uC774\uBBF8\uC9C0 \uBAA9\uC801:
 \uC7A5\uBA74 \uAD6C\uC131:
@@ -1152,7 +1139,7 @@ Writing standard:
             videoprompt: {
                 label: "\uC601\uC0C1 \uD504\uB86C\uD504\uD2B8",
                 formatInstruction: `
-Write as prompt-engineering output for Gemini or video-generation tools.
+Write as prompt-engineering output for AI video-generation tools.
 Required structure:
 \uC601\uC0C1 \uBAA9\uC801:
 \uC601\uC0C1 \uAE38\uC774:
@@ -1209,7 +1196,7 @@ Writing standard:
 - \uC608: #AI\uC6B4\uB3D9\uD3C9\uAC00 #\uB370\uC774\uD130\uAE30\uBC18\uC0C1\uB2F4 #\uADFC\uC721\uBD84\uC11D
 
 5. \uCD5C\uC885 \uC601\uC0C1 \uC0DD\uC131 \uD504\uB86C\uD504\uD2B8
-- Gemini \uB610\uB294 \uC601\uC0C1 \uC0DD\uC131 \uB3C4\uAD6C\uC5D0 \uBC14\uB85C \uBCF5\uC0AC\uD574 \uB123\uC744 \uC218 \uC788\uB294 \uC644\uC131\uD615 \uD504\uB86C\uD504\uD2B8\uB97C \uC791\uC131\uD569\uB2C8\uB2E4.
+- \uC601\uC0C1 \uC0DD\uC131 \uB3C4\uAD6C\uC5D0 \uBC14\uB85C \uBCF5\uC0AC\uD574 \uB123\uC744 \uC218 \uC788\uB294 \uC644\uC131\uD615 \uD504\uB86C\uD504\uD2B8\uB97C \uC791\uC131\uD569\uB2C8\uB2E4.
 - \uC138\uB85C\uD615 \uB9B4\uC2A4 \uC601\uC0C1 \uAE30\uC900\uC73C\uB85C \uC791\uC131\uD569\uB2C8\uB2E4.
 - \uC7A5\uBA74 \uD750\uB984, \uC778\uBB3C, \uC81C\uD488 \uB178\uCD9C \uBC29\uC2DD, \uBD84\uC704\uAE30, \uC790\uB9C9 \uC2A4\uD0C0\uC77C, \uAE08\uC9C0 \uC694\uC18C\uB97C \uD3EC\uD568\uD569\uB2C8\uB2E4.
 
@@ -2038,15 +2025,14 @@ Writing standard:
 
             output = output
                 .replace(new RegExp("API \uD638\uCD9C \uC911 \uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC2B5\uB2C8\uB2E4:[\\s\\S]*?(?=\\n\\n|$)", "gi"), "")
-                .replace(new RegExp("Gemini \uBB34\uB8CC API \uC0AC\uC6A9\uB7C9 \uD55C\uB3C4\uB97C \uCD08\uACFC\uD588\uC2B5\uB2C8\uB2E4[\\s\\S]*?(?=\\n\\n|$)", "gi"), "")
+                .replace(new RegExp("AI API \uC0AC\uC6A9\uB7C9 \uD55C\uB3C4\uB97C \uCD08\uACFC\uD588\uC2B5\uB2C8\uB2E4[\\s\\S]*?(?=\\n\\n|$)", "gi"), "")
                 .replace(/API Error[\s\S]*?(?=\n\n|$)/gi, "")
-                .replace(/Gemini API quota[\s\S]*?(?=\n\n|$)/gi, "")
+                .replace(/Claude API quota[\s\S]*?(?=\n\n|$)/gi, "")
                 .replace(/Quota exceeded[\s\S]*?(?=\n\n|$)/gi, "")
                 .replace(/QUOTA_EXCEEDED[\s\S]*?(?=\n\n|$)/gi, "")
                 .replace(/Please retry[\s\S]*?(?=\n\n|$)/gi, "")
                 .replace(/Retry-After:[^\n]*/gi, "")
-                .replace(/https:\/\/ai\.google\.dev[^\s]*/gi, "")
-                .replace(/https:\/\/ai\.dev[^\s]*/gi, "")
+                .replace(/https:\/\/console\.anthropic\.com[^\s]*/gi, "")
                 .replace(/rate-limits?[^\n]*/gi, "");
 
             const koreanLogLabels = ["\uC694\uC57D", "\uD0A4\uC6CC\uB4DC", "\uC778\uC0AC\uC774\uD2B8", "\uC8FC\uC758\uC0AC\uD56D"];
@@ -2128,7 +2114,7 @@ Writing standard:
                 .replace(/Extracted document preview:[\s\S]*?(?=\n|$)/gi, "")
                 .replace(/QUOTA_EXCEEDED[\s\S]*?(?=\n|$)/gi, "")
                 .replace(/Quota exceeded[\s\S]*?(?=\n|$)/gi, "")
-                .replace(/Gemini API quota[\s\S]*?(?=\n|$)/gi, "")
+                .replace(/Claude API quota[\s\S]*?(?=\n|$)/gi, "")
                 .replace(/API Error[\s\S]*?(?=\n|$)/gi, "")
                 .replace(/Please retry[\s\S]*?(?=\n|$)/gi, "")
                 .replace(/Retry-After:[^\n]*/gi, "")
@@ -2266,7 +2252,7 @@ Writing standard:
                 EXECUTIVE_SUMMARY: normalized.slice(0, 900) || memo || sourceName,
                 KEYWORDS: keywords,
                 MARKETING_POINTS: insights.slice(0, 4),
-                CAUTIONS: ["Saved with local summary mode to reduce Gemini API usage.", "Review product compliance rules and banned expressions before publishing."]
+                CAUTIONS: ["Saved with local summary mode to reduce AI API usage.", "Review product compliance rules and banned expressions before publishing."]
             }, null, 2);
         }
 
@@ -2339,7 +2325,7 @@ Writing standard:
 사이트 수집 데이터:
 ${sampleText}`;
                     try {
-                        const text = await safeCallGemini(prompt, "", ["gemini-2.5-flash-lite", "gemini-2.5-flash", "gemini-flash-latest"]);
+                        const text = await safeCallGemini(prompt, "");
                         executeSaveLearningHistory("url", url, targetProduct, text);
                     } catch (aiError) {
                         console.warn("사이트 AI 분석 실패, fallback 저장:", aiError);
@@ -2392,7 +2378,7 @@ Applied product: ${targetProduct}
 Text to analyze:
 ${sampleText}`;
                 try {
-                    const text = await safeCallGemini(prompt, "", ["gemini-2.5-flash-lite", "gemini-2.5-flash", "gemini-flash-latest"]);
+                    const text = await safeCallGemini(prompt, "");
                     executeSaveLearningHistory(sourceType, sourceName, targetProduct, text);
                 } catch (e) {
                     console.warn("AI analysis failed; saving local fallback learning data:", e);
@@ -3284,7 +3270,7 @@ Apply only when Content Type ID is reels_story.
 \uCD5C\uC885 \uC601\uC0C1 \uC0DD\uC131 \uD504\uB86C\uD504\uD2B8:
 5. For 10 seconds, create 3 to 4 scenes. For 15 seconds, create 4 to 5 scenes.
 6. The keyword section must be hashtags based on user input.
-7. The final video prompt must be a complete vertical reels video prompt ready to paste into Gemini or a video generation tool.
+7. The final video prompt must be a complete vertical reels video prompt ready to paste into a video generation tool.
 [Reels Story Tone Rules]
 Apply these rules only when Content Type ID is reels_story:
 - professional: Center the story on data-based evaluation, trust, objective consultation, and professional credibility. Captions should be short and informational.
@@ -3312,11 +3298,11 @@ ${formatInstruction}
 ONLY if Content Type ID is 'imagegen' or 'reels', include a short English prompt (max 300 chars) for an AI image generator to create a conceptual visual or clean keyframe. Prefix it EXACTLY with "[IMAGE_PROMPT:" and end with "]" at the end.
 `;
 
-                const textResult = await safeCallGemini(userPrompt, sysPrompt, ["gemini-2.5-flash-lite"], { temperature: 0.7, topP: 0.9 });
+                const textResult = await safeCallGemini(userPrompt, sysPrompt, null, { temperature: 0.7, topP: 0.9 });
                 materialBody = cleanGeneratedTextForCopy(textResult);
 
             } catch (error) {
-                console.error("Gemini API Error:", error);
+                console.error("Claude API Error:", error);
                 const fallbackContext = {
                     product,
                     target,
@@ -3340,7 +3326,7 @@ ONLY if Content Type ID is 'imagegen' or 'reels', include a short English prompt
                 if (isQuotaExceededError(error)) {
                     showToast(getQuotaFallbackMessage(error));
                 } else {
-                    showToast(currentLang === 'ko' ? "Gemini API 연결에 실패하여 저장된 제품 지식 기준으로 임시 콘텐츠를 생성했습니다." : "Gemini API failed. A local fallback draft was generated.");
+                    showToast(currentLang === 'ko' ? "AI API 연결에 실패하여 저장된 제품 지식 기준으로 임시 콘텐츠를 생성했습니다." : "AI API failed. A local fallback draft was generated.");
                 }
                 materialBody = buildLocalFallbackContent(fallbackContext);
             } finally {
