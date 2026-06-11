@@ -1,4 +1,4 @@
-name: KB Auto Deploy
+name: KB Validate and Build
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
+  validate-and-build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -28,10 +28,10 @@ jobs:
       - name: Build unified PRODUCT_KB
         run: node scripts/build-kb.js
 
-      - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: '--prod'
+      - name: Commit built KB
+        run: |
+          git config --global user.name 'KB Build Bot'
+          git config --global user.email 'kb-bot@exosystems.io'
+          git add src/lib/product-kb.json public/PRODUCT_KB.js || true
+          git diff --staged --quiet || git commit -m "auto: PRODUCT_KB 빌드 업데이트 - $(date '+%Y-%m-%d %H:%M')"
+          git push || true
