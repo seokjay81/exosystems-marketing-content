@@ -23,6 +23,9 @@
       --error-bg: #fee2e2;
       --error-text: #991b1b;
       --error-border: #fca5a5;
+      --warn-bg: #fef9c3;
+      --warn-text: #854d0e;
+      --warn-border: #fde047;
     }
 
     body {
@@ -32,7 +35,7 @@
       min-height: 100vh;
     }
 
-    /* Header */
+    /* ── Header ── */
     header {
       background: var(--navy);
       color: white;
@@ -43,7 +46,6 @@
       height: 60px;
       box-shadow: 0 2px 8px rgba(11,45,110,0.3);
     }
-
     .logo {
       display: flex;
       align-items: center;
@@ -52,7 +54,6 @@
       font-weight: 700;
       letter-spacing: -0.3px;
     }
-
     .logo-badge {
       background: var(--teal);
       color: white;
@@ -63,13 +64,9 @@
       letter-spacing: 0.5px;
       text-transform: uppercase;
     }
+    .header-sub { font-size: 13px; color: rgba(255,255,255,0.6); }
 
-    .header-sub {
-      font-size: 13px;
-      color: rgba(255,255,255,0.6);
-    }
-
-    /* Layout */
+    /* ── Layout ── */
     .container {
       max-width: 760px;
       margin: 32px auto;
@@ -79,14 +76,13 @@
       gap: 20px;
     }
 
-    /* Card */
+    /* ── Card ── */
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 12px;
       overflow: hidden;
     }
-
     .card-header {
       background: var(--navy);
       color: white;
@@ -98,11 +94,6 @@
       align-items: center;
       gap: 8px;
     }
-
-    .card-header .icon {
-      font-size: 16px;
-    }
-
     .card-body {
       padding: 20px;
       display: flex;
@@ -110,23 +101,45 @@
       gap: 16px;
     }
 
-    /* Form elements */
+    /* ── Tab bar ── */
+    .tab-bar {
+      display: flex;
+      border-bottom: 1.5px solid var(--border);
+      background: #f8faff;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 12px 16px;
+      border: none;
+      background: transparent;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      border-bottom: 2.5px solid transparent;
+      margin-bottom: -1.5px;
+      letter-spacing: 0.1px;
+    }
+    .tab-btn:hover { color: var(--navy); }
+    .tab-btn.active {
+      color: var(--navy);
+      border-bottom-color: var(--teal);
+      background: white;
+    }
+
+    /* ── Form elements ── */
     .form-group {
       display: flex;
       flex-direction: column;
       gap: 6px;
     }
-
     label {
       font-size: 13px;
       font-weight: 600;
       color: var(--navy);
     }
-
-    label .required {
-      color: var(--teal);
-      margin-left: 2px;
-    }
+    label .required { color: var(--teal); margin-left: 2px; }
 
     input[type="text"],
     input[type="password"],
@@ -143,7 +156,6 @@
       transition: border-color 0.2s, box-shadow 0.2s;
       outline: none;
     }
-
     input[type="text"]:focus,
     input[type="password"]:focus,
     textarea:focus,
@@ -152,35 +164,15 @@
       box-shadow: 0 0 0 3px rgba(0,184,169,0.15);
       background: white;
     }
+    textarea { resize: vertical; min-height: 280px; line-height: 1.6; }
+    select { cursor: pointer; }
 
-    textarea {
-      resize: vertical;
-      min-height: 280px;
-      line-height: 1.6;
-    }
-
-    select {
-      cursor: pointer;
-    }
-
-    /* Category chips */
-    .category-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .category-chip {
-      position: relative;
-    }
-
+    /* ── Category chips ── */
+    .category-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .category-chip { position: relative; }
     .category-chip input[type="radio"] {
-      position: absolute;
-      opacity: 0;
-      width: 0;
-      height: 0;
+      position: absolute; opacity: 0; width: 0; height: 0;
     }
-
     .category-chip label {
       display: inline-flex;
       align-items: center;
@@ -196,29 +188,17 @@
       transition: all 0.15s;
       user-select: none;
     }
-
     .category-chip input[type="radio"]:checked + label {
       border-color: var(--teal);
       background: rgba(0,184,169,0.1);
       color: var(--navy);
       font-weight: 700;
     }
+    .category-chip label:hover { border-color: var(--teal-light); color: var(--navy); }
 
-    .category-chip label:hover {
-      border-color: var(--teal-light);
-      color: var(--navy);
-    }
-
-    /* Token section */
-    .token-row {
-      display: flex;
-      gap: 10px;
-    }
-
-    .token-row input {
-      flex: 1;
-    }
-
+    /* ── Token section ── */
+    .token-row { display: flex; gap: 10px; }
+    .token-row input { flex: 1; }
     .btn-save-token {
       padding: 10px 18px;
       background: var(--navy);
@@ -231,18 +211,11 @@
       white-space: nowrap;
       transition: background 0.15s;
     }
-
     .btn-save-token:hover { background: var(--navy-light); }
-
-    .token-status {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 2px;
-    }
-
+    .token-status { font-size: 12px; color: var(--muted); margin-top: 2px; }
     .token-status.saved { color: var(--teal); font-weight: 600; }
 
-    /* Submit button */
+    /* ── Submit button ── */
     .btn-submit {
       width: 100%;
       padding: 14px;
@@ -260,7 +233,6 @@
       justify-content: center;
       gap: 8px;
     }
-
     .btn-submit:hover { background: var(--teal-light); }
     .btn-submit:active { transform: scale(0.99); }
     .btn-submit:disabled {
@@ -270,24 +242,188 @@
       transform: none;
     }
 
-    /* Spinner */
+    /* ── Spinner ── */
     .spinner {
-      width: 18px;
-      height: 18px;
+      width: 18px; height: 18px;
       border: 2.5px solid rgba(255,255,255,0.4);
       border-top-color: white;
       border-radius: 50%;
       animation: spin 0.7s linear infinite;
       display: none;
     }
-
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Toast */
+    /* ── Drop zone ── */
+    .drop-zone {
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 40px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #fafcff;
+      position: relative;
+    }
+    .drop-zone:hover,
+    .drop-zone.drag-over {
+      border-color: var(--teal);
+      background: rgba(0,184,169,0.05);
+    }
+    .drop-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+      border: none;
+      padding: 0;
+    }
+    .drop-zone-icon { font-size: 36px; margin-bottom: 10px; }
+    .drop-zone-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+    .drop-zone-sub { font-size: 12.5px; color: var(--muted); line-height: 1.6; }
+    .drop-zone-sub strong { color: var(--teal); }
+
+    /* ── File queue ── */
+    .file-queue {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .file-queue-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--navy);
+    }
+    .btn-clear-all {
+      font-size: 12px;
+      color: var(--muted);
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 10px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-clear-all:hover { color: var(--error-text); border-color: var(--error-border); }
+
+    /* ── File item ── */
+    .file-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: #f8faff;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      transition: border-color 0.15s;
+    }
+    .file-item.status-uploading { border-color: var(--teal); background: rgba(0,184,169,0.04); }
+    .file-item.status-success   { border-color: var(--success-border); background: var(--success-bg); }
+    .file-item.status-error     { border-color: var(--error-border); background: var(--error-bg); }
+
+    .file-icon { font-size: 22px; flex-shrink: 0; line-height: 1; }
+    .file-info { flex: 1; min-width: 0; }
+    .file-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--navy);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .file-meta { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+    .file-error-msg { font-size: 11.5px; color: var(--error-text); margin-top: 2px; }
+
+    .file-cat-select {
+      width: 110px;
+      flex-shrink: 0;
+      padding: 6px 8px;
+      font-size: 12px;
+      border-radius: 6px;
+    }
+
+    .file-status-badge {
+      flex-shrink: 0;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 10px;
+      white-space: nowrap;
+    }
+    .badge-pending   { background: rgba(107,127,168,0.12); color: var(--muted); }
+    .badge-uploading { background: rgba(0,184,169,0.15); color: #007a70; }
+    .badge-success   { background: var(--success-bg); color: var(--success-text); }
+    .badge-error     { background: var(--error-bg); color: var(--error-text); }
+
+    .btn-remove-file {
+      flex-shrink: 0;
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: white;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      transition: all 0.15s;
+      line-height: 1;
+    }
+    .btn-remove-file:hover { background: var(--error-bg); border-color: var(--error-border); color: var(--error-text); }
+
+    /* ── Upload progress bar ── */
+    .upload-progress {
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+    .upload-progress-bar {
+      height: 100%;
+      background: var(--teal);
+      border-radius: 2px;
+      transition: width 0.3s;
+      width: 0%;
+    }
+
+    /* ── Summary bar ── */
+    .upload-summary {
+      display: flex;
+      gap: 12px;
+      font-size: 12.5px;
+      padding: 8px 12px;
+      background: #f0f4fa;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .summary-chip {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .summary-chip .dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+    }
+    .dot-pending   { background: var(--muted); }
+    .dot-success   { background: #22c55e; }
+    .dot-error     { background: #ef4444; }
+
+    /* ── Toast ── */
     .toast {
       position: fixed;
-      top: 20px;
-      right: 20px;
+      top: 20px; right: 20px;
       max-width: 380px;
       padding: 14px 18px;
       border-radius: 10px;
@@ -302,27 +438,12 @@
       pointer-events: none;
       line-height: 1.5;
     }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.success { background: var(--success-bg); color: var(--success-text); border-color: var(--success-border); }
+    .toast.error   { background: var(--error-bg);   color: var(--error-text);   border-color: var(--error-border); }
+    .toast strong  { display: block; margin-bottom: 2px; }
 
-    .toast.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .toast.success {
-      background: var(--success-bg);
-      color: var(--success-text);
-      border-color: var(--success-border);
-    }
-
-    .toast.error {
-      background: var(--error-bg);
-      color: var(--error-text);
-      border-color: var(--error-border);
-    }
-
-    .toast strong { display: block; margin-bottom: 2px; }
-
-    /* Info box */
+    /* ── Info / Warning boxes ── */
     .info-box {
       background: rgba(0,184,169,0.07);
       border: 1px solid rgba(0,184,169,0.3);
@@ -332,10 +453,18 @@
       color: var(--navy);
       line-height: 1.6;
     }
-
     .info-box strong { color: var(--teal); }
+    .warn-box {
+      background: var(--warn-bg);
+      border: 1px solid var(--warn-border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: var(--warn-text);
+      line-height: 1.6;
+    }
 
-    /* Recent uploads */
+    /* ── History list ── */
     .upload-list {
       display: flex;
       flex-direction: column;
@@ -343,7 +472,6 @@
       max-height: 200px;
       overflow-y: auto;
     }
-
     .upload-item {
       display: flex;
       align-items: center;
@@ -354,15 +482,7 @@
       border-radius: 8px;
       font-size: 12.5px;
     }
-
-    .upload-item .dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--teal);
-      flex-shrink: 0;
-    }
-
+    .upload-item .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
     .upload-item .item-title { flex: 1; color: var(--navy); font-weight: 500; }
     .upload-item .item-cat {
       background: rgba(0,184,169,0.1);
@@ -373,21 +493,13 @@
       font-size: 11px;
     }
     .upload-item .item-time { color: var(--muted); font-size: 11px; white-space: nowrap; }
+    .empty-list { text-align: center; color: var(--muted); font-size: 13px; padding: 20px 0; }
 
-    .empty-list {
-      text-align: center;
-      color: var(--muted);
-      font-size: 13px;
-      padding: 20px 0;
-    }
+    /* ── Char counter ── */
+    .char-counter { text-align: right; font-size: 11.5px; color: var(--muted); margin-top: -10px; }
 
-    /* Char counter */
-    .char-counter {
-      text-align: right;
-      font-size: 11.5px;
-      color: var(--muted);
-      margin-top: -10px;
-    }
+    /* ── Size warning ── */
+    .size-warn { color: var(--warn-text); font-size: 11px; font-weight: 600; }
   </style>
 </head>
 <body>
@@ -405,7 +517,7 @@
     <!-- GitHub 토큰 설정 -->
     <div class="card">
       <div class="card-header">
-        <span class="icon">🔑</span> GitHub 인증 설정
+        <span>🔑</span> GitHub 인증 설정
       </div>
       <div class="card-body">
         <div class="form-group">
@@ -424,12 +536,20 @@
       </div>
     </div>
 
-    <!-- KB 항목 입력 -->
+    <!-- KB 항목 등록 (탭) -->
     <div class="card">
       <div class="card-header">
-        <span class="icon">📝</span> 새 KB 항목 등록
+        <span>📝</span> 새 KB 항목 등록
       </div>
-      <div class="card-body">
+
+      <!-- 탭 바 -->
+      <div class="tab-bar">
+        <button class="tab-btn active" id="tab-text" onclick="switchTab('text')">✏️ 텍스트 입력</button>
+        <button class="tab-btn" id="tab-file" onclick="switchTab('file')">📁 파일 업로드</button>
+      </div>
+
+      <!-- 패널: 텍스트 입력 -->
+      <div class="card-body" id="panel-text">
 
         <div class="form-group">
           <label>제목 <span class="required">*</span></label>
@@ -478,12 +598,68 @@
         </button>
 
       </div>
+
+      <!-- 패널: 파일 업로드 -->
+      <div class="card-body" id="panel-file" style="display:none">
+
+        <!-- 드롭 존 -->
+        <div class="drop-zone" id="dropZone"
+          ondragover="onDragOver(event)"
+          ondragleave="onDragLeave(event)"
+          ondrop="onDrop(event)">
+          <input type="file" id="fileInput" multiple
+            accept=".md,.txt,.pdf,.docx,.json"
+            onchange="onFileSelect(event)" />
+          <div class="drop-zone-icon">📂</div>
+          <div class="drop-zone-title">파일을 드래그하거나 클릭해서 선택</div>
+          <div class="drop-zone-sub">
+            지원 형식: <strong>.md &nbsp;.txt &nbsp;.pdf &nbsp;.docx &nbsp;.json</strong><br/>
+            여러 파일을 동시에 선택할 수 있습니다
+          </div>
+        </div>
+
+        <!-- 파일 큐 -->
+        <div id="fileQueueWrapper" style="display:none">
+          <div class="file-queue-header">
+            <span id="fileQueueCount">파일 0개 선택됨</span>
+            <button class="btn-clear-all" onclick="clearFileQueue()">전체 제거</button>
+          </div>
+
+          <!-- 요약 바 -->
+          <div class="upload-summary" id="uploadSummary" style="display:none">
+            <div class="summary-chip">
+              <div class="dot dot-pending"></div>
+              <span id="sumPending">대기 0</span>
+            </div>
+            <div class="summary-chip">
+              <div class="dot dot-success"></div>
+              <span id="sumSuccess">완료 0</span>
+            </div>
+            <div class="summary-chip">
+              <div class="dot dot-error"></div>
+              <span id="sumError">실패 0</span>
+            </div>
+          </div>
+
+          <div class="file-queue" id="fileQueue"></div>
+
+          <div class="warn-box">
+            ⚠️ GitHub Contents API는 파일당 <strong>1 MB</strong> 제한이 있습니다. 초과 파일은 업로드에 실패할 수 있습니다.
+          </div>
+
+          <button class="btn-submit" id="uploadAllBtn" onclick="uploadAllFiles()">
+            <span class="spinner" id="uploadAllSpinner"></span>
+            <span id="uploadAllLabel">📤 전체 업로드</span>
+          </button>
+        </div>
+
+      </div>
     </div>
 
     <!-- 최근 업로드 내역 -->
     <div class="card">
       <div class="card-header">
-        <span class="icon">📋</span> 최근 업로드 내역
+        <span>📋</span> 최근 업로드 내역
       </div>
       <div class="card-body" style="padding: 16px 20px;">
         <div class="upload-list" id="uploadList"></div>
@@ -492,16 +668,22 @@
 
   </div>
 
-  <!-- Toast -->
   <div class="toast" id="toast"></div>
 
   <script>
-    const REPO = 'seokjay81/exosystems-marketing-content';
+    const REPO        = 'seokjay81/exosystems-marketing-content';
     const UPLOAD_PATH = 'knowledge-base/inbox';
-    const TOKEN_KEY = 'exosystems_kb_gh_token';
+    const TOKEN_KEY   = 'exosystems_kb_gh_token';
     const HISTORY_KEY = 'exosystems_kb_upload_history';
+    const CATS        = ['exoFit','DeepSARC','exoPill','전략','영업메시지','기타'];
+    const CAT_ICONS   = { exoFit:'💪', DeepSARC:'🧬', exoPill:'⚡', '전략':'📊', '영업메시지':'💬', '기타':'📁' };
+    const FILE_ICONS  = { md:'📄', txt:'📝', pdf:'📕', docx:'📘', json:'🔧', default:'📎' };
+    const MAX_BYTES   = 1_000_000;
 
-    // 초기화
+    let fileQueue = [];   // { id, file, name, ext, size, category, status, error }
+    let isUploading = false;
+
+    /* ── Init ── */
     window.addEventListener('DOMContentLoaded', () => {
       const saved = localStorage.getItem(TOKEN_KEY);
       if (saved) {
@@ -511,76 +693,259 @@
       renderHistory();
     });
 
-    // 토큰 저장
+    /* ── Token ── */
     function saveToken() {
       const val = document.getElementById('githubToken').value.trim();
-      if (!val) {
-        showToast('error', '오류', '토큰을 입력해주세요.');
-        return;
-      }
+      if (!val) { showToast('error', '오류', '토큰을 입력해주세요.'); return; }
       localStorage.setItem(TOKEN_KEY, val);
       updateTokenStatus(true);
       showToast('success', '저장 완료', '토큰이 로컬에 저장되었습니다.');
     }
-
     function updateTokenStatus(saved) {
       const el = document.getElementById('tokenStatus');
-      if (saved) {
-        el.textContent = '✅ 토큰이 저장되어 있습니다.';
-        el.className = 'token-status saved';
-      } else {
-        el.textContent = '토큰을 입력하고 저장하세요.';
-        el.className = 'token-status';
-      }
+      if (saved) { el.textContent = '✅ 토큰이 저장되어 있습니다.'; el.className = 'token-status saved'; }
+      else        { el.textContent = '토큰을 입력하고 저장하세요.';  el.className = 'token-status'; }
     }
 
-    // 글자 수 카운터
+    /* ── Tab switching ── */
+    function switchTab(tab) {
+      document.getElementById('panel-text').style.display = tab === 'text' ? 'flex' : 'none';
+      document.getElementById('panel-file').style.display = tab === 'file' ? 'flex' : 'none';
+      document.getElementById('tab-text').classList.toggle('active', tab === 'text');
+      document.getElementById('tab-file').classList.toggle('active', tab === 'file');
+    }
+
+    /* ── Text form ── */
     function updateCounter() {
-      const len = document.getElementById('kbContent').value.length;
-      document.getElementById('charCount').textContent = len.toLocaleString();
+      document.getElementById('charCount').textContent =
+        document.getElementById('kbContent').value.length.toLocaleString();
     }
-
-    // 카테고리 가져오기
     function getCategory() {
       return document.querySelector('input[name="category"]:checked')?.value || '기타';
     }
-
-    // KB 업로드
     async function submitKB() {
-      const token = localStorage.getItem(TOKEN_KEY);
-      const title = document.getElementById('kbTitle').value.trim();
+      const token   = localStorage.getItem(TOKEN_KEY);
+      const title   = document.getElementById('kbTitle').value.trim();
       const content = document.getElementById('kbContent').value.trim();
       const category = getCategory();
+      if (!token)   { showToast('error', '인증 필요',  'GitHub 토큰을 먼저 저장해주세요.'); return; }
+      if (!title)   { showToast('error', '입력 오류',  '제목을 입력해주세요.'); document.getElementById('kbTitle').focus(); return; }
+      if (!content) { showToast('error', '입력 오류',  '내용을 입력해주세요.'); document.getElementById('kbContent').focus(); return; }
 
-      if (!token) {
-        showToast('error', '인증 필요', 'GitHub 토큰을 먼저 저장해주세요.');
-        return;
-      }
-      if (!title) {
-        showToast('error', '입력 오류', '제목을 입력해주세요.');
-        document.getElementById('kbTitle').focus();
-        return;
-      }
-      if (!content) {
-        showToast('error', '입력 오류', '내용을 입력해주세요.');
-        document.getElementById('kbContent').focus();
-        return;
-      }
-
-      setLoading(true);
-
-      const now = new Date();
-      const ts = now.toISOString().replace(/[:.]/g, '-').slice(0, 19);
-      const slug = slugify(title);
+      setTextLoading(true);
+      const now      = new Date();
+      const ts       = tsStr(now);
+      const slug     = slugify(title);
       const filename = `${ts}_${category}_${slug}.md`;
+      const encoded  = toBase64Text(buildMarkdown(title, category, content, now));
+      const ok       = await ghUpload(filename, encoded, `kb: [${category}] ${title}`, token);
+      if (ok) {
+        showToast('success', '업로드 성공 ✅', `"${title}" 항목이 KB inbox에 저장되었습니다.`);
+        saveHistory({ title, category, filename, time: now.toISOString() });
+        clearTextForm();
+      }
+      setTextLoading(false);
+    }
+    function setTextLoading(on) {
+      document.getElementById('submitBtn').disabled = on;
+      document.getElementById('spinner').style.display = on ? 'block' : 'none';
+      document.getElementById('submitLabel').textContent = on ? '업로드 중...' : '📤 KB에 저장';
+    }
+    function clearTextForm() {
+      document.getElementById('kbTitle').value = '';
+      document.getElementById('kbContent').value = '';
+      document.getElementById('charCount').textContent = '0';
+      document.querySelector('input[name="category"][value="exoFit"]').checked = true;
+    }
 
-      const fileContent = buildMarkdown(title, category, content, now);
-      const encoded = btoa(unescape(encodeURIComponent(fileContent)));
+    /* ── File drag & drop ── */
+    function onDragOver(e) {
+      e.preventDefault();
+      document.getElementById('dropZone').classList.add('drag-over');
+    }
+    function onDragLeave(e) {
+      document.getElementById('dropZone').classList.remove('drag-over');
+    }
+    function onDrop(e) {
+      e.preventDefault();
+      document.getElementById('dropZone').classList.remove('drag-over');
+      addFiles(e.dataTransfer.files);
+    }
+    function onFileSelect(e) {
+      addFiles(e.target.files);
+      e.target.value = '';
+    }
 
-      const apiUrl = `https://api.github.com/repos/${REPO}/contents/${UPLOAD_PATH}/${filename}`;
+    /* ── File queue management ── */
+    function addFiles(fileList) {
+      const allowed = ['md','txt','pdf','docx','json'];
+      Array.from(fileList).forEach(file => {
+        const ext = file.name.split('.').pop().toLowerCase();
+        if (!allowed.includes(ext)) {
+          showToast('error', '지원하지 않는 형식', `${file.name} — .md .txt .pdf .docx .json만 지원합니다.`);
+          return;
+        }
+        const duplicate = fileQueue.some(q => q.name === file.name && q.size === file.size);
+        if (duplicate) return;
+        fileQueue.push({
+          id: Date.now() + Math.random(),
+          file,
+          name: file.name,
+          ext,
+          size: file.size,
+          category: 'exoFit',
+          status: 'pending',
+          error: ''
+        });
+      });
+      renderFileQueue();
+    }
 
+    function removeFile(id) {
+      fileQueue = fileQueue.filter(f => f.id !== id);
+      renderFileQueue();
+    }
+
+    function clearFileQueue() {
+      if (isUploading) return;
+      fileQueue = [];
+      renderFileQueue();
+    }
+
+    function setFileCategory(id, cat) {
+      const item = fileQueue.find(f => f.id === id);
+      if (item) item.category = cat;
+    }
+
+    function renderFileQueue() {
+      const wrapper = document.getElementById('fileQueueWrapper');
+      const qEl     = document.getElementById('fileQueue');
+      const countEl = document.getElementById('fileQueueCount');
+
+      if (fileQueue.length === 0) {
+        wrapper.style.display = 'none';
+        return;
+      }
+      wrapper.style.display = 'flex';
+      wrapper.style.flexDirection = 'column';
+      wrapper.style.gap = '10px';
+      countEl.textContent = `파일 ${fileQueue.length}개 선택됨`;
+
+      // summary
+      const nPending   = fileQueue.filter(f => f.status === 'pending').length;
+      const nUploading = fileQueue.filter(f => f.status === 'uploading').length;
+      const nSuccess   = fileQueue.filter(f => f.status === 'success').length;
+      const nError     = fileQueue.filter(f => f.status === 'error').length;
+      const summaryEl  = document.getElementById('uploadSummary');
+      const hasStarted = nSuccess + nError + nUploading > 0;
+      summaryEl.style.display = hasStarted ? 'flex' : 'none';
+      document.getElementById('sumPending').textContent  = `대기 ${nPending + nUploading}`;
+      document.getElementById('sumSuccess').textContent  = `완료 ${nSuccess}`;
+      document.getElementById('sumError').textContent    = `실패 ${nError}`;
+
+      qEl.innerHTML = fileQueue.map(item => {
+        const icon      = FILE_ICONS[item.ext] || FILE_ICONS.default;
+        const sizeStr   = formatSize(item.size);
+        const oversized = item.size > MAX_BYTES;
+        const catOptions = CATS.map(c =>
+          `<option value="${c}" ${c === item.category ? 'selected' : ''}>${CAT_ICONS[c]} ${c}</option>`
+        ).join('');
+        const badgeClass = `badge-${item.status}`;
+        const badgeLabel = { pending:'대기', uploading:'업로드 중', success:'완료 ✓', error:'실패 ✗' }[item.status];
+        const disableRemove = item.status === 'uploading' ? 'disabled' : '';
+        const disableCat    = item.status !== 'pending'   ? 'disabled' : '';
+        return `
+          <div class="file-item status-${item.status}" id="fitem-${item.id}">
+            <div class="file-icon">${icon}</div>
+            <div class="file-info">
+              <div class="file-name" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</div>
+              <div class="file-meta">
+                ${sizeStr}${oversized ? ' <span class="size-warn">⚠ 1MB 초과</span>' : ''}
+              </div>
+              ${item.error ? `<div class="file-error-msg">${escapeHtml(item.error)}</div>` : ''}
+            </div>
+            <select class="file-cat-select" onchange="setFileCategory(${item.id}, this.value)" ${disableCat}>
+              ${catOptions}
+            </select>
+            <span class="file-status-badge ${badgeClass}">${badgeLabel}</span>
+            <button class="btn-remove-file" onclick="removeFile(${item.id})" ${disableRemove} title="제거">✕</button>
+          </div>`;
+      }).join('');
+
+      // upload button state
+      const allDone = fileQueue.every(f => f.status === 'success');
+      const btn     = document.getElementById('uploadAllBtn');
+      if (allDone && fileQueue.length > 0) {
+        btn.disabled = true;
+        document.getElementById('uploadAllLabel').textContent = '✅ 모두 완료';
+      } else {
+        btn.disabled = isUploading;
+        if (!isUploading) document.getElementById('uploadAllLabel').textContent = '📤 전체 업로드';
+      }
+    }
+
+    /* ── Bulk upload ── */
+    async function uploadAllFiles() {
+      const token = localStorage.getItem(TOKEN_KEY);
+      if (!token) { showToast('error', '인증 필요', 'GitHub 토큰을 먼저 저장해주세요.'); return; }
+
+      const pending = fileQueue.filter(f => f.status === 'pending');
+      if (pending.length === 0) { showToast('error', '대기 파일 없음', '업로드할 파일이 없습니다.'); return; }
+
+      isUploading = true;
+      document.getElementById('uploadAllBtn').disabled = true;
+      document.getElementById('uploadAllSpinner').style.display = 'block';
+      document.getElementById('uploadAllLabel').textContent = `업로드 중 (0/${pending.length})`;
+
+      let done = 0;
+      for (const item of pending) {
+        item.status = 'uploading';
+        renderFileQueue();
+
+        try {
+          const base64   = await readFileAsBase64(item.file);
+          const now      = new Date();
+          const ts       = tsStr(now);
+          const slug     = slugify(item.name.replace(/\.[^.]+$/, ''));
+          const filename = `${ts}_${item.category}_${slug}.${item.ext}`;
+          const ok       = await ghUpload(filename, base64, `kb: [${item.category}] ${item.name}`, token);
+          if (ok) {
+            item.status = 'success';
+            saveHistory({ title: item.name, category: item.category, filename, time: now.toISOString() });
+          } else {
+            item.status = 'error';
+          }
+        } catch (e) {
+          item.status = 'error';
+          item.error  = e.message || '알 수 없는 오류';
+        }
+
+        done++;
+        document.getElementById('uploadAllLabel').textContent = `업로드 중 (${done}/${pending.length})`;
+        renderFileQueue();
+
+        // GitHub API 연속 요청 간격
+        if (done < pending.length) await sleep(400);
+      }
+
+      isUploading = false;
+      document.getElementById('uploadAllSpinner').style.display = 'none';
+
+      const nOk  = fileQueue.filter(f => f.status === 'success').length;
+      const nErr = fileQueue.filter(f => f.status === 'error').length;
+      if (nErr === 0) {
+        showToast('success', `전체 업로드 완료 ✅`, `${nOk}개 파일이 KB inbox에 저장되었습니다.`);
+      } else {
+        showToast('error', `일부 실패`, `완료 ${nOk}개 / 실패 ${nErr}개`);
+      }
+      renderFileQueue();
+    }
+
+    /* ── GitHub API ── */
+    async function ghUpload(filename, base64Content, commitMsg, token) {
+      const url = `https://api.github.com/repos/${REPO}/contents/${UPLOAD_PATH}/${filename}`;
       try {
-        const res = await fetch(apiUrl, {
+        const res = await fetch(url, {
           method: 'PUT',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -588,80 +953,56 @@
             'Accept': 'application/vnd.github+json',
             'X-GitHub-Api-Version': '2022-11-28',
           },
-          body: JSON.stringify({
-            message: `kb: [${category}] ${title}`,
-            content: encoded,
-          }),
+          body: JSON.stringify({ message: commitMsg, content: base64Content }),
         });
-
-        if (res.ok) {
-          const data = await res.json();
-          showToast('success', '업로드 성공 ✅', `"${title}" 항목이 KB inbox에 저장되었습니다.`);
-          saveHistory({ title, category, filename, time: now.toISOString() });
-          clearForm();
-        } else {
-          const err = await res.json().catch(() => ({}));
-          const msg = err.message || `HTTP ${res.status}`;
-          if (res.status === 401) {
-            showToast('error', '인증 실패', '토큰이 유효하지 않거나 repo 권한이 없습니다.');
-          } else if (res.status === 422) {
-            showToast('error', '파일 충돌', '동일한 이름의 파일이 이미 존재합니다. 잠시 후 다시 시도해주세요.');
-          } else {
-            showToast('error', `오류 (${res.status})`, msg);
-          }
-        }
+        if (res.ok) return true;
+        const err = await res.json().catch(() => ({}));
+        const msg = err.message || `HTTP ${res.status}`;
+        if (res.status === 401) showToast('error', '인증 실패', '토큰이 유효하지 않거나 repo 권한이 없습니다.');
+        else if (res.status === 422) showToast('error', '파일 충돌', `"${filename}" 이름이 이미 존재합니다.`);
+        else showToast('error', `오류 (${res.status})`, msg);
+        return false;
       } catch (e) {
         showToast('error', '네트워크 오류', e.message || '연결을 확인해주세요.');
-      } finally {
-        setLoading(false);
+        return false;
       }
     }
 
-    // 마크다운 파일 포맷
+    /* ── File reading ── */
+    function readFileAsBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload  = e => resolve(e.target.result.split(',')[1]);
+        reader.onerror = () => reject(new Error('파일 읽기 실패'));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    /* ── Helpers ── */
+    function toBase64Text(str) {
+      return btoa(unescape(encodeURIComponent(str)));
+    }
     function buildMarkdown(title, category, content, date) {
-      const dateStr = date.toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' });
-      return `---
-title: "${title}"
-category: ${category}
-date: ${date.toISOString().slice(0, 10)}
-source: kb-admin
----
-
-# ${title}
-
-> 카테고리: ${category} | 등록일: ${dateStr}
-
-${content}
-`;
+      const dateStr = date.toLocaleDateString('ko-KR', { year:'numeric', month:'2-digit', day:'2-digit' });
+      return `---\ntitle: "${title}"\ncategory: ${category}\ndate: ${date.toISOString().slice(0,10)}\nsource: kb-admin\n---\n\n# ${title}\n\n> 카테고리: ${category} | 등록일: ${dateStr}\n\n${content}\n`;
     }
-
-    // 슬러그 생성 (파일명 안전 처리)
+    function tsStr(d) {
+      return d.toISOString().replace(/[:.]/g,'-').slice(0,19);
+    }
     function slugify(str) {
-      return str
-        .replace(/[^\w\s가-힣]/g, '')
-        .replace(/\s+/g, '-')
-        .slice(0, 40);
+      return str.replace(/[^\w\s가-힣]/g,'').replace(/\s+/g,'-').slice(0,40);
+    }
+    function formatSize(bytes) {
+      if (bytes < 1024)        return bytes + ' B';
+      if (bytes < 1024*1024)   return (bytes/1024).toFixed(1) + ' KB';
+      return (bytes/(1024*1024)).toFixed(1) + ' MB';
+    }
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+    function escapeHtml(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
-    // 폼 초기화
-    function clearForm() {
-      document.getElementById('kbTitle').value = '';
-      document.getElementById('kbContent').value = '';
-      document.getElementById('charCount').textContent = '0';
-      document.querySelector('input[name="category"][value="exoFit"]').checked = true;
-    }
-
-    // 로딩 상태
-    function setLoading(on) {
-      const btn = document.getElementById('submitBtn');
-      const spinner = document.getElementById('spinner');
-      const label = document.getElementById('submitLabel');
-      btn.disabled = on;
-      spinner.style.display = on ? 'block' : 'none';
-      label.textContent = on ? '업로드 중...' : '📤 KB에 저장';
-    }
-
-    // 히스토리 저장
+    /* ── History ── */
     function saveHistory(item) {
       const hist = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
       hist.unshift(item);
@@ -669,8 +1010,6 @@ ${content}
       localStorage.setItem(HISTORY_KEY, JSON.stringify(hist));
       renderHistory();
     }
-
-    // 히스토리 렌더
     function renderHistory() {
       const list = document.getElementById('uploadList');
       const hist = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
@@ -680,23 +1019,18 @@ ${content}
       }
       list.innerHTML = hist.map(item => {
         const d = new Date(item.time);
-        const timeStr = d.toLocaleDateString('ko-KR', { month: '2-digit', day: '2-digit' })
-          + ' ' + d.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
-        return `
-          <div class="upload-item">
-            <div class="dot"></div>
-            <div class="item-title">${escapeHtml(item.title)}</div>
-            <div class="item-cat">${escapeHtml(item.category)}</div>
-            <div class="item-time">${timeStr}</div>
-          </div>`;
+        const t = d.toLocaleDateString('ko-KR',{month:'2-digit',day:'2-digit'})
+                + ' ' + d.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
+        return `<div class="upload-item">
+          <div class="dot"></div>
+          <div class="item-title">${escapeHtml(item.title)}</div>
+          <div class="item-cat">${escapeHtml(item.category)}</div>
+          <div class="item-time">${t}</div>
+        </div>`;
       }).join('');
     }
 
-    function escapeHtml(s) {
-      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-    }
-
-    // 토스트 알림
+    /* ── Toast ── */
     let toastTimer = null;
     function showToast(type, title, msg) {
       const el = document.getElementById('toast');
@@ -704,9 +1038,7 @@ ${content}
       el.innerHTML = `<strong>${escapeHtml(title)}</strong>${escapeHtml(msg)}`;
       el.classList.add('show');
       if (toastTimer) clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => {
-        el.classList.remove('show');
-      }, 4500);
+      toastTimer = setTimeout(() => el.classList.remove('show'), 4500);
     }
   </script>
 </body>
