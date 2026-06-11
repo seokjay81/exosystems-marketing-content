@@ -1,0 +1,16 @@
+{
+  "name": "exosystems-marketing-content",
+  "version": "1.0.0",
+  "description": "EXOSYSTEMS B2B 마케팅 콘텐츠 에이전트",
+  "private": true,
+  "scripts": {
+    "validate": "node scripts/validate-kb.js",
+    "build": "node scripts/build-kb.js",
+    "test:quality": "node scripts/test-quality.js",
+    "sync": "node scripts/sync-knowledge.js",
+    "pipeline": "npm run validate && npm run build && npm run test:quality"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
