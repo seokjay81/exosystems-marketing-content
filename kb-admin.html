@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EXOSYSTEMS KB 관리자</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #0B2D6E;
+      --navy-light: #1a4a9e;
+      --teal: #00B8A9;
+      --teal-light: #00d4c4;
+      --bg: #f0f4fa;
+      --surface: #ffffff;
+      --border: #d0daea;
+      --text: #1a2a4a;
+      --muted: #6b7fa8;
+      --success-bg: #d1fae5;
+      --success-text: #065f46;
+      --success-border: #6ee7b7;
+      --error-bg: #fee2e2;
+      --error-text: #991b1b;
+      --error-border: #fca5a5;
+    }
+
+    body {
+      font-family: 'Segoe UI', 'Malgun Gothic', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* Header */
+    header {
+      background: var(--navy);
+      color: white;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+      box-shadow: 0 2px 8px rgba(11,45,110,0.3);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .logo-badge {
+      background: var(--teal);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .header-sub {
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+    }
+
+    /* Layout */
+    .container {
+      max-width: 760px;
+      margin: 32px auto;
+      padding: 0 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Card */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .card-header {
+      background: var(--navy);
+      color: white;
+      padding: 14px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-header .icon {
+      font-size: 16px;
+    }
+
+    .card-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Form elements */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--navy);
+    }
+
+    label .required {
+      color: var(--teal);
+      margin-left: 2px;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    textarea,
+    select {
+      width: 100%;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 14px;
+      color: var(--text);
+      font-family: inherit;
+      background: #fafcff;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+
+    input[type="text"]:focus,
+    input[type="password"]:focus,
+    textarea:focus,
+    select:focus {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(0,184,169,0.15);
+      background: white;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 280px;
+      line-height: 1.6;
+    }
+
+    select {
+      cursor: pointer;
+    }
+
+    /* Category chips */
+    .category-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .category-chip {
+      position: relative;
+    }
+
+    .category-chip input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .category-chip label {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 7px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      color: var(--muted);
+      background: #fafcff;
+      transition: all 0.15s;
+      user-select: none;
+    }
+
+    .category-chip input[type="radio"]:checked + label {
+      border-color: var(--teal);
+      background: rgba(0,184,169,0.1);
+      color: var(--navy);
+      font-weight: 700;
+    }
+
+    .category-chip label:hover {
+      border-color: var(--teal-light);
+      color: var(--navy);
+    }
+
+    /* Token section */
+    .token-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .token-row input {
+      flex: 1;
+    }
+
+    .btn-save-token {
+      padding: 10px 18px;
+      background: var(--navy);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+
+    .btn-save-token:hover { background: var(--navy-light); }
+
+    .token-status {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .token-status.saved { color: var(--teal); font-weight: 600; }
+
+    /* Submit button */
+    .btn-submit {
+      width: 100%;
+      padding: 14px;
+      background: var(--teal);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: -0.2px;
+      transition: background 0.15s, transform 0.1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-submit:hover { background: var(--teal-light); }
+    .btn-submit:active { transform: scale(0.99); }
+    .btn-submit:disabled {
+      background: var(--border);
+      color: var(--muted);
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Spinner */
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2.5px solid rgba(255,255,255,0.4);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      max-width: 380px;
+      padding: 14px 18px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      border: 1.5px solid transparent;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: opacity 0.25s, transform 0.25s;
+      z-index: 9999;
+      pointer-events: none;
+      line-height: 1.5;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .toast.success {
+      background: var(--success-bg);
+      color: var(--success-text);
+      border-color: var(--success-border);
+    }
+
+    .toast.error {
+      background: var(--error-bg);
+      color: var(--error-text);
+      border-color: var(--error-border);
+    }
+
+    .toast strong { display: block; margin-bottom: 2px; }
+
+    /* Info box */
+    .info-box {
+      background: rgba(0,184,169,0.07);
+      border: 1px solid rgba(0,184,169,0.3);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 12.5px;
+      color: var(--navy);
+      line-height: 1.6;
+    }
+
+    .info-box strong { color: var(--teal); }
+
+    /* Recent uploads */
+    .upload-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .upload-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      background: #f8faff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 12.5px;
+    }
+
+    .upload-item .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--teal);
+      flex-shrink: 0;
+    }
+
+    .upload-item .item-title { flex: 1; color: var(--navy); font-weight: 500; }
+    .upload-item .item-cat {
+      background: rgba(0,184,169,0.1);
+      color: var(--teal);
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 11px;
+    }
+    .upload-item .item-time { color: var(--muted); font-size: 11px; white-space: nowrap; }
+
+    .empty-list {
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      padding: 20px 0;
+    }
+
+    /* Char counter */
+    .char-counter {
+      text-align: right;
+      font-size: 11.5px;
+      color: var(--muted);
+      margin-top: -10px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      EXOSYSTEMS
+      <span class="logo-badge">KB Admin</span>
+    </div>
+    <span class="header-sub">Knowledge Base 관리 도구</span>
+  </header>
+
+  <div class="container">
+
+    <!-- GitHub 토큰 설정 -->
+    <div class="card">
+      <div class="card-header">
+        <span class="icon">🔑</span> GitHub 인증 설정
+      </div>
+      <div class="card-body">
+        <div class="form-group">
+          <label>Personal Access Token (repo 권한 필요)</label>
+          <div class="token-row">
+            <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxxxx" autocomplete="off" />
+            <button class="btn-save-token" onclick="saveToken()">저장</button>
+          </div>
+          <span class="token-status" id="tokenStatus">토큰을 입력하고 저장하세요.</span>
+        </div>
+        <div class="info-box">
+          <strong>저장소:</strong> seokjay81/exosystems-marketing-content
+          &nbsp;|&nbsp; <strong>업로드 경로:</strong> knowledge-base/inbox/<br/>
+          토큰은 브라우저 localStorage에만 저장되며, 외부로 전송되지 않습니다.
+        </div>
+      </div>
+    </div>
+
+    <!-- KB 항목 입력 -->
+    <div class="card">
+      <div class="card-header">
+        <span class="icon">📝</span> 새 KB 항목 등록
+      </div>
+      <div class="card-body">
+
+        <div class="form-group">
+          <label>제목 <span class="required">*</span></label>
+          <input type="text" id="kbTitle" placeholder="예: exoFit 피트니스 센터 대상 핵심 메시지" maxlength="120" />
+        </div>
+
+        <div class="form-group">
+          <label>카테고리 <span class="required">*</span></label>
+          <div class="category-grid">
+            <div class="category-chip">
+              <input type="radio" name="category" id="cat-exofit" value="exoFit" checked />
+              <label for="cat-exofit">💪 exoFit</label>
+            </div>
+            <div class="category-chip">
+              <input type="radio" name="category" id="cat-deepsarc" value="DeepSARC" />
+              <label for="cat-deepsarc">🧬 DeepSARC</label>
+            </div>
+            <div class="category-chip">
+              <input type="radio" name="category" id="cat-exopill" value="exoPill" />
+              <label for="cat-exopill">⚡ exoPill</label>
+            </div>
+            <div class="category-chip">
+              <input type="radio" name="category" id="cat-strategy" value="전략" />
+              <label for="cat-strategy">📊 전략</label>
+            </div>
+            <div class="category-chip">
+              <input type="radio" name="category" id="cat-sales" value="영업메시지" />
+              <label for="cat-sales">💬 영업메시지</label>
+            </div>
+            <div class="category-chip">
+              <input type="radio" name="category" id="cat-etc" value="기타" />
+              <label for="cat-etc">📁 기타</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>내용 <span class="required">*</span></label>
+          <textarea id="kbContent" placeholder="KB에 저장할 내용을 입력하세요. 제품 특징, 타겟 인사이트, 영업 메시지, 전략 방향 등 어떤 형식이든 자유롭게 작성하세요." oninput="updateCounter()"></textarea>
+          <div class="char-counter"><span id="charCount">0</span>자</div>
+        </div>
+
+        <button class="btn-submit" id="submitBtn" onclick="submitKB()">
+          <span class="spinner" id="spinner"></span>
+          <span id="submitLabel">📤 KB에 저장</span>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- 최근 업로드 내역 -->
+    <div class="card">
+      <div class="card-header">
+        <span class="icon">📋</span> 최근 업로드 내역
+      </div>
+      <div class="card-body" style="padding: 16px 20px;">
+        <div class="upload-list" id="uploadList"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const REPO = 'seokjay81/exosystems-marketing-content';
+    const UPLOAD_PATH = 'knowledge-base/inbox';
+    const TOKEN_KEY = 'exosystems_kb_gh_token';
+    const HISTORY_KEY = 'exosystems_kb_upload_history';
+
+    // 초기화
+    window.addEventListener('DOMContentLoaded', () => {
+      const saved = localStorage.getItem(TOKEN_KEY);
+      if (saved) {
+        document.getElementById('githubToken').value = saved;
+        updateTokenStatus(true);
+      }
+      renderHistory();
+    });
+
+    // 토큰 저장
+    function saveToken() {
+      const val = document.getElementById('githubToken').value.trim();
+      if (!val) {
+        showToast('error', '오류', '토큰을 입력해주세요.');
+        return;
+      }
+      localStorage.setItem(TOKEN_KEY, val);
+      updateTokenStatus(true);
+      showToast('success', '저장 완료', '토큰이 로컬에 저장되었습니다.');
+    }
+
+    function updateTokenStatus(saved) {
+      const el = document.getElementById('tokenStatus');
+      if (saved) {
+        el.textContent = '✅ 토큰이 저장되어 있습니다.';
+        el.className = 'token-status saved';
+      } else {
+        el.textContent = '토큰을 입력하고 저장하세요.';
+        el.className = 'token-status';
+      }
+    }
+
+    // 글자 수 카운터
+    function updateCounter() {
+      const len = document.getElementById('kbContent').value.length;
+      document.getElementById('charCount').textContent = len.toLocaleString();
+    }
+
+    // 카테고리 가져오기
+    function getCategory() {
+      return document.querySelector('input[name="category"]:checked')?.value || '기타';
+    }
+
+    // KB 업로드
+    async function submitKB() {
+      const token = localStorage.getItem(TOKEN_KEY);
+      const title = document.getElementById('kbTitle').value.trim();
+      const content = document.getElementById('kbContent').value.trim();
+      const category = getCategory();
+
+      if (!token) {
+        showToast('error', '인증 필요', 'GitHub 토큰을 먼저 저장해주세요.');
+        return;
+      }
+      if (!title) {
+        showToast('error', '입력 오류', '제목을 입력해주세요.');
+        document.getElementById('kbTitle').focus();
+        return;
+      }
+      if (!content) {
+        showToast('error', '입력 오류', '내용을 입력해주세요.');
+        document.getElementById('kbContent').focus();
+        return;
+      }
+
+      setLoading(true);
+
+      const now = new Date();
+      const ts = now.toISOString().replace(/[:.]/g, '-').slice(0, 19);
+      const slug = slugify(title);
+      const filename = `${ts}_${category}_${slug}.md`;
+
+      const fileContent = buildMarkdown(title, category, content, now);
+      const encoded = btoa(unescape(encodeURIComponent(fileContent)));
+
+      const apiUrl = `https://api.github.com/repos/${REPO}/contents/${UPLOAD_PATH}/${filename}`;
+
+      try {
+        const res = await fetch(apiUrl, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/vnd.github+json',
+            'X-GitHub-Api-Version': '2022-11-28',
+          },
+          body: JSON.stringify({
+            message: `kb: [${category}] ${title}`,
+            content: encoded,
+          }),
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          showToast('success', '업로드 성공 ✅', `"${title}" 항목이 KB inbox에 저장되었습니다.`);
+          saveHistory({ title, category, filename, time: now.toISOString() });
+          clearForm();
+        } else {
+          const err = await res.json().catch(() => ({}));
+          const msg = err.message || `HTTP ${res.status}`;
+          if (res.status === 401) {
+            showToast('error', '인증 실패', '토큰이 유효하지 않거나 repo 권한이 없습니다.');
+          } else if (res.status === 422) {
+            showToast('error', '파일 충돌', '동일한 이름의 파일이 이미 존재합니다. 잠시 후 다시 시도해주세요.');
+          } else {
+            showToast('error', `오류 (${res.status})`, msg);
+          }
+        }
+      } catch (e) {
+        showToast('error', '네트워크 오류', e.message || '연결을 확인해주세요.');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    // 마크다운 파일 포맷
+    function buildMarkdown(title, category, content, date) {
+      const dateStr = date.toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' });
+      return `---
+title: "${title}"
+category: ${category}
+date: ${date.toISOString().slice(0, 10)}
+source: kb-admin
+---
+
+# ${title}
+
+> 카테고리: ${category} | 등록일: ${dateStr}
+
+${content}
+`;
+    }
+
+    // 슬러그 생성 (파일명 안전 처리)
+    function slugify(str) {
+      return str
+        .replace(/[^\w\s가-힣]/g, '')
+        .replace(/\s+/g, '-')
+        .slice(0, 40);
+    }
+
+    // 폼 초기화
+    function clearForm() {
+      document.getElementById('kbTitle').value = '';
+      document.getElementById('kbContent').value = '';
+      document.getElementById('charCount').textContent = '0';
+      document.querySelector('input[name="category"][value="exoFit"]').checked = true;
+    }
+
+    // 로딩 상태
+    function setLoading(on) {
+      const btn = document.getElementById('submitBtn');
+      const spinner = document.getElementById('spinner');
+      const label = document.getElementById('submitLabel');
+      btn.disabled = on;
+      spinner.style.display = on ? 'block' : 'none';
+      label.textContent = on ? '업로드 중...' : '📤 KB에 저장';
+    }
+
+    // 히스토리 저장
+    function saveHistory(item) {
+      const hist = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+      hist.unshift(item);
+      if (hist.length > 30) hist.length = 30;
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(hist));
+      renderHistory();
+    }
+
+    // 히스토리 렌더
+    function renderHistory() {
+      const list = document.getElementById('uploadList');
+      const hist = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+      if (hist.length === 0) {
+        list.innerHTML = '<div class="empty-list">아직 업로드 내역이 없습니다.</div>';
+        return;
+      }
+      list.innerHTML = hist.map(item => {
+        const d = new Date(item.time);
+        const timeStr = d.toLocaleDateString('ko-KR', { month: '2-digit', day: '2-digit' })
+          + ' ' + d.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+        return `
+          <div class="upload-item">
+            <div class="dot"></div>
+            <div class="item-title">${escapeHtml(item.title)}</div>
+            <div class="item-cat">${escapeHtml(item.category)}</div>
+            <div class="item-time">${timeStr}</div>
+          </div>`;
+      }).join('');
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // 토스트 알림
+    let toastTimer = null;
+    function showToast(type, title, msg) {
+      const el = document.getElementById('toast');
+      el.className = `toast ${type}`;
+      el.innerHTML = `<strong>${escapeHtml(title)}</strong>${escapeHtml(msg)}`;
+      el.classList.add('show');
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        el.classList.remove('show');
+      }, 4500);
+    }
+  </script>
+</body>
+</html>
