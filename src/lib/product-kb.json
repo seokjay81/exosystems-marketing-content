@@ -1,198 +1,412 @@
 {
   "_meta": {
     "version": "20260611",
-    "generated_at": "2026-06-11T07:56:07.407Z",
-    "product_count": 2
+    "generated_at": "2026-06-11T12:15:48.449Z",
+    "product_count": 6
   },
   "products": {
-    "deepsarc": {
-      "product_name": "EXOMED-DeepSARC",
-      "core_value": "AI 기반 근감소증(Sarcopenia) 조기 선별 및 중증도 평가 보조 솔루션 — 식약처 혁신의료기기 지정",
-      "category": "medical_device",
-      "is_medical_device": true,
-      "regulatory_status": "식약처 혁신의료기기 지정",
-      "target_customers": {
-        "hospital": {
-          "segment": "병원 / 검진센터",
-          "pain_points": [
-            "근감소증 선별 검사의 표준화된 디지털 도구 부재로 의료진 판단 편차 발생",
-            "고령 환자 증가에 따른 근감소증 관리 수요 대비 효율적 선별 체계 미흡",
-            "EMG 기반 근기능 평가 결과를 임상 워크플로에 통합하는 솔루션 부재"
-          ],
-          "buying_motivation": "표준화된 AI 보조 근감소증 선별로 진단 효율성 향상 및 환자 관리 고도화"
-        },
-        "pharma": {
-          "segment": "제약사 / 연구기관",
-          "pain_points": [
-            "근감소증 치료제 임상시험에서 객관적·재현 가능한 엔드포인트 측정 도구 부재",
-            "대규모 코호트 대상 근기능 평가의 비용·시간 효율성 문제",
-            "규제기관이 인정하는 디지털 바이오마커 확보 필요성 증가"
-          ],
-          "buying_motivation": "임상시험 엔드포인트 측정 표준화 및 디지털 바이오마커 확보"
-        },
-        "insurance": {
-          "segment": "보험사",
-          "pain_points": [
-            "고령 피보험자의 근감소증 위험도를 보험 언더라이팅 단계에서 객관적으로 평가할 수단 부재",
-            "근감소증 관련 의료비 청구 급증에 따른 손해율 관리 필요",
-            "예방적 건강관리 서비스 연계로 보험 상품 차별화 필요"
-          ],
-          "buying_motivation": "근감소증 위험군 조기 식별로 보험 리스크 관리 및 예방 건강관리 서비스 연계"
-        }
+    "EXOMED-DeepSARC": {
+      "id": "EXOMED-DeepSARC",
+      "name": "EXOMED-DeepSARC",
+      "definition": {
+        "ko": "AI 기반 근감소증(Sarcopenia) 위험도 평가 진단 보조 솔루션 (식약처 혁신의료기기 지정)",
+        "en": "AI-Based Sarcopenia Risk Assessment Diagnosis Support Solution (MFDS Innovative Medical Device Designation)"
       },
-      "key_messages": [
-        "식약처 혁신의료기기로 지정된 AI 근감소증 선별 솔루션으로 임상 현장의 진단 보조 신뢰도를 높입니다",
-        "EMG 기반 근기능 데이터와 AI 분석을 결합해 기존 이미징 검사 대비 신속하고 비침습적인 근감소증 평가를 지원합니다",
-        "다기관 데이터 학습 기반의 AI 모델로 의료기관별 편차 없이 표준화된 평가 보조 결과를 제공합니다",
-        "병원·보험사·제약사를 연결하는 근감소증 데이터 생태계 구축의 핵심 인프라로 활용할 수 있습니다"
-      ],
-      "clinical_evidence": {
-        "regulatory": "식약처 혁신의료기기 지정 (확정 언급 가능)",
-        "validation_studies": [
-          "다기관 임상 데이터 기반 AI 모델 검증 (구체적 수치는 영업팀 자료 참조)"
-        ],
-        "prohibited_claims": [
-          "'진단합니다' 표현 금지 — '평가를 보조합니다', '참고 데이터를 제공합니다'로 대체",
-          "'치료됩니다', '완치됩니다' 표현 금지",
-          "'보험 적용 보장' 표현 금지",
-          "'AI가 의사를 대신합니다' 표현 금지",
-          "검증되지 않은 정확도 수치 인용 금지"
+      "positioning": {
+        "ko": "신경근육계 반응 데이터와 딥러닝 AI 분석으로 근감소증 위험도를 객관적으로 평가하여 의료진의 진단 보조 및 예방적 스크리닝을 지원하는 식약처 혁신의료기기 지정 솔루션. 고령화 사회의 핵심 과제인 근감소증 조기 발견 생태계 구축에서 선도적 위치를 확보합니다.",
+        "en": "An MFDS Innovative Medical Device designation AI solution leveraging neural-muscular response data and deep learning to objectively assess sarcopenia risk, supporting clinician diagnosis and preventive screening for the aging society."
+      },
+      "keyFeatures": {
+        "ko": [
+          "AI(딥러닝) 기반 신경근육계 반응 분석",
+          "근감소증 위험도 스코어링 및 데이터 시각화",
+          "비침습적 단시간 평가 (기존 DXA 대비 접근성 향상)",
+          "식약처 혁신의료기기 지정 (공식 인증)",
+          "의료진 진단 보조 솔루션 (단독 확정 진단 불가)",
+          "제약사 RWE(Real-World Evidence) 데이터 파이프라인 연계 가능성",
+          "검진 센터 시니어 헬스케어 프리미엄 라인업 편입 가능"
         ]
       },
-      "differentiators": [
-        "국내 유일 식약처 혁신의료기기 지정 AI 근감소증 선별 솔루션",
-        "EMG + AI 이중 레이어 분석으로 단순 이미징 대비 근기능 '질적 평가' 가능",
-        "클라우드 기반 다기관 운영으로 병원·검진센터 네트워크 전체 데이터 통합 관리",
-        "보험 언더라이팅·제약 임상·병원 진단 보조 등 B2B 다채널 수익 모델"
+      "targetInsights": {
+        "병원": "내과·재활의학과·노인의학과의 근감소증 비급여 검사 신설 기회. AI 판독 보조로 진단 워크플로우 효율화, 최소 인프라 투자로 최대 효과를 실현합니다.",
+        "검진센터": "시니어 종합 건강검진 프리미엄 패키지 편입으로 경쟁력 강화. AI 분석으로 검진 정확도와 회전율을 동시에 향상시킬 수 있습니다.",
+        "제약사": "근감소증 치료제 임상 환자 스크리닝 도구로 활용 가능. 실세계 증거(RWE) 데이터 축적과 예방적 디지털 바이오마커 파이프라인 공동 구축 기회를 제공합니다.",
+        "연구기관": "근감소증 관련 임상 연구의 정밀 바이오마커 데이터 수집 도구. 논문 게재를 위한 객관적 근거 확보에 기여합니다.",
+        "보험사": "근감소증 위험도 AI 스크리닝으로 보험 가입자 건강 리스크 사전 관리. 예방적 데이터 파이프라인 구축으로 보험금 지출 최적화와 헬스케어 연계 서비스 개발 기회를 제공합니다."
+      },
+      "targets": [
+        "병원",
+        "검진센터",
+        "제약사",
+        "연구기관",
+        "보험사"
       ],
-      "pricing_model": {
-        "type": "enterprise_saas",
-        "base": "기관 규모·검사량 기반 맞춤 계약",
-        "components": [
-          "플랫폼 라이선스 (연간)",
-          "검사 건당 과금 옵션",
-          "데이터 분석 리포트 패키지"
-        ],
-        "note": "구체적 단가는 영업팀 문의 유도 — 콘텐츠에 수치 기재 금지"
+      "allowed": {
+        "ko": [
+          "식약처 혁신의료기기로 지정된 AI 진단 보조 솔루션입니다.",
+          "근감소증 위험도 평가를 위한 참고 데이터를 제공합니다.",
+          "의료진의 진단 판단을 AI로 보조합니다.",
+          "비침습적 방식으로 빠른 근감소증 위험도 스크리닝이 가능합니다.",
+          "예방적 스크리닝 목적의 진단 보조 솔루션입니다."
+        ]
       },
-      "segment_messages": {
-        "hospital": {
-          "headline": "근감소증 선별, 이제 AI가 의료진의 판단을 보조합니다 — 혁신의료기기 지정 DeepSARC",
-          "body": "DeepSARC는 EMG 기반 근기능 데이터를 AI로 분석해 근감소증 중증도 평가를 보조합니다. 식약처 혁신의료기기로 지정되어 임상 현장에서 신뢰할 수 있는 디지털 평가 보조 도구로 활용하실 수 있습니다.",
-          "cta": "병원·검진센터 도입 상담"
-        },
-        "pharma": {
-          "headline": "근감소증 임상시험의 엔드포인트를 디지털로 표준화하세요 — DeepSARC 연구 파트너십",
-          "body": "DeepSARC의 AI 근기능 평가 데이터를 임상시험 엔드포인트로 활용하면 측정의 재현성과 객관성을 확보할 수 있습니다. 다기관 코호트 연구에서 일관된 데이터 수집을 지원합니다.",
-          "cta": "제약사·연구기관 파트너십 문의"
-        },
-        "insurance": {
-          "headline": "근감소증 리스크를 데이터로 선별하세요 — 보험 언더라이팅을 위한 AI 평가 솔루션",
-          "body": "고령 피보험자의 근감소증 위험도를 DeepSARC AI 평가 데이터로 객관적으로 파악하고, 예방적 건강관리 서비스와 연계해 손해율을 관리하세요. 보험 상품 차별화와 장기 리스크 최소화를 동시에 달성합니다.",
-          "cta": "보험사 솔루션 제안서 요청"
-        }
+      "prohibited": {
+        "ko": [
+          "단독으로 근감소증을 확정 진단합니다",
+          "치료 효과를 보장합니다",
+          "의료진 없이 진단 결과를 확정합니다",
+          "DXA를 완전히 대체합니다 (보완 도구임)",
+          "보험 급여를 100% 보장합니다",
+          "AI가 의사를 대신합니다"
+        ]
       },
-      "objection_handling": {
-        "기존 DXA 검사로 충분하지 않나요?": "DXA는 근육량(양적 평가)에 집중하지만 DeepSARC는 EMG 기반으로 근기능(질적 평가)을 추가로 분석합니다. 두 데이터를 결합하면 근감소증 위험도를 더 입체적으로 평가 보조할 수 있습니다.",
-        "혁신의료기기가 실제 급여 적용되나요?": "현재 급여 적용 여부는 확정되지 않았으며 보험 적용을 보장하지 않습니다. 혁신의료기기 지정은 임상 도입 및 연구 활용의 신뢰성을 나타내는 지표입니다. 자세한 급여 현황은 영업팀에 문의해 주세요.",
-        "보험사에서 어떻게 활용할 수 있나요?": "건강검진 파트너 기관과의 연계를 통해 피보험자 근감소증 위험 선별 데이터를 언더라이팅에 참고하거나, 예방 건강관리 서비스(헬스케어 특약 등)와 연동하는 방식으로 활용할 수 있습니다.",
-        "AI 분석 결과의 신뢰도는?": "DeepSARC는 다기관 임상 데이터로 학습·검증된 AI 모델을 사용하며, 식약처 혁신의료기기 지정 과정에서 안전성·성능 기준을 충족했습니다. 구체적인 검증 자료는 영업팀이 제공합니다."
+      "rules": {
+        "ko": [
+          "식약처 혁신의료기기 지정 사실 반드시 명시",
+          "AI 진단 '보조' 솔루션으로 표현 (단독 진단 주체 아님)",
+          "최종 의학적 판단은 반드시 의료진이 수행함을 명시",
+          "제약사·연구기관 대상: RWE 데이터 활용 가능성 중심 소구",
+          "검진센터 대상: 시니어 헬스케어 프리미엄화 가치 중심 소구",
+          "병원 대상: 비급여 수익 모델 및 워크플로우 효율화 중심 소구"
+        ]
       },
-      "_update_history": [
-        {
-          "date": "2026-06-11",
-          "author": "system",
-          "changes": "초기 KB 파일 생성 — 보험사 세그먼트 포함, 혁신의료기기 규제 표현 기준 적용"
-        }
-      ]
+      "disclaimer": {
+        "ko": "본 제품은 식약처 혁신의료기기로 지정된 AI 진단 보조 솔루션입니다. 근감소증 위험도 평가를 위한 참고 데이터를 제공하며, 최종 의학적 진단 및 판단은 반드시 자격을 갖춘 의료전문가가 수행하여야 합니다.",
+        "en": "This MFDS Innovative Medical Device designation AI solution provides reference data for sarcopenia risk assessment. Final medical diagnosis and judgment must be performed by qualified healthcare professionals."
+      },
+      "isMedical": true
     },
-    "exofit": {
-      "product_name": "exoFit",
-      "core_value": "AI 기반 근전도(EMG) 분석으로 운동 효과를 실시간 데이터로 검증하는 스마트 웰니스 기기",
-      "category": "wellness",
-      "is_medical_device": false,
-      "target_customers": {
-        "fitness": {
-          "segment": "피트니스 센터 / 퍼스널 트레이너",
-          "pain_points": [
-            "회원의 운동 효과를 주관적 피드백 없이 객관적으로 증명하기 어려움",
-            "고부가가치 프로그램 차별화 수단 부재",
-            "회원 이탈 방지를 위한 데이터 기반 성과 공유 필요"
-          ],
-          "buying_motivation": "데이터로 운동 효과를 증명해 프리미엄 서비스 포지셔닝"
-        },
-        "hospital": {
-          "segment": "병원 / 운동처방 클리닉",
-          "pain_points": [
-            "근감소증 예방·관리를 위한 객관적 측정 도구 부재",
-            "운동처방 효과를 정량적으로 환자에게 전달하기 어려움",
-            "의료기기 없이 근기능 상태를 모니터링하는 보조 수단 필요"
-          ],
-          "buying_motivation": "비의료기기 범주에서 근기능 모니터링 보조 도구로 활용"
-        },
-        "rehabilitation": {
-          "segment": "재활센터 / 홈케어",
-          "pain_points": [
-            "외래·가정 환경에서 재활 진행 상황 추적 도구 부재",
-            "환자 자가 운동 관리 및 동기 부여 수단 필요"
-          ],
-          "buying_motivation": "홈케어 연계 재활 보조 솔루션으로 활용"
-        }
+    "exoFit": {
+      "id": "exoFit",
+      "name": "exoFit",
+      "definition": {
+        "ko": "AI 운동 역량 평가 솔루션 (웰니스 기기)",
+        "en": "AI Exercise Capacity Evaluation Solution (Wellness Device)"
       },
-      "key_messages": [
-        "근전도(EMG) 센서가 운동 중 근육 활성화를 실시간으로 측정해 '내 운동이 제대로 되고 있는가'를 데이터로 확인합니다",
-        "AI 분석 리포트로 운동 전·후 근기능 변화를 시각화하여 회원에게 성과를 직관적으로 공유할 수 있습니다",
-        "클라우드 기반 대시보드로 다수 회원의 운동 데이터를 한눈에 관리하고 맞춤형 피드백을 제공합니다",
-        "식약처 의료기기 허가 없이 웰니스 목적으로 도입 가능하여 규제 부담 없이 즉시 운영에 적용할 수 있습니다"
-      ],
-      "clinical_evidence": {
-        "note": "비의료기기로 임상시험 결과 대신 파일럿 사례 중심 활용",
-        "pilot_cases": [
-          "국내 피트니스 센터 파일럿: 회원 운동 지속률 향상 사례",
-          "운동처방사 협업 파일럿: EMG 데이터 기반 맞춤 처방 프로토콜 구축"
-        ],
-        "prohibited_claims": [
-          "치료 효과 수치 인용 금지",
-          "의료기기 성능 비교 금지",
-          "FDA·CE 인증 언급 금지 (미취득)"
+      "positioning": {
+        "ko": "EMG(근전도)와 IMU(관성측정장치) 이중 센서로 운동 중 실시간 근육 활성도와 움직임 패턴을 데이터화하여, 트레이너의 과학적 상담과 피트니스 센터의 프리미엄 차별화를 지원하는 AI 운동 솔루션. '직관에서 데이터로' 전환을 통해 회원 재등록률과 센터 경쟁력을 동시에 높입니다.",
+        "en": "An AI wellness solution using dual EMG/IMU sensors to quantify real-time muscle activation and movement patterns, enabling data-driven personal training and premium fitness differentiation."
+      },
+      "keyFeatures": {
+        "ko": [
+          "EMG + IMU 이중 센서 기반 실시간 근육 활성도 측정",
+          "운동 동작별 근육 사용 패턴 데이터 시각화",
+          "트레이너 전용 과학적 상담 지원 소프트웨어",
+          "운동 처방 개인화를 위한 참고 데이터 제공",
+          "비의료기기(웰니스 기기) — 진단·치료 목적 아님"
         ]
       },
-      "differentiators": [
-        "실시간 EMG 센서와 AI 분석의 결합 — 운동 중 즉각 피드백 제공",
-        "웰니스 기기 포지셔닝으로 의료기기 심의 없이 마케팅 가능",
-        "구독형 SaaS 모델로 기관의 초기 투자 부담 최소화",
-        "EXOSYSTEMS 의료기기 라인(exoPill 시리즈)과 연계한 풀-라인업 솔루션 구성 가능"
+      "targetInsights": {
+        "트레이너": "주관적 경험 의존 지도에서 데이터 기반 전문성으로 고도화. 회원 재등록률 향상과 차별화된 PT 서비스 구현에 직결됩니다.",
+        "피트니스 센터 대표": "경쟁 센터 대비 압도적인 하이테크 프리미엄 포지셔닝. 데이터 기반 트레이너 역량 표준화로 서비스 품질 일관성을 확보합니다.",
+        "메디컬 피트니스 센터": "의학적 근거(EBM)와 피트니스를 결합한 임상 수준의 VIP 서비스. 비급여 수익 모델 연계 가능성과 고객 신뢰도를 동시에 확보합니다.",
+        "병원": "운동처방 클리닉 및 근골격 재활 연계 보조 참고 데이터로 활용 가능. 비의료기기이므로 '운동 보조 참고 도구'로 소통합니다.",
+        "국내 유통사": "피트니스·메디컬 피트니스 시장의 명확한 세일즈 포인트. 데모 운영 후 센터 내 입소문 효과와 높은 재구매율이 기대되는 제품입니다.",
+        "해외 유통사": "직관적 데이터 시각화로 언어 장벽을 넘어 현지 시장 적응이 용이. 글로벌 프리미엄 피트니스 트렌드에 부합하는 솔루션입니다."
+      },
+      "targets": [
+        "일반 회원",
+        "트레이너",
+        "피트니스 센터 대표",
+        "메디컬 피트니스 센터",
+        "병원",
+        "국내 유통사",
+        "해외 유통사",
+        "물리치료사"
       ],
-      "pricing_model": {
-        "type": "hardware_plus_saas",
-        "hardware": "기기 구매 또는 리스",
-        "saas": "월정액 구독 (클라우드 분석 플랫폼, 대시보드, 리포트 포함)",
-        "note": "구체적 단가는 영업팀 문의 유도 — 콘텐츠에 수치 기재 금지"
+      "allowed": {
+        "ko": [
+          "운동 중 근육 반응을 데이터로 확인하는 솔루션입니다.",
+          "트레이너의 과학적 상담을 지원합니다.",
+          "운동 동작 중 근육 활성 패턴을 시각화합니다.",
+          "개인화된 운동 방향 설정에 참고 데이터를 제공합니다.",
+          "피트니스 센터의 프리미엄 차별화를 지원하는 솔루션입니다."
+        ]
       },
-      "segment_messages": {
-        "fitness": {
-          "headline": "데이터가 만드는 프리미엄 PT — 회원의 근육이 반응하는 순간을 수치로 보여주세요",
-          "body": "exoFit은 EMG 센서로 운동 중 근육 활성화를 실시간 측정하고, AI 분석 리포트로 회원별 운동 성과를 시각화합니다. '열심히 했다'는 말 대신 데이터로 증명하는 PT 서비스를 구축하세요.",
-          "cta": "피트니스 센터 도입 문의"
-        },
-        "hospital": {
-          "headline": "운동처방의 효과를 환자가 직접 확인하는 시대 — 근기능 데이터로 신뢰를 쌓으세요",
-          "body": "비의료기기 범주의 exoFit으로 환자 근기능 변화를 비침습적으로 모니터링하고 운동처방 효과를 정량적 데이터로 제시합니다. 의료진과 환자 간 커뮤니케이션 도구로 활용하세요.",
-          "cta": "병원·클리닉 도입 상담"
-        }
+      "prohibited": {
+        "ko": [
+          "질병을 치료합니다 / 완치됩니다",
+          "의학적 진단이 가능합니다",
+          "재활 효과를 보장합니다",
+          "의료기기입니다 (비의료기기이므로 의료기기 표현 금지)",
+          "통증을 없애줍니다",
+          "근감소증을 진단합니다"
+        ]
       },
-      "objection_handling": {
-        "기존 피트니스 장비와 차이가 없지 않나요?": "기존 장비는 운동량(횟수·거리)을 측정하지만 exoFit은 근육의 '질적 반응'을 측정합니다. EMG 데이터는 같은 운동도 어느 근육이 얼마나 활성화되었는지를 보여주는 전혀 다른 차원의 정보입니다.",
-        "의료기기가 아닌데 병원에서 쓸 수 있나요?": "네. exoFit은 웰니스 기기로 분류되어 의료기기 허가 없이 운동처방 보조 도구로 활용할 수 있습니다. 의료진의 진단·처방을 보조하는 참고 데이터 목적으로 사용하시면 됩니다.",
-        "구독료가 부담스럽습니다": "초기 하드웨어 비용을 낮추고 실제 사용량에 따라 구독 플랜을 조정할 수 있습니다. 도입 규모와 사용 패턴에 맞는 최적 플랜을 영업팀과 상담해 보세요."
+      "rules": {
+        "ko": [
+          "운동 보조 참고 데이터 솔루션임을 명확히 표현",
+          "트레이너 전문성 지원 및 센터 차별화 도구로 포지셔닝",
+          "'데이터로 확인한다'는 표현 적극 활용",
+          "의료적 효능 주장 절대 금지",
+          "피트니스 센터 대상: ROI·차별화·회원 재등록률 중심 소구",
+          "병원 대상: 운동처방 보조 참고 도구 수준으로만 표현"
+        ]
       },
-      "_update_history": [
-        {
-          "date": "2026-06-11",
-          "author": "system",
-          "changes": "초기 KB 파일 생성 — 핵심 가치, 타겟 세그먼트, 메시지, 가격 모델 정의"
-        }
-      ]
+      "disclaimer": {
+        "ko": "본 제품은 운동 지도를 보조하는 웰니스 기기이며, 의학적 진단이나 치료 목적으로 사용할 수 없습니다. 운동 관련 전문가의 지도 하에 활용하시기 바랍니다.",
+        "en": "exoFit is a wellness device that assists exercise guidance. It is not intended for medical diagnosis or treatment. Use under qualified fitness or health professional supervision."
+      },
+      "isMedical": false
+    },
+    "exoPill-dEMG": {
+      "id": "exoPill-dEMG",
+      "name": "exoPill-dEMG",
+      "definition": {
+        "ko": "동작분석 및 역동적 근전도(dEMG) 기반 근기능 평가 의료기기",
+        "en": "Dynamic EMG & Motion Analysis Muscle Function Evaluation Medical Device"
+      },
+      "positioning": {
+        "ko": "동작 수행 중 근전도(EMG)와 관성측정(IMU)을 동시 측정하여 근기능 상태를 객관적으로 평가하고, 재활의학과·정형외과·물리치료실의 평가 워크플로우를 지원하는 식약처 허가 의료기기. 치료사의 주관적 평가를 데이터로 보완하여 재활 방향 설정의 근거를 강화합니다.",
+        "en": "An MFDS-approved medical device that simultaneously captures EMG and IMU during motion to objectively evaluate muscle function, complementing therapist judgment and supporting rehab evaluation workflows."
+      },
+      "keyFeatures": {
+        "ko": [
+          "동작 중 근전도(EMG) + IMU 동시 측정 (역동적 근기능 평가)",
+          "재활 평가용 객관적 근기능 데이터 제공",
+          "치료사의 주관적 평가를 데이터로 보완",
+          "재활 방향 설정 참고 데이터 제공",
+          "식약처 허가 의료기기",
+          "실시간 데이터 시각화 및 임상 보고서 생성"
+        ]
+      },
+      "targetInsights": {
+        "병원": "재활 평가의 객관성 확보와 비급여 검사 항목 신설로 수익성 개선. 기존 인프라 변경 없이 도입 가능하여 초기 투자 부담이 낮습니다.",
+        "재활의학과": "근기능 상태의 데이터 기반 추적으로 치료 효과를 객관화하고, 환자 치료 순응도(Compliance)를 높입니다.",
+        "정형외과": "수술 전·후 근기능 상태 변화 비교 데이터로 환자 설명력 강화. 보존적 치료 경과 모니터링에 활용 가능합니다.",
+        "물리치료사": "주관적 도수치료 평가의 한계를 객관적 데이터로 보완. 환자 예후 설명력 강화와 전문성 차별화에 직결됩니다.",
+        "국내 유통사": "병원·재활 클리닉 시장의 명확한 세일즈 논리. 비급여 수익 모델 신설 가능성이 병원 도입 결정의 핵심 설득 포인트입니다.",
+        "해외 유통사": "식약처 허가 기반으로 현지 규제 대응 레퍼런스 확보 용이. 재활 의료기기 시장의 데이터 기반 평가 니즈에 부합합니다."
+      },
+      "targets": [
+        "병원",
+        "재활의학과",
+        "정형외과",
+        "물리치료실",
+        "국내 유통사",
+        "해외 유통사",
+        "물리치료사"
+      ],
+      "allowed": {
+        "ko": [
+          "동작 중 근육 활성 상태를 객관적으로 확인합니다.",
+          "재활 방향 설정을 위한 참고 데이터를 제공합니다.",
+          "식약처 허가 의료기기로 임상 현장에 적용 가능합니다.",
+          "실시간 근기능 데이터를 시각화합니다.",
+          "의료진의 평가를 보조하는 솔루션입니다."
+        ]
+      },
+      "prohibited": {
+        "ko": [
+          "질환을 단독으로 확정 진단합니다",
+          "재활 효과를 100% 보장합니다",
+          "치료 성과를 담보합니다",
+          "의료진 없이 단독 사용 가능합니다",
+          "특정 질환의 치료 목적으로 사용합니다"
+        ]
+      },
+      "rules": {
+        "ko": [
+          "식약처 허가 의료기기임을 명시",
+          "의료진(전문가)의 최종 판단 보조 도구로 표현",
+          "확정 진단이 아닌 '평가 참고 데이터' 표현 사용",
+          "B2B 병원·클리닉 대상: 비급여 ROI 및 워크플로우 효율화 중심 소구",
+          "비급여 수익 모델 연계 가능성 언급 가능 (구체적 수치 보장 금지)"
+        ]
+      },
+      "disclaimer": {
+        "ko": "본 제품은 식약처 허가 의료기기로, 의료전문가의 평가를 보조하기 위한 참고 데이터를 제공합니다. 최종 의학적 판단 및 진단은 반드시 의료진이 수행하여야 합니다.",
+        "en": "This MFDS-approved medical device provides reference data to assist healthcare professional evaluation. Final medical judgment and diagnosis must be performed by qualified clinicians."
+      },
+      "isMedical": true
+    },
+    "exoPill-FES": {
+      "id": "exoPill-FES",
+      "name": "exoPill-FES",
+      "definition": {
+        "ko": "기능적 전기자극(FES) 기반 재활 보조 의료기기",
+        "en": "Functional Electrical Stimulation (FES) Rehabilitation Assist Medical Device"
+      },
+      "positioning": {
+        "ko": "기능적 전기자극(FES) 기술로 재활 과정에서 마비되거나 약화된 근육의 수축을 전기 신호로 보조하는 식약처 허가 의료기기. 뇌졸중·척수손상 재활, 근위축 예방 분야에서 전문가 지도 하에 근육 활성 보조 역할을 담당합니다.",
+        "en": "An MFDS-approved medical device applying FES to assist contraction of weakened or paralyzed muscles during rehabilitation, used under professional guidance for stroke, spinal cord injury recovery, and muscle atrophy prevention."
+      },
+      "keyFeatures": {
+        "ko": [
+          "기능적 전기자극(FES): 신경 자극으로 근육 수축 유도",
+          "맞춤형 자극 파라미터 설정 (강도·빈도·패턴)",
+          "재활 과정 근육 활성 보조 솔루션",
+          "식약처 허가 의료기기",
+          "반드시 전문 의료인 지도 하에 사용"
+        ]
+      },
+      "targetInsights": {
+        "병원": "뇌졸중·척수손상 환자 재활 프로그램에 통합하여 치료 다양성 확보. 비급여 서비스로 병원 수익 모델을 확대할 수 있습니다.",
+        "재활의학과": "근육 활성 보조를 통한 조기 재활 개입 가능. 환자 치료 순응도 향상과 재활 프로그램 차별화에 기여합니다.",
+        "물리치료사": "도수치료와 병행한 전기자극 보조 재활로 치료 효율성 향상. 치료사의 전문 역량을 확장하는 도구로 포지셔닝됩니다.",
+        "재활병원": "입원 환자 재활 프로그램의 FES 기반 보조 치료 도입으로 차별화된 재활 서비스 구현 가능합니다."
+      },
+      "targets": [
+        "병원",
+        "재활의학과",
+        "물리치료실",
+        "재활병원",
+        "국내 유통사",
+        "물리치료사"
+      ],
+      "allowed": {
+        "ko": [
+          "식약처 허가 의료기기로 재활 현장에 적용 가능합니다.",
+          "기능적 전기자극(FES)으로 근육 수축을 보조합니다.",
+          "전문가 지도 하에 재활 과정에서 근육 활성 보조 역할을 합니다.",
+          "재활 프로그램의 보조 수단으로 활용됩니다."
+        ]
+      },
+      "prohibited": {
+        "ko": [
+          "치료 효과를 보장합니다",
+          "완치됩니다",
+          "의료진 없이 단독 사용 가능합니다",
+          "진단 목적으로 사용합니다",
+          "보험 수가 적용을 보장합니다"
+        ]
+      },
+      "rules": {
+        "ko": [
+          "식약처 허가 의료기기 명시 필수",
+          "반드시 전문 의료인 지도 하 사용 조건 명시",
+          "보조적 역할 강조 (치료 대체 아님)",
+          "재활 과정의 근육 활성 '보조' 도구로 표현",
+          "병원·재활의학과 대상: 비급여 수익 모델 연계 가능성 소구 가능"
+        ]
+      },
+      "disclaimer": {
+        "ko": "본 제품은 식약처 허가 의료기기로, 반드시 전문 의료인의 지도 하에 보조적으로 활용되어야 합니다. 단독 사용이나 진단·치료 목적의 사용은 적합하지 않습니다.",
+        "en": "This MFDS-approved medical device must be used under qualified healthcare professional supervision as an auxiliary tool. It is not suitable for independent use, diagnosis, or primary treatment."
+      },
+      "isMedical": true
+    },
+    "exoPill-Lite": {
+      "id": "exoPill-Lite",
+      "name": "exoPill-Lite",
+      "definition": {
+        "ko": "웨어러블 전기자극 재활 보조 솔루션 (가정용·외래 재활 보조 목적)",
+        "en": "Wearable Electrical Stimulation Rehabilitation Support Solution (Home/Outpatient Rehab)"
+      },
+      "positioning": {
+        "ko": "휴대성과 사용 편의성을 극대화한 웨어러블 전기자극 재활 보조 솔루션. 가정 및 외래 환경에서 전문가 지도 하에 근육 자극 관리를 지원하며, 병원 재활 치료 연계 홈케어 솔루션으로 포지셔닝됩니다.",
+        "en": "A highly portable wearable electrical stimulation solution that supports muscle stimulation management under professional guidance in home and outpatient settings, positioned as a hospital-linked home care rehabilitation solution."
+      },
+      "keyFeatures": {
+        "ko": [
+          "경량 웨어러블 전극 디자인으로 탁월한 휴대성",
+          "직관적 조작 인터페이스 (고령자·비전문가 친화적)",
+          "병원 연계 홈케어 재활 보조 솔루션",
+          "개인 맞춤형 자극 강도 조절 가능",
+          "전문가 지도 하에 보조적으로 활용"
+        ]
+      },
+      "targetInsights": {
+        "병원": "외래 치료 후 가정 연속 관리로 치료 경험 연장. 재원일 단축 및 재방문율 향상에 기여할 수 있습니다.",
+        "물리치료사": "가정에서의 자가 관리를 지원하여 치료 순응도 향상. 치료사의 원격 지도 가능성을 확장합니다.",
+        "재활센터": "외래 및 센터 내 보조 재활 솔루션으로 활용하여 치료 서비스 다양화가 가능합니다."
+      },
+      "targets": [
+        "병원",
+        "재활센터",
+        "홈 재활 시장",
+        "유통사",
+        "물리치료사"
+      ],
+      "allowed": {
+        "ko": [
+          "사용이 간편한 웨어러블 전기자극 보조 솔루션입니다.",
+          "가정에서도 활용할 수 있는 재활 보조 기기입니다.",
+          "전문가 지도 하에 사용하는 보조 솔루션입니다.",
+          "휴대성과 편의성을 극대화한 설계입니다."
+        ]
+      },
+      "prohibited": {
+        "ko": [
+          "질병을 치료합니다",
+          "의료기기를 완전히 대체합니다",
+          "의사 처방 없이 치료 목적으로 사용 가능합니다",
+          "치료 효과를 보장합니다"
+        ]
+      },
+      "rules": {
+        "ko": [
+          "휴대성·편의성을 핵심 차별점으로 강조",
+          "병원 연계 홈케어 솔루션으로 포지셔닝",
+          "전문가 지도 하 사용 조건 명시",
+          "의료기기 여부에 따라 표현 수위 조절"
+        ]
+      },
+      "disclaimer": {
+        "ko": "본 제품은 전문가의 지도 하에 보조적으로 활용하는 제품입니다. 의료 목적의 단독 진단이나 치료 목적으로 사용할 수 없습니다.",
+        "en": "This product is for auxiliary use under professional guidance. It is not intended for independent medical diagnosis or treatment purposes."
+      },
+      "isMedical": false
+    },
+    "exoRehab": {
+      "id": "exoRehab",
+      "name": "exoRehab",
+      "definition": {
+        "ko": "미국 RTM(원격 치료 모니터링) 시장 대상 재활 관리 솔루션",
+        "en": "US RTM (Remote Therapeutic Monitoring) Market Rehabilitation Management Solution"
+      },
+      "positioning": {
+        "ko": "미국 RTM(Remote Therapeutic Monitoring) 보험 청구 코드 체계에 최적화된 재활 원격 관리 솔루션. 물리치료 기관과 재활 클리닉이 환자 원격 모니터링 데이터를 수집·분석하고, RTM 기반 보험 청구 서비스 흐름을 체계적으로 지원합니다.",
+        "en": "A rehabilitation remote management solution optimized for the US RTM insurance reimbursement framework, supporting physical therapy clinics in collecting patient monitoring data and managing the RTM billing workflow."
+      },
+      "keyFeatures": {
+        "ko": [
+          "미국 RTM 코드 연계 원격 치료 모니터링 흐름 지원",
+          "환자 수행 데이터 원격 수집 및 분석",
+          "물리치료사 원격 지도 지원 소프트웨어",
+          "RTM 사업 파트너 대상 시장 진입 지원",
+          "미국 규제 환경 대응 설계"
+        ]
+      },
+      "targetInsights": {
+        "미국 재활 클리닉": "RTM 코드 적용으로 원격 모니터링 보험 청구 가능성 확보. 환자 치료 연속성과 추가 수익 창출 기회를 동시에 제공합니다.",
+        "RTM 사업 파트너": "미국 원격 재활 시장 선점 기회. 명확한 보험 청구 모델 기반의 수익화 경로를 제공합니다.",
+        "물리치료사": "원격 환자 모니터링으로 치료 연속성 강화. 클리닉 외부에서도 환자 상태를 추적·관리할 수 있습니다."
+      },
+      "targets": [
+        "미국 재활 클리닉",
+        "물리치료 기관",
+        "RTM 사업 파트너",
+        "물리치료사"
+      ],
+      "allowed": {
+        "ko": [
+          "미국 RTM 코드 체계에 최적화된 원격 재활 관리 흐름을 지원합니다.",
+          "환자 수행 데이터를 원격으로 수집하고 관리합니다.",
+          "물리치료사의 원격 모니터링 업무 효율성을 높입니다."
+        ]
+      },
+      "prohibited": {
+        "ko": [
+          "보험 수가 100% 청구를 보장합니다",
+          "치료 효과를 완벽히 보장합니다",
+          "미국 규제 승인을 보장합니다",
+          "모든 RTM 코드에 자동 적용됩니다"
+        ]
+      },
+      "rules": {
+        "ko": [
+          "RTM 모니터링 워크플로우 효율성 중심 소구",
+          "보험 수가는 '가능성' 또는 '지원' 수준으로만 표현",
+          "미국 시장 특화 솔루션임을 명시",
+          "활용 가능성은 현지 규제에 따라 달라질 수 있음을 명시"
+        ]
+      },
+      "disclaimer": {
+        "ko": "본 제품의 RTM 보험 청구 적용 가능성은 현지 규정 및 심사 기준에 따라 다를 수 있습니다. 실제 적용 전 담당 전문가 및 관련 기관의 확인을 권장합니다.",
+        "en": "RTM insurance reimbursement applicability may vary depending on local regulations and review criteria. Confirmation with qualified professionals and relevant authorities is recommended before actual application."
+      },
+      "isMedical": false
     }
   },
   "strategy": {},

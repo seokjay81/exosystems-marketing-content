@@ -1,0 +1,56 @@
+{
+  "id": "exoPill-Lite",
+  "name": "exoPill-Lite",
+  "definition": {
+    "ko": "웨어러블 전기자극 재활 보조 솔루션 (가정용·외래 재활 보조 목적)",
+    "en": "Wearable Electrical Stimulation Rehabilitation Support Solution (Home/Outpatient Rehab)"
+  },
+  "positioning": {
+    "ko": "휴대성과 사용 편의성을 극대화한 웨어러블 전기자극 재활 보조 솔루션. 가정 및 외래 환경에서 전문가 지도 하에 근육 자극 관리를 지원하며, 병원 재활 치료 연계 홈케어 솔루션으로 포지셔닝됩니다.",
+    "en": "A highly portable wearable electrical stimulation solution that supports muscle stimulation management under professional guidance in home and outpatient settings, positioned as a hospital-linked home care rehabilitation solution."
+  },
+  "keyFeatures": {
+    "ko": [
+      "경량 웨어러블 전극 디자인으로 탁월한 휴대성",
+      "직관적 조작 인터페이스 (고령자·비전문가 친화적)",
+      "병원 연계 홈케어 재활 보조 솔루션",
+      "개인 맞춤형 자극 강도 조절 가능",
+      "전문가 지도 하에 보조적으로 활용"
+    ]
+  },
+  "targetInsights": {
+    "병원": "외래 치료 후 가정 연속 관리로 치료 경험 연장. 재원일 단축 및 재방문율 향상에 기여할 수 있습니다.",
+    "물리치료사": "가정에서의 자가 관리를 지원하여 치료 순응도 향상. 치료사의 원격 지도 가능성을 확장합니다.",
+    "재활센터": "외래 및 센터 내 보조 재활 솔루션으로 활용하여 치료 서비스 다양화가 가능합니다."
+  },
+  "targets": ["병원", "재활센터", "홈 재활 시장", "유통사", "물리치료사"],
+  "allowed": {
+    "ko": [
+      "사용이 간편한 웨어러블 전기자극 보조 솔루션입니다.",
+      "가정에서도 활용할 수 있는 재활 보조 기기입니다.",
+      "전문가 지도 하에 사용하는 보조 솔루션입니다.",
+      "휴대성과 편의성을 극대화한 설계입니다."
+    ]
+  },
+  "prohibited": {
+    "ko": [
+      "질병을 치료합니다",
+      "의료기기를 완전히 대체합니다",
+      "의사 처방 없이 치료 목적으로 사용 가능합니다",
+      "치료 효과를 보장합니다"
+    ]
+  },
+  "rules": {
+    "ko": [
+      "휴대성·편의성을 핵심 차별점으로 강조",
+      "병원 연계 홈케어 솔루션으로 포지셔닝",
+      "전문가 지도 하 사용 조건 명시",
+      "의료기기 여부에 따라 표현 수위 조절"
+    ]
+  },
+  "disclaimer": {
+    "ko": "본 제품은 전문가의 지도 하에 보조적으로 활용하는 제품입니다. 의료 목적의 단독 진단이나 치료 목적으로 사용할 수 없습니다.",
+    "en": "This product is for auxiliary use under professional guidance. It is not intended for independent medical diagnosis or treatment purposes."
+  },
+  "isMedical": false
+}

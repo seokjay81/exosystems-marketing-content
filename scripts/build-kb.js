@@ -5,14 +5,16 @@ const KB_ROOT = path.join(__dirname, '..', 'knowledge-base');
 const OUT_DIR = path.join(__dirname, '..', 'src', 'lib');
 const OUT_FILE = path.join(OUT_DIR, 'product-kb.json');
 
-function readJsonFiles(dir) {
+function readJsonFiles(dir, useIdAsKey = false) {
   if (!fs.existsSync(dir)) return {};
   return fs.readdirSync(dir)
     .filter(f => f.endsWith('.json'))
     .reduce((acc, file) => {
-      const key = path.basename(file, '.json');
+      const fallbackKey = path.basename(file, '.json');
       try {
-        acc[key] = JSON.parse(fs.readFileSync(path.join(dir, file), 'utf8'));
+        const data = JSON.parse(fs.readFileSync(path.join(dir, file), 'utf8'));
+        const key = useIdAsKey ? (data.id || fallbackKey) : fallbackKey;
+        acc[key] = data;
       } catch (e) {
         console.warn(`[경고] JSON 파싱 실패: ${file} — ${e.message}`);
       }
@@ -20,7 +22,7 @@ function readJsonFiles(dir) {
     }, {});
 }
 
-const products  = readJsonFiles(path.join(KB_ROOT, 'products'));
+const products  = readJsonFiles(path.join(KB_ROOT, 'products'), true);
 const strategy  = readJsonFiles(path.join(KB_ROOT, 'strategy'));
 const messaging = readJsonFiles(path.join(KB_ROOT, 'messaging'));
 

@@ -1,3 +1,42 @@
+import { readFileSync } from 'fs';
+import { join } from 'path';
+
+let productKBCache = null;
+
+function getProductKB() {
+  if (productKBCache) return productKBCache;
+  try {
+    const kbPath = join(process.cwd(), 'src', 'lib', 'product-kb.json');
+    const raw = JSON.parse(readFileSync(kbPath, 'utf8'));
+    productKBCache = raw.products || {};
+  } catch {
+    productKBCache = {};
+  }
+  return productKBCache;
+}
+
+function buildProductKBSection(product) {
+  const lines = [
+    '',
+    '--- [서버 검증: 제품 지식베이스] ---',
+    `제품명: ${product.name}`,
+    `분류: ${product.isMedical ? '식약처 허가 의료기기' : '웰니스 기기(비의료기기)'}`,
+  ];
+  if (product.keyFeatures?.ko?.length) {
+    lines.push(`핵심 기능:\n${product.keyFeatures.ko.map(f => `- ${f}`).join('\n')}`);
+  }
+  if (product.prohibited?.ko?.length) {
+    lines.push(`절대 금지 표현:\n${product.prohibited.ko.map(p => `- ${p}`).join('\n')}`);
+  }
+  if (product.rules?.ko?.length) {
+    lines.push(`필수 규칙:\n${product.rules.ko.map(r => `- ${r}`).join('\n')}`);
+  }
+  if (product.disclaimer?.ko) {
+    lines.push(`면책 고지: ${product.disclaimer.ko}`);
+  }
+  return lines.join('\n');
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
@@ -11,6 +50,7 @@ export default async function handler(req, res) {
   const temperature = body.temperature;
   const top_p = body.top_p;
   const max_tokens = body.max_tokens || 4096;
+  const productKey = body.productKey || null;
 
   if (!messages || !Array.isArray(messages) || messages.length === 0) {
     return res.status(400).json({ error: 'Request body must contain a messages array.' });
@@ -22,8 +62,15 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Server is missing ANTHROPIC_API_KEY.' });
   }
 
+  let augmentedSystem = system || '';
+  if (productKey) {
+    const kb = getProductKB();
+    const product = kb[productKey];
+    if (product) augmentedSystem += buildProductKBSection(product);
+  }
+
   const claudeBody = { model, max_tokens, messages };
-  if (system) claudeBody.system = system;
+  if (augmentedSystem) claudeBody.system = augmentedSystem;
   if (temperature !== undefined) claudeBody.temperature = temperature;
   if (top_p !== undefined) claudeBody.top_p = top_p;
 

@@ -1,0 +1,55 @@
+{
+  "id": "exoRehab",
+  "name": "exoRehab",
+  "definition": {
+    "ko": "미국 RTM(원격 치료 모니터링) 시장 대상 재활 관리 솔루션",
+    "en": "US RTM (Remote Therapeutic Monitoring) Market Rehabilitation Management Solution"
+  },
+  "positioning": {
+    "ko": "미국 RTM(Remote Therapeutic Monitoring) 보험 청구 코드 체계에 최적화된 재활 원격 관리 솔루션. 물리치료 기관과 재활 클리닉이 환자 원격 모니터링 데이터를 수집·분석하고, RTM 기반 보험 청구 서비스 흐름을 체계적으로 지원합니다.",
+    "en": "A rehabilitation remote management solution optimized for the US RTM insurance reimbursement framework, supporting physical therapy clinics in collecting patient monitoring data and managing the RTM billing workflow."
+  },
+  "keyFeatures": {
+    "ko": [
+      "미국 RTM 코드 연계 원격 치료 모니터링 흐름 지원",
+      "환자 수행 데이터 원격 수집 및 분석",
+      "물리치료사 원격 지도 지원 소프트웨어",
+      "RTM 사업 파트너 대상 시장 진입 지원",
+      "미국 규제 환경 대응 설계"
+    ]
+  },
+  "targetInsights": {
+    "미국 재활 클리닉": "RTM 코드 적용으로 원격 모니터링 보험 청구 가능성 확보. 환자 치료 연속성과 추가 수익 창출 기회를 동시에 제공합니다.",
+    "RTM 사업 파트너": "미국 원격 재활 시장 선점 기회. 명확한 보험 청구 모델 기반의 수익화 경로를 제공합니다.",
+    "물리치료사": "원격 환자 모니터링으로 치료 연속성 강화. 클리닉 외부에서도 환자 상태를 추적·관리할 수 있습니다."
+  },
+  "targets": ["미국 재활 클리닉", "물리치료 기관", "RTM 사업 파트너", "물리치료사"],
+  "allowed": {
+    "ko": [
+      "미국 RTM 코드 체계에 최적화된 원격 재활 관리 흐름을 지원합니다.",
+      "환자 수행 데이터를 원격으로 수집하고 관리합니다.",
+      "물리치료사의 원격 모니터링 업무 효율성을 높입니다."
+    ]
+  },
+  "prohibited": {
+    "ko": [
+      "보험 수가 100% 청구를 보장합니다",
+      "치료 효과를 완벽히 보장합니다",
+      "미국 규제 승인을 보장합니다",
+      "모든 RTM 코드에 자동 적용됩니다"
+    ]
+  },
+  "rules": {
+    "ko": [
+      "RTM 모니터링 워크플로우 효율성 중심 소구",
+      "보험 수가는 '가능성' 또는 '지원' 수준으로만 표현",
+      "미국 시장 특화 솔루션임을 명시",
+      "활용 가능성은 현지 규제에 따라 달라질 수 있음을 명시"
+    ]
+  },
+  "disclaimer": {
+    "ko": "본 제품의 RTM 보험 청구 적용 가능성은 현지 규정 및 심사 기준에 따라 다를 수 있습니다. 실제 적용 전 담당 전문가 및 관련 기관의 확인을 권장합니다.",
+    "en": "RTM insurance reimbursement applicability may vary depending on local regulations and review criteria. Confirmation with qualified professionals and relevant authorities is recommended before actual application."
+  },
+  "isMedical": false
+}

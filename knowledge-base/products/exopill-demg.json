@@ -1,0 +1,63 @@
+{
+  "id": "exoPill-dEMG",
+  "name": "exoPill-dEMG",
+  "definition": {
+    "ko": "동작분석 및 역동적 근전도(dEMG) 기반 근기능 평가 의료기기",
+    "en": "Dynamic EMG & Motion Analysis Muscle Function Evaluation Medical Device"
+  },
+  "positioning": {
+    "ko": "동작 수행 중 근전도(EMG)와 관성측정(IMU)을 동시 측정하여 근기능 상태를 객관적으로 평가하고, 재활의학과·정형외과·물리치료실의 평가 워크플로우를 지원하는 식약처 허가 의료기기. 치료사의 주관적 평가를 데이터로 보완하여 재활 방향 설정의 근거를 강화합니다.",
+    "en": "An MFDS-approved medical device that simultaneously captures EMG and IMU during motion to objectively evaluate muscle function, complementing therapist judgment and supporting rehab evaluation workflows."
+  },
+  "keyFeatures": {
+    "ko": [
+      "동작 중 근전도(EMG) + IMU 동시 측정 (역동적 근기능 평가)",
+      "재활 평가용 객관적 근기능 데이터 제공",
+      "치료사의 주관적 평가를 데이터로 보완",
+      "재활 방향 설정 참고 데이터 제공",
+      "식약처 허가 의료기기",
+      "실시간 데이터 시각화 및 임상 보고서 생성"
+    ]
+  },
+  "targetInsights": {
+    "병원": "재활 평가의 객관성 확보와 비급여 검사 항목 신설로 수익성 개선. 기존 인프라 변경 없이 도입 가능하여 초기 투자 부담이 낮습니다.",
+    "재활의학과": "근기능 상태의 데이터 기반 추적으로 치료 효과를 객관화하고, 환자 치료 순응도(Compliance)를 높입니다.",
+    "정형외과": "수술 전·후 근기능 상태 변화 비교 데이터로 환자 설명력 강화. 보존적 치료 경과 모니터링에 활용 가능합니다.",
+    "물리치료사": "주관적 도수치료 평가의 한계를 객관적 데이터로 보완. 환자 예후 설명력 강화와 전문성 차별화에 직결됩니다.",
+    "국내 유통사": "병원·재활 클리닉 시장의 명확한 세일즈 논리. 비급여 수익 모델 신설 가능성이 병원 도입 결정의 핵심 설득 포인트입니다.",
+    "해외 유통사": "식약처 허가 기반으로 현지 규제 대응 레퍼런스 확보 용이. 재활 의료기기 시장의 데이터 기반 평가 니즈에 부합합니다."
+  },
+  "targets": ["병원", "재활의학과", "정형외과", "물리치료실", "국내 유통사", "해외 유통사", "물리치료사"],
+  "allowed": {
+    "ko": [
+      "동작 중 근육 활성 상태를 객관적으로 확인합니다.",
+      "재활 방향 설정을 위한 참고 데이터를 제공합니다.",
+      "식약처 허가 의료기기로 임상 현장에 적용 가능합니다.",
+      "실시간 근기능 데이터를 시각화합니다.",
+      "의료진의 평가를 보조하는 솔루션입니다."
+    ]
+  },
+  "prohibited": {
+    "ko": [
+      "질환을 단독으로 확정 진단합니다",
+      "재활 효과를 100% 보장합니다",
+      "치료 성과를 담보합니다",
+      "의료진 없이 단독 사용 가능합니다",
+      "특정 질환의 치료 목적으로 사용합니다"
+    ]
+  },
+  "rules": {
+    "ko": [
+      "식약처 허가 의료기기임을 명시",
+      "의료진(전문가)의 최종 판단 보조 도구로 표현",
+      "확정 진단이 아닌 '평가 참고 데이터' 표현 사용",
+      "B2B 병원·클리닉 대상: 비급여 ROI 및 워크플로우 효율화 중심 소구",
+      "비급여 수익 모델 연계 가능성 언급 가능 (구체적 수치 보장 금지)"
+    ]
+  },
+  "disclaimer": {
+    "ko": "본 제품은 식약처 허가 의료기기로, 의료전문가의 평가를 보조하기 위한 참고 데이터를 제공합니다. 최종 의학적 판단 및 진단은 반드시 의료진이 수행하여야 합니다.",
+    "en": "This MFDS-approved medical device provides reference data to assist healthcare professional evaluation. Final medical judgment and diagnosis must be performed by qualified clinicians."
+  },
+  "isMedical": true
+}
