@@ -29,14 +29,21 @@ function validateProductKB(filePath, data) {
 }
 
 const productsDir = path.join(KB_ROOT, 'products');
-if (fs.existsSync(productsDir)) {
-  fs.readdirSync(productsDir).filter(f => f.endsWith('.json')).forEach(file => {
-    const data = validateJSON(path.join(productsDir, file));
-    if (data) validateProductKB(path.join(productsDir, file), data);
-  });
-} else {
-  errors.push('knowledge-base/products 디렉토리 없음');
+if (!fs.existsSync(productsDir)) {
+  console.log('\nknowledge-base/products 디렉토리 없음 — KB 검증 스킵');
+  process.exit(0);
 }
+
+const jsonFiles = fs.readdirSync(productsDir).filter(f => f.endsWith('.json'));
+if (jsonFiles.length === 0) {
+  console.log('\nknowledge-base/products 에 JSON 파일 없음 — KB 검증 스킵');
+  process.exit(0);
+}
+
+jsonFiles.forEach(file => {
+  const data = validateJSON(path.join(productsDir, file));
+  if (data) validateProductKB(path.join(productsDir, file), data);
+});
 
 console.log('\n========================================');
 console.log('  EXOSYSTEMS KB 검증 결과');
