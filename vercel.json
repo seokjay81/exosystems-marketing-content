@@ -2,8 +2,9 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
   "buildCommand": "node scripts/build-kb.js",
-  "outputDirectory": "public",
   "routes": [
-    { "src": "/api/(.*)", "dest": "/api/$1" }
+    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/kb-admin.html", "dest": "/public/kb-admin.html" },
+    { "src": "/", "dest": "/public/index.html" }
   ]
 }
