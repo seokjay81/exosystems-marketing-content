@@ -1,3 +1,9 @@
-{
-  "$schema": "https://openapi.vercel.sh/vercel.json"
+﻿{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "version": 2,
+  "buildCommand": "node scripts/build-kb.js",
+  "outputDirectory": "public",
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1" }
+  ]
 }
