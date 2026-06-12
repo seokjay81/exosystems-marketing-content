@@ -8,24 +8,38 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed. Use POST.' });
   }
 
-  const { title, category, content, product, source = 'claude-ai' } = req.body || {};
+  // req.body 안전 파싱
+  let body = {};
+  try {
+    body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
+  } catch (e) {
+    return res.status(400).json({ error: `요청 본문 파싱 실패: ${e.message}` });
+  }
+
+  const { title, category, content, product, source = 'claude-ai' } = body;
 
   if (!title || !content || !product) {
-    return res.status(400).json({ error: 'title, content, product 필드가 필요합니다.' });
+    return res.status(400).json({
+      error: 'title, content, product 필드가 필요합니다.',
+      received: Object.keys(body)
+    });
   }
 
   const token = process.env.GITHUB_TOKEN;
   const repo  = process.env.GITHUB_REPO || 'seokjay81/exosystems-marketing-content';
-  if (!token) return res.status(500).json({ error: 'GITHUB_TOKEN 환경변수가 없습니다.' });
 
-  const date = new Date().toISOString().slice(0, 10);
-  const slug = title.replace(/[^\w\s가-힣]/g, '').replace(/\s+/g, '-').slice(0, 50);
-  const cat  = category || 'general';
+  if (!token) {
+    return res.status(500).json({ error: 'GITHUB_TOKEN 환경변수가 설정되지 않았습니다.' });
+  }
+
+  const date     = new Date().toISOString().slice(0, 10);
+  const slug     = String(title).replace(/[^\w\s가-힣]/g, '').replace(/\s+/g, '-').slice(0, 50);
+  const cat      = category || 'general';
   const filePath = `knowledge-base/${product}/${date}_${cat}_${slug}.md`;
 
   const md = [
     '---',
-    `title: "${title}"`,
+    `title: "${String(title).replace(/"/g, "'")}"`,
     `product: ${product}`,
     `category: ${cat}`,
     `date: ${date}`,
@@ -36,28 +50,30 @@ export default async function handler(req, res) {
     '',
     `> 제품: ${product} | 카테고리: ${cat} | 등록일: ${date} | 출처: ${source}`,
     '',
-    content.trim(),
+    String(content).trim(),
     ''
-  ].join('
-');
+  ].join('\n');
 
   const encoded = Buffer.from(md, 'utf8').toString('base64');
 
   try {
+    // 기존 파일 sha 확인
     let sha;
-    const check = await fetch(
-      `https://api.github.com/repos/${repo}/contents/${filePath}`,
-      { headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json' } }
-    );
-    if (check.ok) {
-      const existing = await check.json();
-      sha = existing.sha;
-    }
+    try {
+      const checkRes = await fetch(
+        `https://api.github.com/repos/${repo}/contents/${filePath}`,
+        { headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json' } }
+      );
+      if (checkRes.ok) {
+        const existing = await checkRes.json();
+        sha = existing.sha;
+      }
+    } catch (_) {}
 
     const putBody = { message: `kb: [${product}] ${title}`, content: encoded };
     if (sha) putBody.sha = sha;
 
-    const put = await fetch(
+    const putRes = await fetch(
       `https://api.github.com/repos/${repo}/contents/${filePath}`,
       {
         method: 'PUT',
@@ -70,20 +86,22 @@ export default async function handler(req, res) {
       }
     );
 
-    if (!put.ok) {
-      const err = await put.json();
-      return res.status(500).json({ error: `GitHub API 오류: ${err.message}` });
+    if (!putRes.ok) {
+      const errData = await putRes.json().catch(() => ({}));
+      return res.status(500).json({
+        error: `GitHub API 오류 (${putRes.status}): ${errData.message || '알 수 없는 오류'}`
+      });
     }
 
-    const result = await put.json();
+    const result = await putRes.json();
     return res.status(200).json({
       success: true,
-      message: `KB 저장 완료: ${filePath}`,
-      url: result.content?.html_url,
-      path: filePath
+      message: `KB 저장 완료`,
+      path: filePath,
+      url: result.content?.html_url || ''
     });
 
   } catch (e) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: `처리 중 오류: ${e.message}` });
   }
 }
