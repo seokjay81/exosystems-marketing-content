@@ -1,9 +1,7 @@
 ﻿{
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "version": 2,
-  "routes": [
-    { "src": "/api/(.*)", "dest": "/api/$1" },
-    { "src": "/kb-admin.html", "dest": "/public/kb-admin.html" },
-    { "src": "/", "dest": "/public/index.html" }
+  "rewrites": [
+    { "source": "/kb-admin.html", "destination": "/public/kb-admin.html" },
+    { "source": "/", "destination": "/public/index.html" }
   ]
 }
