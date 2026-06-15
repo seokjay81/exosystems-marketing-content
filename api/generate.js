@@ -62,6 +62,8 @@ function buildProductKBSection(product) {
   return lines.join('\n');
 }
 
+const GEMINI_MODELS = ['gemini-2.5-flash', 'gemini-2.5-flash-lite', 'gemini-2.5-pro'];
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
@@ -69,7 +71,7 @@ export default async function handler(req, res) {
   }
 
   const body = req.body || {};
-  const model = body.model || 'claude-sonnet-4-6';
+  const requestedModel = body.model || 'claude-sonnet-4-6';
   const messages = body.messages;
   const system = body.system;
   const temperature = body.temperature;
@@ -81,10 +83,11 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Request body must contain a messages array.' });
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY;
+  const bearerToken = process.env.GEMINI_BEARER_TOKEN;
 
-  if (!apiKey) {
-    return res.status(500).json({ error: 'Server is missing ANTHROPIC_API_KEY.' });
+  if (!apiKey && !bearerToken) {
+    return res.status(500).json({ error: 'Server is missing GEMINI_API_KEY or GEMINI_BEARER_TOKEN.' });
   }
 
   let augmentedSystem = system || '';
@@ -94,41 +97,81 @@ export default async function handler(req, res) {
     if (product) augmentedSystem += buildProductKBSection(product);
   }
 
-  const claudeBody = { model, max_tokens, messages };
-  if (augmentedSystem) claudeBody.system = augmentedSystem;
-  if (temperature !== undefined) claudeBody.temperature = temperature;
-  if (top_p !== undefined) claudeBody.top_p = top_p;
+  const contents = messages.map(m => ({
+    role: m.role === 'assistant' ? 'model' : 'user',
+    parts: [{ text: typeof m.content === 'string' ? m.content : JSON.stringify(m.content) }]
+  }));
 
-  const url = 'https://api.anthropic.com/v1/messages';
-  const headers = {
-    'Content-Type': 'application/json',
-    'x-api-key': apiKey,
-    'anthropic-version': '2023-06-01'
-  };
+  const generationConfig = { maxOutputTokens: max_tokens };
+  if (temperature !== undefined) generationConfig.temperature = temperature;
+  if (top_p !== undefined) generationConfig.topP = top_p;
 
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(claudeBody)
-    });
+  const geminiBody = { contents, generationConfig };
+  if (augmentedSystem) {
+    geminiBody.systemInstruction = { parts: [{ text: augmentedSystem }] };
+  }
 
-    const text = await response.text();
-    let data;
+  const headers = { 'Content-Type': 'application/json' };
+  if (bearerToken) headers['Authorization'] = `Bearer ${bearerToken}`;
+
+  let lastError = null;
+  let lastStatus = 502;
+  let lastRetryAfter = null;
+
+  for (const geminiModel of GEMINI_MODELS) {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(geminiModel)}:generateContent${apiKey && !bearerToken ? `?key=${encodeURIComponent(apiKey)}` : ''}`;
 
     try {
-      data = JSON.parse(text);
+      const response = await fetch(url, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(geminiBody)
+      });
+
+      const text = await response.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (error) {
+        lastError = { message: 'Invalid JSON received from Gemini API.', rawResponse: text };
+        lastStatus = 502;
+        continue;
+      }
+
+      if (!response.ok) {
+        lastError = data.error || data;
+        lastStatus = response.status;
+        lastRetryAfter = response.headers.get('retry-after')
+          || data?.error?.details?.find?.(d => d?.['@type']?.includes('RetryInfo'))?.retryDelay
+          || null;
+
+        const shouldTryNext = response.status === 429 || response.status === 404
+          || /not found|unsupported|quota|resource_exhausted/i.test(JSON.stringify(lastError));
+        if (shouldTryNext) continue;
+        break;
+      }
+
+      const candidate = data?.candidates?.[0];
+      const textOut = candidate?.content?.parts?.map(p => p.text || '').join('') || '';
+
+      if (!textOut) {
+        lastError = { message: 'Gemini response did not contain text content.', raw: data };
+        lastStatus = 502;
+        continue;
+      }
+
+      return res.status(200).json({
+        content: [{ type: 'text', text: textOut }],
+        model: geminiModel,
+        stop_reason: candidate?.finishReason || null
+      });
+
     } catch (error) {
-      return res.status(502).json({ error: 'Invalid JSON received from Claude API.', rawResponse: text });
+      lastError = { message: error.message };
+      lastStatus = 502;
+      continue;
     }
-
-    if (!response.ok) {
-      const retryAfter = response.headers.get('retry-after') || null;
-      return res.status(response.status).json({ error: data.error || data, retryAfter, model });
-    }
-
-    return res.status(200).json(data);
-  } catch (error) {
-    return res.status(502).json({ error: 'Claude proxy request failed.', message: error.message });
   }
+
+  return res.status(lastStatus).json({ error: lastError || 'All Gemini models failed.', retryAfter: lastRetryAfter, model: requestedModel });
 }
