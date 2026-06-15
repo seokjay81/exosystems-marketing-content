@@ -33,7 +33,8 @@ function readMdFiles(dir) {
   return readdirSync(dir)
     .filter(f => f.endsWith('.md'))
     .map(file => {
-      const raw = readFileSync(join(dir, file), 'utf8');
+      let raw = readFileSync(join(dir, file), 'utf8');
+      raw = raw.replace(/^﻿/, '').replace(/\r\n/g, '\n');
       const fm  = {};
       const fmMatch = raw.match(/^---\n([\s\S]*?)\n---/);
       if (fmMatch) {
@@ -61,7 +62,7 @@ function collectAllMdFiles(rootDir) {
   const results = [];
   const entries = readdirSync(rootDir, { withFileTypes: true });
   for (const entry of entries) {
-    if (entry.isDirectory()) {
+    if (entry.isDirectory() && entry.name !== 'inbox') {
       results.push(...readMdFiles(join(rootDir, entry.name)));
     }
   }
@@ -91,6 +92,17 @@ for (const doc of learnedDocs) {
 for (const [productKey, docs] of Object.entries(learnedByProduct)) {
   if (products[productKey]) {
     products[productKey].learnedDocs = docs;
+  }
+}
+
+// 공통(general) 학습 자료는 모든 제품에 참고자료로 추가
+const generalDocs = learnedByProduct['general'] || [];
+if (generalDocs.length) {
+  for (const productKey of Object.keys(products)) {
+    products[productKey].learnedDocs = [
+      ...(products[productKey].learnedDocs || []),
+      ...generalDocs,
+    ];
   }
 }
 
