@@ -3148,33 +3148,42 @@ EXOSYSTEMS는 신경근육계 데이터 측정 및 AI 분석 기술을 기반으
                 const prohibitedWords = kb.prohibited[currentLang] || kb.prohibited['ko'] || [];
                 const rules = kb.rules[currentLang] || kb.rules['ko'] || [];
                 const durationText = (type === 'reels' || type === 'reels_story') ? `\n- Required Video Duration: EXACTLY ${reelsDuration} seconds` : '';
-                let formatInstruction = `
+                let formatInstruction = '';
+
+                if (type === 'reels_story') {
+                    formatInstruction = `
 [Reels Story Fixed Output Rules]
-Apply only when Content Type ID is reels_story. Act as a world-class short-form reels planner, video creative director, and performance marketing storyboard strategist. Use Product KB and learned context internally to design a practical reels plan, not a generic explanation. The final output must contain exactly these 7 sections in order:
+Act as a world-class short-form reels planner, video creative director, and performance marketing storyboard strategist. Use Product KB and learned context internally to design a practical reels plan, not a generic explanation. The final output must contain exactly these 7 sections in order:
 1. \uCF58\uD150\uCE20 \uBAA9\uC801
 2. \uC804\uCCB4 \uD575\uC2EC \uBA54\uC2DC\uC9C0
 3. \uD0C0\uAC9F \uACE0\uAC1D\uC758 \uC2EC\uB9AC
-4. \uCD08 \uB2E8\uC704 \uB9B4\uC2A4 \uCF58\uD2F0
+4. \uCD08 \uB2E8\uC704 \uB9B4\uC2A4 \uCF58\uD150\uCE20
 5. \uCD08 \uB2E8\uC704 \uC790\uB9C9 \uBC0F \uD14D\uC2A4\uD2B8 \uBAA8\uC158 \uC9C0\uC2DC
 6. \uAC15\uC870 \uD0A4\uC6CC\uB4DC
 7. \uC601\uC0C1 \uC0DD\uC131 \uD504\uB86C\uD504\uD2B8
 Separate section 4 and section 5. In section 4, each time range must include \uD654\uBA74 and \uC758\uB3C4. In section 5, each time range must include \uC790\uB9C9 and \uD14D\uC2A4\uD2B8 \uBAA8\uC158. Section 6 must be hashtags only. Section 7 must be one complete copy-ready vertical reels video generation prompt.
 
-[Content Format Guide]
-- Content Type: ${formatGuide.label}
-- Required Format:
-${formatGuide.formatInstruction}
-
-Mandatory format rules:
-1. Follow the selected content type format exactly.
-2. If strategyplan, write a strategy document.
-3. If email, write a copy-ready business email.
-4. If cardnews, write a page-by-page card news plan.
-5. If reels, write a short-form video plan.
-6. If adcopy, write main copy, sub copy, hook, CTA, and channel suggestion.
-7. If imagegen or videoprompt, write prompt-engineering output that can be pasted directly into an image/video generation tool.
-8. Show only final content. Never expose learned data, API logs, file names, JSON, quota messages, or internal notes.
+Mandatory format rule:
+Show only final content. Never expose learned data, API logs, file names, JSON, quota messages, or internal notes.
 `;
+                } else {
+                    const typeRuleMap = {
+                        strategyplan: 'Write a single marketing strategy document following the Required Format above exactly.',
+                        email: 'Write a single copy-ready business email following the Required Format above exactly. Do not add a separate strategy section, summary, or any content beyond the email itself.',
+                        cardnews: 'Write a single page-by-page card news plan following the Required Format above exactly.',
+                        reels: 'Write a single short-form video plan following the Required Format above exactly.',
+                        adcopy: 'Write a single ad copy set (main copy, sub copy, hook, CTA, channel suggestion) following the Required Format above exactly.',
+                        imagegen: 'Write a single prompt-engineering output that can be pasted directly into an image generation tool.',
+                        videoprompt: 'Write a single prompt-engineering output that can be pasted directly into a video generation tool.',
+                    };
+
+                    formatInstruction = `
+Mandatory format rule:
+${typeRuleMap[type] || typeRuleMap.email}
+Output only this single content type. Do not add any additional section, overview, explanation, or alternate content type beyond what is specified in the Required Format above.
+Show only final content. Never expose learned data, API logs, file names, JSON, quota messages, or internal notes.
+`;
+                }
 
                 const targetSpecificInsight = kb.targetInsights?.[target] || "";
                 const keyFeaturesText = (kb.keyFeatures?.ko || []).join(' / ');

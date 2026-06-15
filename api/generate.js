@@ -22,8 +22,24 @@ function buildProductKBSection(product) {
     `제품명: ${product.name}`,
     `분류: ${product.isMedical ? '식약처 허가 의료기기' : '웰니스 기기(비의료기기)'}`,
   ];
+
+  if (product.definition?.ko) {
+    lines.push(`제품 정의: ${product.definition.ko}`);
+  }
+  if (product.positioning?.ko) {
+    lines.push(`핵심 포지셔닝: ${product.positioning.ko}`);
+  }
+  if (product.targetInsights) {
+    lines.push('타겟별 핵심 인사이트:');
+    for (const [target, insight] of Object.entries(product.targetInsights)) {
+      lines.push(`- ${target}: ${insight}`);
+    }
+  }
   if (product.keyFeatures?.ko?.length) {
     lines.push(`핵심 기능:\n${product.keyFeatures.ko.map(f => `- ${f}`).join('\n')}`);
+  }
+  if (product.allowed?.ko?.length) {
+    lines.push(`사용 가능 표현 예시:\n${product.allowed.ko.map(a => `- ${a}`).join('\n')}`);
   }
   if (product.prohibited?.ko?.length) {
     lines.push(`절대 금지 표현:\n${product.prohibited.ko.map(p => `- ${p}`).join('\n')}`);
@@ -31,9 +47,18 @@ function buildProductKBSection(product) {
   if (product.rules?.ko?.length) {
     lines.push(`필수 규칙:\n${product.rules.ko.map(r => `- ${r}`).join('\n')}`);
   }
+  if (product.learnedDocs?.length) {
+    lines.push('');
+    lines.push('--- [학습된 영업·전략 자료 - 콘텐츠 생성 시 최우선 참고] ---');
+    for (const doc of product.learnedDocs) {
+      lines.push(`\n[${doc.category}] ${doc.title} (${doc.date || '날짜 미기재'})`);
+      lines.push(doc.content);
+    }
+  }
   if (product.disclaimer?.ko) {
     lines.push(`면책 고지: ${product.disclaimer.ko}`);
   }
+
   return lines.join('\n');
 }
 
